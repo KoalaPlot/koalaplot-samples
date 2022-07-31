@@ -9,28 +9,45 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
-            -   uses: actions/checkout@v3
-
             -   name: Set up JDK 11
                 uses: actions/setup-java@v3
                 with:
                     java-version: '11'
                     distribution: 'temurin'
 
+            -   name: Setup Gradle
+                uses: gradle/gradle-build-action@v2
+
+            -   uses: actions/checkout@v3
+                with:
+                    path: koalaplot-samples
+
             -   name: Validate Gradle wrapper
                 uses: gradle/wrapper-validation-action@v1
 
-            -   name: Build with Gradle
+            -   name: Checkout koalaplot-core
+            -   uses: actions/checkout@v3
+                with:
+                    repository: koalaplot/koalaplot-core
+                    path: koalaplot-core
+
+            -   name: Publish koalaplot-core to Maven Local
+                with:
+                    arguments: check publishToMavenLocal
+                    build-root-directory: koalaplot-core
+
+            -   name: Build koalaplot-samples
                 uses: gradle/gradle-build-action@v2
                 with:
                     arguments: build jsBrowserDistribution
+                    build-root-directory: koalaplot-samples
 
             -   name: Deploy compose-web sample to GitHub Pages
                 if: success()
                 uses: crazy-max/ghaction-github-pages@v3
                 with:
                     target_branch: gh-pages
-                    build_dir: build/distributions
+                    build_dir: koalaplot-samples/build/distributions
                     keep_history: false
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
