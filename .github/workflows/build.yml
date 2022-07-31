@@ -32,6 +32,7 @@ jobs:
                     path: koalaplot-core
 
             -   name: Publish koalaplot-core to Maven Local
+                uses: gradle/gradle-build-action@v2
                 with:
                     arguments: check publishToMavenLocal
                     build-root-directory: koalaplot-core
