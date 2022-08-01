@@ -40,7 +40,14 @@ jobs:
             -   name: Build koalaplot-samples
                 uses: gradle/gradle-build-action@v2
                 with:
-                    arguments: build jsBrowserDistribution
+                    arguments: build
+                    build-root-directory: koalaplot-samples
+
+            # jsBrowserWebpack in one step doesn't put skiko.wasm or skio.js in the distributions directory
+            -   name: Build koalaplot-samples
+                uses: gradle/gradle-build-action@v2
+                with:
+                    arguments: jsBrowserWebpack
                     build-root-directory: koalaplot-samples
 
             -   name: Deploy compose-web sample to GitHub Pages
