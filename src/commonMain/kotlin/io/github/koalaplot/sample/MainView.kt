@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -108,12 +109,18 @@ fun MainView() {
                     )
                 }
             }) {
-                if (selectedTabIndex == -1) {
-                    ThumbnailsView(currentPage, setCurrentPage = { currentPage = it }) {
-                        selectedTabIndex = it
+                Column(Modifier.fillMaxWidth()) {
+                    if (selectedTabIndex == -1) {
+                        ThumbnailsView(
+                            currentPage = currentPage,
+                            setCurrentPage = { currentPage = it },
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        ) {
+                            selectedTabIndex = it
+                        }
+                    } else {
+                        samples[selectedTabIndex].content.invoke()
                     }
-                } else {
-                    samples[selectedTabIndex].content.invoke()
                 }
             }
         }
@@ -124,8 +131,13 @@ fun MainView() {
  * Displays the sample thumbnails.
  */
 @Composable
-private fun ThumbnailsView(currentPage: Int, setCurrentPage: (Int) -> Unit, select: (Int) -> Unit) {
-    BoxWithConstraints {
+private fun ThumbnailsView(
+    currentPage: Int,
+    setCurrentPage: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    select: (Int) -> Unit
+) {
+    BoxWithConstraints(modifier) {
         val sizeClass = WindowSizeClass.fromSize(maxWidth, maxHeight)
 
         @Suppress("MagicNumber")
@@ -161,7 +173,7 @@ private fun ThumbnailsView(currentPage: Int, setCurrentPage: (Int) -> Unit, sele
 
                 val placeables = measurables.map { it.measure(Constraints.fixed(cellSize, cellSize)) }
 
-                layout(constraints.maxWidth, constraints.maxHeight) {
+                layout(cellSize * columns, cellSize * rows) {
                     var row = 0
                     var column = 0
                     placeables.forEach {
