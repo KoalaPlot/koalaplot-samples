@@ -1,9 +1,9 @@
 package io.github.koalaplot.sample
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
@@ -15,15 +15,21 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.theme.KoalaPlotTheme
+import kotlin.math.ceil
+import kotlin.math.min
 
 // https://developer.android.com/guide/topics/large-screens/support-different-screen-sizes#window_size_classes
 enum class WindowWidthSizeClass(private val threshold: Dp) {
@@ -75,13 +81,13 @@ private val samples = buildList {
     add(stackedVerticalBarSampleView)
     add(xyLineSampleView)
     add(xyLogLineSampleView)
-    // add(instrinsicsView)
+    add(minimalBarChartSampleView)
 }
-
-private const val ThumbnailsPerRow = 3
 
 @Composable
 fun MainView() {
+    var currentPage by remember { mutableStateOf(0) }
+
     MaterialTheme {
         KoalaPlotTheme {
             var selectedTabIndex by remember { mutableStateOf(-1) }
@@ -103,23 +109,8 @@ fun MainView() {
                 }
             }) {
                 if (selectedTabIndex == -1) {
-                    // Scroll not yet implemented in JS target, throws runtime exception
-                    Column(/*Modifier.verticalScroll(rememberScrollState())*/) {
-                        for (i in samples.indices step ThumbnailsPerRow) {
-                            Row {
-                                Thumbnail({ selectedTabIndex = i }, samples[i].thumbnail)
-                                if (i + 1 < samples.size)
-                                    Thumbnail(
-                                        { selectedTabIndex = i + 1 },
-                                        samples[i + 1].thumbnail
-                                    )
-                                if (i + 2 < samples.size)
-                                    Thumbnail(
-                                        { selectedTabIndex = i + 2 },
-                                        samples[i + 2].thumbnail
-                                    )
-                            }
-                        }
+                    ThumbnailsView(currentPage, setCurrentPage = { currentPage = it }) {
+                        selectedTabIndex = it
                     }
                 } else {
                     samples[selectedTabIndex].content.invoke()
@@ -129,12 +120,105 @@ fun MainView() {
     }
 }
 
+/**
+ * Displays the sample thumbnails.
+ */
 @Composable
-private fun RowScope.Thumbnail(onClick: () -> Unit, content: @Composable () -> Unit) {
+private fun ThumbnailsView(currentPage: Int, setCurrentPage: (Int) -> Unit, select: (Int) -> Unit) {
+    BoxWithConstraints {
+        val sizeClass = WindowSizeClass.fromSize(maxWidth, maxHeight)
+
+        @Suppress("MagicNumber")
+        val columns = when (sizeClass.widthSizeClass) {
+            WindowWidthSizeClass.Compact -> 2
+            WindowWidthSizeClass.Medium -> 3
+            WindowWidthSizeClass.Expanded -> 4
+        }
+
+        @Suppress("MagicNumber")
+        val rows = when (sizeClass.heightSizeClass) {
+            WindowHeightSizeClass.Compact -> 2
+            WindowHeightSizeClass.Medium -> 3
+            WindowHeightSizeClass.Expanded -> 4
+        }
+
+        val (numPages, pageSize) =
+            remember(rows, columns) { ceil(samples.size.toDouble() / (rows * columns)).toInt() to rows * columns }
+
+        Pager(numPages, currentPage, { setCurrentPage(it) }) {
+            Layout(content = {
+                for (row in 0 until rows) {
+                    for (column in 0 until columns) {
+                        val index = currentPage * pageSize + row * columns + column
+                        if (index < samples.size) {
+                            Thumbnail({ select(index) }, samples[index].thumbnail)
+                        }
+                    }
+                }
+            }) { measurables, constraints ->
+                val cellSize =
+                    min(constraints.maxWidth.toDouble() / columns, constraints.maxHeight.toDouble() / rows).toInt()
+
+                val placeables = measurables.map { it.measure(Constraints.fixed(cellSize, cellSize)) }
+
+                layout(constraints.maxWidth, constraints.maxHeight) {
+                    var row = 0
+                    var column = 0
+                    placeables.forEach {
+                        it.place(column * cellSize, row * cellSize)
+                        column++
+                        if (column >= columns) {
+                            column = 0
+                            row++
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun Pager(
+    numPages: Int,
+    currentPage: Int,
+    setCurrentPage: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    page: @Composable () -> Unit
+) {
+    Column(modifier = modifier) {
+        Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            // Left button
+            IconButton(
+                onClick = { setCurrentPage(currentPage - 1) },
+                enabled = currentPage > 0,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Previous")
+            }
+
+            Text("${currentPage + 1} / $numPages", modifier = Modifier.align(Alignment.CenterVertically))
+
+            // Right button
+            IconButton(
+                onClick = { setCurrentPage(currentPage + 1) },
+                enabled = currentPage < numPages - 1,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ) {
+                Icon(Icons.Default.ArrowForward, contentDescription = "Next")
+            }
+        }
+        Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            page()
+        }
+    }
+}
+
+@Composable
+private fun Thumbnail(onClick: () -> Unit, content: @Composable () -> Unit) {
     Surface(
         elevation = 2.dp,
-        modifier = Modifier.weight(1f).padding(padding).clickable(onClick = onClick)
-            .aspectRatio(1f),
+        modifier = Modifier.padding(padding).clickable(onClick = onClick).aspectRatio(1f),
         content = content
     )
 }
