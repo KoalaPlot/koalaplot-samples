@@ -1,14 +1,7 @@
-buildscript {
-    dependencies {
-        classpath("org.jetbrains.dokka:dokka-base:_") // needed for dokka custom format config
-    }
-}
-
 plugins {
     kotlin("multiplatform")
     id("com.android.application")
     id("org.jetbrains.compose")
-    id("org.jetbrains.dokka")
     id("io.gitlab.arturbosch.detekt")
 }
 
