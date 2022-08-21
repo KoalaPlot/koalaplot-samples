@@ -83,6 +83,7 @@ private val samples = buildList {
     add(xyLineSampleView)
     add(xyLogLineSampleView)
     add(minimalBarChartSampleView)
+    add(bulletGraphSampleView)
 }
 
 @Composable
