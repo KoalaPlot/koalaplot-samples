@@ -17,7 +17,7 @@ dependencies {
 }
 
 group = "io.github.koalaplot"
-version = "0.1.0-SNAPSHOT"
+version = "0.1.0"
 
 kotlin {
     jvm()
@@ -35,7 +35,7 @@ kotlin {
                 implementation(compose.material)
                 implementation(compose.ui)
                 implementation(compose.animation)
-                implementation("io.github.koalaplot:koalaplot-core:0.1.0-SNAPSHOT")
+                implementation("io.github.koalaplot:koalaplot-core:_")
             }
         }
 
@@ -47,14 +47,12 @@ kotlin {
 
         named("androidMain") {
             dependencies {
-                implementation("io.github.koalaplot:koalaplot-core:0.1.0-SNAPSHOT")
                 implementation(AndroidX.activity.compose)
             }
         }
 
         named("jsMain") {
             dependencies {
-                implementation("io.github.koalaplot:koalaplot-core:0.1.0-SNAPSHOT")
             }
         }
     }
