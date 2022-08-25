@@ -2,7 +2,11 @@
 
 This repository houses samples demonstrating the use and features of Koala Plot libraries.
 
-# How to run
+Try out the [web version of the samples](https://koalaplot.github.io/koalaplot-samples/index.html) for a quick look at
+the possibilities when using Koala Plot. Note that this uses the alpha Compose web-canvas capability, so there may be
+bugs in the underlying Compose framework.
+
+# How to run with a development build of koalaplot-core
 
 1. Build koalaplot-core with the following commands
 

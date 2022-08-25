@@ -1,9 +1,8 @@
-name: Build and deploy compose-web sample to GitHub pages
+name: Build samples and publish web-canvas version to Github Pages
 
 on:
-    push:
-        branches: [ "main" ]
-    workflow_dispatch:
+    release:
+        types: [created]
 
 jobs:
     build:
@@ -37,3 +36,13 @@ jobs:
                 with:
                     arguments: jsBrowserWebpack
                     build-root-directory: koalaplot-samples
+
+            -   name: Deploy compose-web sample to GitHub Pages
+                if: success()
+                uses: crazy-max/ghaction-github-pages@v3
+                with:
+                    target_branch: gh-pages
+                    build_dir: koalaplot-samples/build/distributions
+                    keep_history: false
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
