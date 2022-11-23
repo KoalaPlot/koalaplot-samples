@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.koalaplot.core.ChartLayout
@@ -335,7 +336,8 @@ private fun PieChartSample(
             },
             holeSize = otherOptionsState.holeSize,
             holeContent = { holeTotalLabel() },
-            labelSpacing = if (otherOptionsState.showLabels) otherOptionsState.labelSpacing else 1.0f
+            labelSpacing = if (otherOptionsState.showLabels) otherOptionsState.labelSpacing else 1.0f,
+            maxPieDiameter = Dp.Infinity
         )
     }
 }
@@ -359,7 +361,7 @@ private fun PieChartThumbnail(
             }
         }
     ) {
-        PieChart(fibonacci)
+        PieChart(fibonacci, labelConnector = {})
     }
 }
 
