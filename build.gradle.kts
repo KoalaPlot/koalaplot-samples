@@ -17,7 +17,7 @@ dependencies {
 }
 
 group = "io.github.koalaplot"
-version = "0.2.0"
+version = "0.2.1"
 
 kotlin {
     jvm()
@@ -112,7 +112,7 @@ android {
     defaultConfig {
         applicationId = "io.github.koalaplot.sample.android"
         minSdk = 24
-        targetSdk = 30
+        targetSdk = 31
         versionCode = 1
         versionName = "1.0"
     }
