@@ -1,5 +1,6 @@
 package io.github.koalaplot.sample
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -56,8 +58,9 @@ import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.toString
 
 private val colors = generateHueColorPalette(fibonacci.size)
-private val LabelSpacingSliderRange = 1.05f..1.5f
+private val LabelSpacingSliderRange = 1.01f..1.3f
 private val HoleSizeRange = 0f..0.9f
+private val SliceGapRange = 0f..2f
 
 private val strokes = buildList {
     add(Stroke(width = 1f))
@@ -77,7 +80,10 @@ private data class ConnectorStyleState(
 private data class OtherOptionsState(
     val showLabels: Boolean = false,
     val holeSize: Float = 0.0f,
-    val labelSpacing: Float = 1.1f
+    val labelSpacing: Float = 1.1f,
+    val antiAlias: Boolean = false,
+    val borders: Boolean = false,
+    val sliceGap: Float = 0.0f
 )
 
 val pieSampleView = object : SampleView {
@@ -125,6 +131,15 @@ val pieSampleView = object : SampleView {
                 },
                 onLabelSpacing = {
                     otherOptions = otherOptions.copy(labelSpacing = it)
+                },
+                onAntiAlias = {
+                    otherOptions = otherOptions.copy(antiAlias = it)
+                },
+                onShowBorder = {
+                    otherOptions = otherOptions.copy(borders = it)
+                },
+                onSliceGap = {
+                    otherOptions = otherOptions.copy(sliceGap = it)
                 }
             )
         }
@@ -197,15 +212,28 @@ private fun OtherOptions(
     state: OtherOptionsState,
     onShowLabels: (Boolean) -> Unit,
     onHoleSize: (Float) -> Unit,
-    onLabelSpacing: (Float) -> Unit
+    onLabelSpacing: (Float) -> Unit,
+    onAntiAlias: (Boolean) -> Unit,
+    onShowBorder: (Boolean) -> Unit,
+    onSliceGap: (Float) -> Unit
 ) {
     ExpandableCard(elevation = 2.dp, modifier = paddingMod, titleContent = {
         Text("Other Options", modifier = paddingMod)
     }) {
         Column(modifier = paddingMod) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(checked = state.showLabels, onCheckedChange = onShowLabels)
-                Text("Show labels", modifier = paddingMod)
+            Row {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(checked = state.showLabels, onCheckedChange = onShowLabels)
+                    Text("Show labels", modifier = paddingMod)
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(checked = state.antiAlias, onCheckedChange = onAntiAlias)
+                    Text("Antialias", modifier = paddingMod)
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(checked = state.borders, onCheckedChange = onShowBorder)
+                    Text("Show slice borders", modifier = paddingMod)
+                }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Slider(
@@ -224,6 +252,15 @@ private fun OtherOptions(
                     modifier = Modifier.width(150.dp)
                 )
                 Text("Hole size")
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Slider(
+                    state.sliceGap,
+                    onSliceGap,
+                    valueRange = SliceGapRange,
+                    modifier = Modifier.width(150.dp)
+                )
+                Text("Slice gap")
             }
         }
     }
@@ -310,8 +347,18 @@ private fun PieChartSample(
             slice = { i: Int ->
                 DefaultSlice(
                     color = colors[i],
+                    border = if (otherOptionsState.borders) {
+                        BorderStroke(
+                            6.dp,
+                            lerp(colors[i], Color.White, 0.2f)
+                        )
+                    } else {
+                        null
+                    },
                     hoverExpandFactor = 1.05f,
-                    hoverElement = { HoverSurface { Text(fibonacci[i].toString()) } }
+                    hoverElement = { HoverSurface { Text(fibonacci[i].toString()) } },
+                    antiAlias = otherOptionsState.antiAlias,
+                    gap = otherOptionsState.sliceGap
                 )
             },
             label = { i ->
@@ -337,7 +384,7 @@ private fun PieChartSample(
             holeSize = otherOptionsState.holeSize,
             holeContent = { holeTotalLabel() },
             labelSpacing = if (otherOptionsState.showLabels) otherOptionsState.labelSpacing else 1.0f,
-            maxPieDiameter = Dp.Infinity
+            maxPieDiameter = Dp.Infinity,
         )
     }
 }
