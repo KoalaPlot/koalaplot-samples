@@ -1,3 +1,5 @@
+import de.fayard.refreshVersions.core.versionFor
+
 plugins {
     kotlin("multiplatform")
     id("com.android.application")
@@ -105,8 +107,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion =
-            de.fayard.refreshVersions.core.versionFor("org.jetbrains.compose:compose-gradle-plugin:_")
+        kotlinCompilerExtensionVersion = versionFor("org.jetbrains.compose:compose-gradle-plugin:_")
     }
 
     defaultConfig {

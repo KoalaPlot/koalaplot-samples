@@ -1,4 +1,5 @@
 @file:Suppress("TooManyFunctions")
+
 package io.github.koalaplot.sample
 
 import androidx.compose.foundation.layout.Box
@@ -58,6 +59,7 @@ private fun BulletGraphSample() {
     Column {
         MaterialTheme(lightColors(primary = Color.Black)) {
             BulletGraphs(modifier = Modifier.padding(KoalaPlotTheme.sizes.gap)) {
+                @Suppress("MagicNumber")
                 labelWidth = VariableFraction(0.25f)
                 bulletGraphSample1()
                 bulletGraphSample2()

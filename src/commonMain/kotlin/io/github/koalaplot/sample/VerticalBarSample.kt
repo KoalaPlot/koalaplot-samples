@@ -126,16 +126,16 @@ private fun BarSamplePlot(
             xAxisTitle = { if (!thumbnail) AxisTitle("Position in Sequence") },
             yAxisStyle = rememberAxisStyle(tickPosition = tickPositionState.verticalAxis),
             yAxisLabels = {
-                if (!thumbnail)
-                    AxisLabel(it.toString(1), Modifier.absolutePadding(right = 2.dp))
+                if (!thumbnail) AxisLabel(it.toString(1), Modifier.absolutePadding(right = 2.dp))
             },
             yAxisTitle = {
-                if (!thumbnail)
+                if (!thumbnail) {
                     AxisTitle(
                         "Value",
                         modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
                             .padding(bottom = padding)
                     )
+                }
             },
             verticalMajorGridLineStyle = null
         ) {

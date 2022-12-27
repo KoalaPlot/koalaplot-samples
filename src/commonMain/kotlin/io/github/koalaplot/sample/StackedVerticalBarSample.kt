@@ -83,9 +83,7 @@ private fun Legend(thumbnail: Boolean = false) {
             FlowLegend(
                 itemCount = PopulationData.Categories.values().size,
                 symbol = { i ->
-                    Symbol(
-                        modifier = Modifier.size(padding), fillBrush = SolidColor(colors[i])
-                    )
+                    Symbol(modifier = Modifier.size(padding), fillBrush = SolidColor(colors[i]))
                 },
                 label = { i ->
                     Text(PopulationData.Categories.values()[i].toString())
@@ -131,32 +129,34 @@ private fun StackedBarSamplePlot(thumbnail: Boolean = false, title: String) {
                 0f..(ceil(maxPopulation / PopulationScale) * PopulationScale).toFloat(),
             ),
             xAxisLabels = {
-                if (!thumbnail)
-                    AxisLabel("$it", Modifier.padding(top = 2.dp))
+                if (!thumbnail) AxisLabel("$it", Modifier.padding(top = 2.dp))
             },
             xAxisTitle = {
                 if (!thumbnail) AxisTitle("Year", modifier = paddingMod)
             },
             yAxisStyle = rememberAxisStyle(minorTickSize = 0.dp),
             yAxisLabels = {
-                if (!thumbnail)
+                if (!thumbnail) {
                     AxisLabel(
                         (it / PopulationScale).toString(2),
                         Modifier.absolutePadding(right = 2.dp)
                     )
+                }
             },
             yAxisTitle = {
-                if (!thumbnail)
+                if (!thumbnail) {
                     AxisTitle(
                         "Population (Millions)",
                         modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
                             .padding(bottom = padding)
                     )
+                }
             },
             verticalMajorGridLineStyle = null
         ) {
             VerticalBarChart(
-                series = barChartEntries, stacked = true,
+                series = barChartEntries,
+                stacked = true,
                 bar = { series, _, value ->
                     DefaultVerticalBar(
                         brush = SolidColor(colors[series]),

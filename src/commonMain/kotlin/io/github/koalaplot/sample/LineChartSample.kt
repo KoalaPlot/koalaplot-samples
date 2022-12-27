@@ -73,16 +73,16 @@ private fun XYSamplePlot(thumbnail: Boolean, title: String) {
             },
             xAxisTitle = { if (!thumbnail) AxisTitle("Month") },
             yAxisLabels = {
-                if (!thumbnail)
-                    AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
+                if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
             },
             yAxisTitle = {
-                if (!thumbnail)
+                if (!thumbnail) {
                     AxisTitle(
                         "Rainfall (mm)",
                         modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
                             .padding(bottom = padding)
                     )
+                }
             }
         ) {
             RainData.rainfall.entries.sortedBy { it.key }.forEach { (city, rain) ->

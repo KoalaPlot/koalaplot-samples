@@ -123,24 +123,7 @@ val pieSampleView = object : SampleView {
             }
             OtherOptions(
                 otherOptions,
-                onShowLabels = {
-                    otherOptions = otherOptions.copy(showLabels = it)
-                },
-                onHoleSize = {
-                    otherOptions = otherOptions.copy(holeSize = it)
-                },
-                onLabelSpacing = {
-                    otherOptions = otherOptions.copy(labelSpacing = it)
-                },
-                onAntiAlias = {
-                    otherOptions = otherOptions.copy(antiAlias = it)
-                },
-                onShowBorder = {
-                    otherOptions = otherOptions.copy(borders = it)
-                },
-                onSliceGap = {
-                    otherOptions = otherOptions.copy(sliceGap = it)
-                }
+                onUpdate = { otherOptions = it }
             )
         }
     }
@@ -210,12 +193,7 @@ private fun ConnectorStyleSelector(
 @Composable
 private fun OtherOptions(
     state: OtherOptionsState,
-    onShowLabels: (Boolean) -> Unit,
-    onHoleSize: (Float) -> Unit,
-    onLabelSpacing: (Float) -> Unit,
-    onAntiAlias: (Boolean) -> Unit,
-    onShowBorder: (Boolean) -> Unit,
-    onSliceGap: (Float) -> Unit
+    onUpdate: (OtherOptionsState) -> Unit,
 ) {
     ExpandableCard(elevation = 2.dp, modifier = paddingMod, titleContent = {
         Text("Other Options", modifier = paddingMod)
@@ -223,22 +201,31 @@ private fun OtherOptions(
         Column(modifier = paddingMod) {
             Row {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(checked = state.showLabels, onCheckedChange = onShowLabels)
+                    Checkbox(
+                        checked = state.showLabels,
+                        onCheckedChange = { onUpdate(state.copy(showLabels = it)) }
+                    )
                     Text("Show labels", modifier = paddingMod)
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(checked = state.antiAlias, onCheckedChange = onAntiAlias)
+                    Checkbox(
+                        checked = state.antiAlias,
+                        onCheckedChange = { onUpdate(state.copy(antiAlias = it)) }
+                    )
                     Text("Antialias", modifier = paddingMod)
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(checked = state.borders, onCheckedChange = onShowBorder)
+                    Checkbox(
+                        checked = state.borders,
+                        onCheckedChange = { onUpdate(state.copy(borders = it)) }
+                    )
                     Text("Show slice borders", modifier = paddingMod)
                 }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Slider(
                     state.labelSpacing,
-                    onLabelSpacing,
+                    { onUpdate(state.copy(labelSpacing = it)) },
                     valueRange = LabelSpacingSliderRange,
                     modifier = Modifier.width(150.dp)
                 )
@@ -247,7 +234,7 @@ private fun OtherOptions(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Slider(
                     state.holeSize,
-                    onHoleSize,
+                    { onUpdate(state.copy(holeSize = it)) },
                     valueRange = HoleSizeRange,
                     modifier = Modifier.width(150.dp)
                 )
@@ -256,7 +243,7 @@ private fun OtherOptions(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Slider(
                     state.sliceGap,
-                    onSliceGap,
+                    { onUpdate(state.copy(sliceGap = it)) },
                     valueRange = SliceGapRange,
                     modifier = Modifier.width(150.dp)
                 )
@@ -289,7 +276,8 @@ private val vLegend = @Composable {
                 (fibonacci[i] / fibonacciSum).toPercent(1),
                 modifier = Modifier.align(Alignment.End)
             )
-        }, modifier = Modifier.padding(padding).border(1.dp, Color.Black).padding(padding)
+        },
+        modifier = Modifier.padding(padding).border(1.dp, Color.Black).padding(padding)
     )
 }
 
@@ -298,9 +286,7 @@ private val hLegend = @Composable {
     FlowLegend(
         fibonacci.size,
         symbol = { i ->
-            Symbol(
-                modifier = Modifier.size(padding), fillBrush = SolidColor(colors[i])
-            )
+            Symbol(modifier = Modifier.size(padding), fillBrush = SolidColor(colors[i]))
         },
         label = { i ->
             Text("Category $i")
@@ -422,9 +408,7 @@ private fun holeTotalLabel() {
         ResponsiveText(
             "Total",
             modifier = Modifier.weight(0.20f).fillMaxSize(),
-            style = LocalTextStyle.current.copy(
-                fontFamily = FontFamily.SansSerif, color = Color.Black
-            )
+            style = LocalTextStyle.current.copy(fontFamily = FontFamily.SansSerif, color = Color.Black)
         )
         ResponsiveText(
             "${fibonacciSum.toInt()}",

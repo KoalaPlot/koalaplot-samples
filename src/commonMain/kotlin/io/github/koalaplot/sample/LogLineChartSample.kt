@@ -61,16 +61,16 @@ private fun XYSamplePlot(thumbnail: Boolean, title: String) {
             },
             xAxisTitle = { if (!thumbnail) AxisTitle("Position in Sequence") },
             yAxisLabels = {
-                if (!thumbnail)
-                    AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
+                if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
             },
             yAxisTitle = {
-                if (!thumbnail)
+                if (!thumbnail) {
                     AxisTitle(
                         "Value",
                         modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
                             .padding(bottom = padding)
                     )
+                }
             },
         ) {
             LineChart(
