@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -135,7 +135,7 @@ private fun Legend(thumbnail: Boolean = false) {
     val cities = RainData.rainfall.keys.sorted()
 
     if (!thumbnail) {
-        Surface(elevation = 2.dp) {
+        Surface(shadowElevation = 2.dp) {
             FlowLegend(
                 itemCount = cities.size,
                 symbol = { i ->

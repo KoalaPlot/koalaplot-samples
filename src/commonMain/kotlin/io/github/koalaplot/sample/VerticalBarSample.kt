@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.material.Divider
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Text
+import androidx.compose.material3.Divider
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -168,7 +168,6 @@ private fun TickPositionSelector(
     update: (TickPositionState) -> Unit
 ) {
     ExpandableCard(
-        elevation = 2.dp,
         modifier = paddingMod,
         titleContent = { Text("Axis options", modifier = paddingMod) }
     ) {

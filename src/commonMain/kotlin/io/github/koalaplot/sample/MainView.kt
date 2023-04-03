@@ -7,16 +7,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -86,6 +87,7 @@ private val samples = buildList {
     add(bulletGraphSampleView)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainView() {
     var currentPage by remember { mutableStateOf(0) }
@@ -230,7 +232,7 @@ private fun Pager(
 @Composable
 private fun Thumbnail(onClick: () -> Unit, content: @Composable () -> Unit) {
     Surface(
-        elevation = 2.dp,
+        shadowElevation = 2.dp,
         modifier = Modifier.padding(padding).clickable(onClick = onClick).aspectRatio(1f),
         content = content
     )

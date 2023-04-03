@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -133,8 +133,8 @@ private fun BarSample2Plot(thumbnail: Boolean, title: String) {
                 if (!thumbnail) {
                     Text(
                         "Population (Millions)",
-                        color = MaterialTheme.colors.onBackground,
-                        style = MaterialTheme.typography.subtitle1,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
                             .padding(bottom = padding),
                     )

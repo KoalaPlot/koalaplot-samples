@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -79,7 +79,7 @@ private fun barChartEntries(): Pair<List<List<PopulationBarChartEntry<Int, Float
 @Composable
 private fun Legend(thumbnail: Boolean = false) {
     if (!thumbnail) {
-        Surface(elevation = 2.dp) {
+        Surface(shadowElevation = 2.dp) {
             FlowLegend(
                 itemCount = PopulationData.Categories.values().size,
                 symbol = { i ->

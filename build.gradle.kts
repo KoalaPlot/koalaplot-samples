@@ -35,6 +35,7 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
+                implementation(compose.material3)
                 implementation(compose.ui)
                 implementation(compose.animation)
                 implementation("io.github.koalaplot:koalaplot-core:_")
@@ -100,7 +101,7 @@ project.tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile::class.ja
 
 android {
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    compileSdk = 32
+    compileSdk = 33
 
     buildFeatures {
         compose = true
@@ -113,7 +114,7 @@ android {
     defaultConfig {
         applicationId = "io.github.koalaplot.sample.android"
         minSdk = 24
-        targetSdk = 31
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
     }

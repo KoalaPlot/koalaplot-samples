@@ -15,14 +15,15 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.Checkbox
-import androidx.compose.material.Divider
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Slider
-import androidx.compose.material.Switch
-import androidx.compose.material.Text
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Divider
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -132,8 +133,9 @@ val pieSampleView = object : SampleView {
 @Composable
 fun LegendPositionSelector(value: LegendLocation, onSelection: (LegendLocation) -> Unit) {
     ExpandableCard(
-        elevation = 2.dp,
         modifier = paddingMod,
+        colors = CardDefaults.elevatedCardColors(),
+        elevation = CardDefaults.elevatedCardElevation(),
         titleContent = { Text("Legend Location", modifier = paddingMod) }
     ) {
         Column {
@@ -152,9 +154,12 @@ private fun ConnectorStyleSelector(
     state: ConnectorStyleState,
     update: (ConnectorStyleState) -> Unit
 ) {
-    ExpandableCard(elevation = 2.dp, modifier = paddingMod, titleContent = {
-        Text("Label Connector Style", modifier = paddingMod)
-    }) {
+    ExpandableCard(modifier = paddingMod,
+        colors = CardDefaults.elevatedCardColors(),
+        elevation = CardDefaults.elevatedCardElevation(),
+        titleContent = {
+            Text("Label Connector Style", modifier = paddingMod)
+        }) {
         Row {
             Column(modifier = paddingMod) {
                 strokes.forEach {
@@ -195,26 +200,30 @@ private fun OtherOptions(
     state: OtherOptionsState,
     onUpdate: (OtherOptionsState) -> Unit,
 ) {
-    ExpandableCard(elevation = 2.dp, modifier = paddingMod, titleContent = {
-        Text("Other Options", modifier = paddingMod)
-    }) {
+    ExpandableCard(
+        modifier = paddingMod,
+        colors = CardDefaults.elevatedCardColors(),
+        elevation = CardDefaults.elevatedCardElevation(),
+        titleContent = {
+            Text("Other Options", modifier = paddingMod)
+        }) {
         Column(modifier = paddingMod) {
             Row {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
                     Checkbox(
                         checked = state.showLabels,
                         onCheckedChange = { onUpdate(state.copy(showLabels = it)) }
                     )
                     Text("Show labels", modifier = paddingMod)
                 }
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
                     Checkbox(
                         checked = state.antiAlias,
                         onCheckedChange = { onUpdate(state.copy(antiAlias = it)) }
                     )
                     Text("Antialias", modifier = paddingMod)
                 }
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
                     Checkbox(
                         checked = state.borders,
                         onCheckedChange = { onUpdate(state.copy(borders = it)) }
@@ -238,7 +247,7 @@ private fun OtherOptions(
                     valueRange = HoleSizeRange,
                     modifier = Modifier.width(150.dp)
                 )
-                Text("Hole size")
+                Text("Hole size ${state.holeSize}")
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Slider(
@@ -247,7 +256,7 @@ private fun OtherOptions(
                     valueRange = SliceGapRange,
                     modifier = Modifier.width(150.dp)
                 )
-                Text("Slice gap")
+                Text("Slice gap ${state.sliceGap}")
             }
         }
     }
@@ -318,8 +327,8 @@ private fun PieChartSample(
             Column {
                 Text(
                     "Fibonacci Sequence",
-                    color = MaterialTheme.colors.onBackground,
-                    style = MaterialTheme.typography.h6,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             }
