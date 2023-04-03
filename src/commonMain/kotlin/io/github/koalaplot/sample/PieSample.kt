@@ -154,12 +154,14 @@ private fun ConnectorStyleSelector(
     state: ConnectorStyleState,
     update: (ConnectorStyleState) -> Unit
 ) {
-    ExpandableCard(modifier = paddingMod,
+    ExpandableCard(
+        modifier = paddingMod,
         colors = CardDefaults.elevatedCardColors(),
         elevation = CardDefaults.elevatedCardElevation(),
         titleContent = {
             Text("Label Connector Style", modifier = paddingMod)
-        }) {
+        }
+    ) {
         Row {
             Column(modifier = paddingMod) {
                 strokes.forEach {
@@ -206,7 +208,8 @@ private fun OtherOptions(
         elevation = CardDefaults.elevatedCardElevation(),
         titleContent = {
             Text("Other Options", modifier = paddingMod)
-        }) {
+        }
+    ) {
         Column(modifier = paddingMod) {
             Row {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
