@@ -5,13 +5,14 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.selectable
@@ -84,7 +85,8 @@ private data class OtherOptionsState(
     val labelSpacing: Float = 1.1f,
     val antiAlias: Boolean = false,
     val borders: Boolean = false,
-    val sliceGap: Float = 0.0f
+    val sliceGap: Float = 0.0f,
+    val forcePieCentering: Boolean = false
 )
 
 val pieSampleView = object : SampleView {
@@ -113,7 +115,7 @@ val pieSampleView = object : SampleView {
                 legendLocation,
                 connectorStyle,
                 otherOptions,
-                modifier = Modifier.sizeIn(200.dp, 200.dp, 600.dp, 600.dp).weight(1.0f),
+                modifier = Modifier.weight(1.0f),
             )
             Divider(modifier = Modifier.fillMaxWidth())
             LegendPositionSelector(legendLocation) {
@@ -197,6 +199,7 @@ private fun ConnectorStyleSelector(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun OtherOptions(
     state: OtherOptionsState,
@@ -211,7 +214,7 @@ private fun OtherOptions(
         }
     ) {
         Column(modifier = paddingMod) {
-            Row {
+            FlowRow {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
                     Checkbox(
                         checked = state.showLabels,
@@ -232,6 +235,13 @@ private fun OtherOptions(
                         onCheckedChange = { onUpdate(state.copy(borders = it)) }
                     )
                     Text("Show slice borders", modifier = paddingMod)
+                }
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                    Checkbox(
+                        checked = state.forcePieCentering,
+                        onCheckedChange = { onUpdate(state.copy(forcePieCentering = it)) }
+                    )
+                    Text("Center Pie", modifier = paddingMod)
                 }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -289,7 +299,7 @@ private val vLegend = @Composable {
                 modifier = Modifier.align(Alignment.End)
             )
         },
-        modifier = Modifier.padding(padding).border(1.dp, Color.Black).padding(padding)
+        modifier = Modifier.border(1.dp, Color.Black).padding(padding)
     )
 }
 
@@ -341,7 +351,7 @@ private fun PieChartSample(
     ) {
         PieChart(
             fibonacci,
-            modifier = modifier.padding(padding),
+            modifier = modifier.padding(start = padding).border(1.dp, Color.Black).padding(padding),
             slice = { i: Int ->
                 DefaultSlice(
                     color = colors[i],
@@ -383,6 +393,7 @@ private fun PieChartSample(
             holeContent = { holeTotalLabel() },
             labelSpacing = if (otherOptionsState.showLabels) otherOptionsState.labelSpacing else 1.0f,
             maxPieDiameter = Dp.Infinity,
+            forceCenteredPie = otherOptionsState.forcePieCentering
         )
     }
 }

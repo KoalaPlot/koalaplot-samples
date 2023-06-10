@@ -19,7 +19,7 @@ dependencies {
 }
 
 group = "io.github.koalaplot"
-version = "0.3.0"
+version = "0.4.0-dev1"
 
 kotlin {
     jvm()
@@ -44,18 +44,21 @@ kotlin {
 
         named("jvmMain") {
             dependencies {
+                implementation("io.github.koalaplot:koalaplot-core:_")
                 implementation(compose.desktop.currentOs)
             }
         }
 
         named("androidMain") {
             dependencies {
+                implementation("io.github.koalaplot:koalaplot-core:_")
                 implementation(AndroidX.activity.compose)
             }
         }
 
         named("jsMain") {
             dependencies {
+                implementation("io.github.koalaplot:koalaplot-core:_")
             }
         }
     }
