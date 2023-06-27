@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun ChartTitle(title: String) {
@@ -35,6 +36,8 @@ fun AxisLabel(label: String, modifier: Modifier = Modifier) {
         label,
         color = MaterialTheme.colorScheme.onBackground,
         style = MaterialTheme.typography.bodySmall,
-        modifier = modifier
+        modifier = modifier,
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 1
     )
 }

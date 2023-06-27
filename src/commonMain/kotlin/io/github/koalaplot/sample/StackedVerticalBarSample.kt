@@ -1,13 +1,21 @@
 package io.github.koalaplot.sample
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
@@ -37,6 +45,8 @@ import kotlin.math.max
 private val colors = generateHueColorPalette(PopulationData.Categories.values().size)
 
 private const val BarWidth = 0.8f
+
+private val rotationOptions = listOf(0, 30, 45, 60, 90)
 
 internal data class PopulationBarChartEntry<X, Y>(
     override val xValue: X,
@@ -104,8 +114,35 @@ val stackedVerticalBarSampleView = object : SampleView {
     }
 
     override val content: @Composable () -> Unit = @Composable {
+        var selectedOption by remember { mutableStateOf(rotationOptions[0]) }
         KoalaPlotTheme(axis = KoalaPlotTheme.axis.copy(minorGridlineStyle = minorGridLineStyle)) {
-            StackedBarSamplePlot(false, "New York City Population")
+            Column {
+                StackedBarSamplePlot(
+                    false,
+                    "New York City Population",
+                    Modifier.weight(1f),
+                    selectedOption
+                )
+                ExpandableCard(
+                    colors = CardDefaults.elevatedCardColors(),
+                    elevation = CardDefaults.elevatedCardElevation(),
+                    titleContent = {
+                        Text("X-Axis Label Angle", modifier = paddingMod)
+                    }
+                ) {
+                    Column {
+                        rotationOptions.forEach {
+                            Row(
+                                Modifier.fillMaxWidth()
+                                    .selectable(selected = (it == selectedOption), onClick = { selectedOption = it })
+                            ) {
+                                RadioButton(selected = (it == selectedOption), onClick = { selectedOption = it })
+                                Text(text = it.toString())
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -114,11 +151,16 @@ private const val PopulationScale = 1E6
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
-private fun StackedBarSamplePlot(thumbnail: Boolean = false, title: String) {
+private fun StackedBarSamplePlot(
+    thumbnail: Boolean = false,
+    title: String,
+    modifier: Modifier = Modifier,
+    xAxisLabelRotation: Int = 0
+) {
     val (barChartEntries, maxPopulation) = remember { barChartEntries() }
 
     ChartLayout(
-        modifier = paddingMod,
+        modifier = modifier.then(paddingMod),
         title = { ChartTitle(title) },
         legend = { Legend(thumbnail) },
         legendLocation = LegendLocation.BOTTOM
@@ -128,6 +170,7 @@ private fun StackedBarSamplePlot(thumbnail: Boolean = false, title: String) {
             yAxisModel = LinearAxisModel(
                 0f..(ceil(maxPopulation / PopulationScale) * PopulationScale).toFloat(),
             ),
+            xAxisStyle = rememberAxisStyle(labelRotation = xAxisLabelRotation),
             xAxisLabels = {
                 if (!thumbnail) AxisLabel("$it", Modifier.padding(top = 2.dp))
             },
