@@ -19,7 +19,7 @@ dependencies {
 }
 
 group = "io.github.koalaplot"
-version = "0.4.0-dev1"
+version = "0.4.0-dev2"
 
 kotlin {
     jvm()
@@ -27,7 +27,7 @@ kotlin {
         browser()
         binaries.executable()
     }
-    android()
+    androidTarget()
 
     sourceSets {
         named("commonMain") {
@@ -103,8 +103,9 @@ project.tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile::class.ja
 }
 
 android {
+    namespace = "io.github.koalaplot.samples"
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    compileSdk = 33
+    compileSdk = 34
 
     buildFeatures {
         compose = true
@@ -122,8 +123,8 @@ android {
         versionName = "1.0"
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     buildTypes {
         getByName("release") {
@@ -147,9 +148,9 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     }
 
     detekt {
-        source = files("src")
+        source.setFrom("src")
         parallel = true
-        config = files("$rootDir/detekt.yml")
+        config.setFrom("$rootDir/detekt.yml")
         buildUponDefaultConfig = true
     }
 }
