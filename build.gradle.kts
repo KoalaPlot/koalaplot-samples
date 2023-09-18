@@ -1,5 +1,3 @@
-import de.fayard.refreshVersions.core.versionFor
-
 plugins {
     kotlin("multiplatform")
     id("com.android.application")
@@ -22,6 +20,7 @@ group = "io.github.koalaplot"
 version = "0.4.0-dev2"
 
 kotlin {
+    jvmToolchain(17)
     jvm()
     js(IR) {
         browser()
@@ -103,17 +102,9 @@ project.tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile::class.ja
 }
 
 android {
-    namespace = "io.github.koalaplot.samples"
+    namespace = "io.github.koalaplot.sample.android"
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     compileSdk = 34
-
-    buildFeatures {
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = versionFor("org.jetbrains.compose:compose-gradle-plugin:_")
-    }
 
     defaultConfig {
         applicationId = "io.github.koalaplot.sample.android"
@@ -122,10 +113,12 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
@@ -144,7 +137,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         freeCompilerArgs = freeCompilerArgs + listOf(
             "-opt-in=kotlin.RequiresOptIn"
         )
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 
     detekt {
