@@ -79,9 +79,13 @@ private val samples = buildList {
     add(groupedVerticalBarSampleView)
     add(stackedVerticalBarSampleView)
     add(xyLineSampleView)
+    add(stairStepSampleView)
     add(xyLogLineSampleView)
     add(minimalBarChartSampleView)
     add(bulletGraphSampleView)
+    add(trigSampleView)
+    add(areaPlotSample1View)
+    add(stackedAreaSampleView)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

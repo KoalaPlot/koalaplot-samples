@@ -1,0 +1,103 @@
+package io.github.koalaplot.sample
+
+import androidx.compose.foundation.layout.absolutePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.unit.dp
+import io.github.koalaplot.core.ChartLayout
+import io.github.koalaplot.core.legend.LegendLocation
+import io.github.koalaplot.core.line.AreaBaseline
+import io.github.koalaplot.core.line.AreaStyle
+import io.github.koalaplot.core.line.LineChart
+import io.github.koalaplot.core.line.Point
+import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
+import io.github.koalaplot.core.xychart.LineStyle
+import io.github.koalaplot.core.xychart.LinearAxisModel
+import io.github.koalaplot.core.xychart.XYChart
+import kotlin.math.PI
+import kotlin.math.exp
+import kotlin.math.pow
+import kotlin.math.sqrt
+
+val areaPlotSample1View = object : SampleView {
+    override val name: String = "Areas to x-axis"
+
+    override val thumbnail = @Composable {
+        ThumbnailTheme {
+            AreaPlotSample1Plot(true, name)
+        }
+    }
+
+    override val content: @Composable () -> Unit = @Composable {
+        AreaPlotSample1Plot(false, "Normal Distributions")
+    }
+}
+
+@OptIn(ExperimentalKoalaPlotApi::class)
+@Composable
+@Suppress("MagicNumber")
+private fun AreaPlotSample1Plot(thumbnail: Boolean, title: String) {
+    ChartLayout(
+        modifier = paddingMod,
+        title = { ChartTitle(title) },
+        legendLocation = LegendLocation.BOTTOM
+    ) {
+        XYChart(
+            xAxisModel = LinearAxisModel(-5f..5.0f),
+            yAxisModel = LinearAxisModel(-0.1f..1.0f, minimumMajorTickSpacing = 50.dp),
+            xAxisLabels = {
+                if (!thumbnail) {
+                    AxisLabel("$it", Modifier.padding(top = 2.dp))
+                }
+            },
+            xAxisTitle = { if (!thumbnail) AxisTitle("x") },
+            yAxisLabels = {
+                if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
+            }
+        ) {
+            LineChart(
+                data = normalDistribution(xAxisValues, 1.0f, 1.0f),
+                lineStyle = LineStyle(brush = SolidColor(Color.Blue), strokeWidth = 2.dp),
+                areaStyle = AreaStyle(
+                    brush = SolidColor(Color.Blue),
+                    alpha = 0.5f,
+                ),
+                areaBaseline = AreaBaseline.ConstantLine(0f)
+            )
+            LineChart(
+                data = normalDistribution(xAxisValues, 0.5f, -0.5f),
+                lineStyle = LineStyle(brush = SolidColor(Color.Green), strokeWidth = 2.dp),
+                areaStyle = AreaStyle(
+                    brush = SolidColor(Color.Green),
+                    alpha = 0.5f,
+                ),
+                areaBaseline = AreaBaseline.ConstantLine(0f)
+            )
+        }
+    }
+}
+
+@Suppress("MagicNumber")
+private val xAxisValues: List<Float> = buildList {
+    val numSamples = 500
+    val min = -5f
+    val max = 5f
+
+    for (i in 0..numSamples) {
+        add(min + (max - min) * i / numSamples)
+    }
+}
+
+@Suppress("MagicNumber")
+private fun normalDistribution(x: List<Float>, sigma: Float, mu: Float): List<Point<Float, Float>> = buildList {
+    x.forEach {
+        add(Point(it, normalDistribution(it, sigma, mu)))
+    }
+}
+
+@Suppress("MagicNumber")
+private fun normalDistribution(x: Float, sigma: Float, mu: Float): Float =
+    (1.0 / (sigma * sqrt(2.0 * PI)) * exp(-0.5 * ((x - mu) / sigma).pow(2))).toFloat()
