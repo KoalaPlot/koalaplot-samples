@@ -1,4 +1,4 @@
-name: Build samples and publish web-canvas version to Github Pages
+name: Publish samples to Github Pages
 
 on:
     release:
