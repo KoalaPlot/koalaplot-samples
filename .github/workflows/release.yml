@@ -43,7 +43,7 @@ jobs:
                 uses: crazy-max/ghaction-github-pages@v3
                 with:
                     target_branch: gh-pages
-                    build_dir: koalaplot-samples/build/distributions
+                    build_dir: koalaplot-samples/build/dist/js/productionExecutable
                     keep_history: false
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
