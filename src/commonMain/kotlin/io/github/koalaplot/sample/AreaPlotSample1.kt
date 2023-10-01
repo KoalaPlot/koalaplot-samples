@@ -14,6 +14,7 @@ import io.github.koalaplot.core.line.AreaStyle
 import io.github.koalaplot.core.line.LineChart
 import io.github.koalaplot.core.line.Point
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
+import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.core.xychart.LineStyle
 import io.github.koalaplot.core.xychart.LinearAxisModel
 import io.github.koalaplot.core.xychart.XYChart
@@ -50,12 +51,12 @@ private fun AreaPlotSample1Plot(thumbnail: Boolean, title: String) {
             yAxisModel = LinearAxisModel(-0.1f..1.0f, minimumMajorTickSpacing = 50.dp),
             xAxisLabels = {
                 if (!thumbnail) {
-                    AxisLabel("$it", Modifier.padding(top = 2.dp))
+                    AxisLabel(it.toString(1), Modifier.padding(top = 2.dp))
                 }
             },
             xAxisTitle = { if (!thumbnail) AxisTitle("x") },
             yAxisLabels = {
-                if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
+                if (!thumbnail) AxisLabel(it.toString(1), Modifier.absolutePadding(right = 2.dp))
             }
         ) {
             LineChart(
