@@ -1,29 +1,34 @@
 package io.github.koalaplot.sample
 
-import androidx.compose.foundation.layout.absolutePadding
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.line.AreaBaseline
-import io.github.koalaplot.core.line.AreaStyle
 import io.github.koalaplot.core.line.DefaultMultiPoint
-import io.github.koalaplot.core.line.Point
 import io.github.koalaplot.core.line.StackedAreaChart
 import io.github.koalaplot.core.line.StackedAreaStyle
+import io.github.koalaplot.core.style.AreaStyle
+import io.github.koalaplot.core.style.KoalaPlotTheme
+import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
+import io.github.koalaplot.core.util.VerticalRotation
+import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
-import io.github.koalaplot.core.xychart.LineStyle
+import io.github.koalaplot.core.xychart.AnchorPoint
 import io.github.koalaplot.core.xychart.LinearAxisModel
+import io.github.koalaplot.core.xychart.Point
+import io.github.koalaplot.core.xychart.XYAnnotation
 import io.github.koalaplot.core.xychart.XYChart
-import kotlin.math.PI
-import kotlin.math.exp
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 val stackedAreaSampleView = object : SampleView {
     override val name: String = "Stacked Area Chart"
@@ -35,9 +40,18 @@ val stackedAreaSampleView = object : SampleView {
     }
 
     override val content: @Composable () -> Unit = @Composable {
-        StackedAreaSample(false, "Stacked Normal Distributions")
+        StackedAreaSample(false, "New York City Population")
     }
 }
+
+@Suppress("MagicNumber")
+private val colorPalette = listOf(
+    Color(0xFF00498F),
+    Color(0xFF37A78F),
+    Color(0xFFC05050),
+    Color(0xFFED7D31),
+    Color(0xFF8068A0)
+)
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
@@ -49,65 +63,84 @@ private fun StackedAreaSample(thumbnail: Boolean, title: String) {
         legendLocation = LegendLocation.BOTTOM
     ) {
         XYChart(
-            xAxisModel = LinearAxisModel(-5f..5.0f),
-            yAxisModel = LinearAxisModel(-0.1f..1.0f, minimumMajorTickSpacing = 50.dp),
+            xAxisModel = LinearAxisModel(PopulationData.years.first().toFloat()..PopulationData.years.last().toFloat()),
+            yAxisModel = LinearAxisModel(0f..10f),
+            horizontalMajorGridLineStyle = null,
+            horizontalMinorGridLineStyle = null,
+            verticalMajorGridLineStyle = null,
+            verticalMinorGridLineStyle = null,
             xAxisLabels = {
                 if (!thumbnail) {
-                    AxisLabel(it.toString(1), Modifier.padding(top = 2.dp))
+                    AxisLabel(it.toString(0), Modifier.padding(top = 2.dp))
                 }
             },
-            xAxisTitle = { if (!thumbnail) AxisTitle("x") },
+            xAxisTitle = { if (!thumbnail) AxisTitle("Year") },
             yAxisLabels = {
-                if (!thumbnail) AxisLabel(it.toString(1), Modifier.absolutePadding(right = 2.dp))
+                if (!thumbnail) AxisLabel(it.toString(0))
+            },
+            yAxisTitle = {
+                if (!thumbnail) {
+                    AxisTitle(
+                        "Population (Millions)",
+                        modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                    )
+                }
             }
         ) {
             StackedAreaChart(
                 stackedAreaData,
-                listOf(
+                colorPalette.map {
                     StackedAreaStyle(
-                        LineStyle(brush = SolidColor(Color.Blue), strokeWidth = 2.dp),
-                        AreaStyle(brush = SolidColor(Color.Blue), alpha = 0.5f)
-                    ),
-                    StackedAreaStyle(
-                        LineStyle(brush = SolidColor(Color.Green), strokeWidth = 2.dp),
-                        AreaStyle(brush = SolidColor(Color.Green), alpha = 0.5f)
+                        LineStyle(brush = SolidColor(Color.White), strokeWidth = 8.dp),
+                        AreaStyle(brush = SolidColor(it))
                     )
-                ),
+                },
                 AreaBaseline.ConstantLine(0f)
             )
+
+            if (!thumbnail) {
+                val entries = PopulationData.data.entries.toList()
+                val max = entries.map { it.value.max() }
+                val maxIndices = entries.mapIndexed { index, entry ->
+                    entry.value.indexOfFirst { it == max[index] }
+                }
+
+                entries.forEachIndexed { index, (category, data) ->
+                    val yearIndex = maxIndices[index] // index into the year the max occurred
+
+                    var sum = 0
+                    for (i in 0..<index) {
+                        sum += entries[i].value[yearIndex]
+                    }
+
+                    val anchorPoint = when (yearIndex) {
+                        0 -> AnchorPoint.LeftMiddle
+                        PopulationData.years.lastIndex -> AnchorPoint.RightMiddle
+                        else -> AnchorPoint.Center
+                    }
+
+                    XYAnnotation(
+                        Point(PopulationData.years[yearIndex].toFloat(), (sum + data[yearIndex] / 2f) / 1E6f),
+                        anchorPoint
+                    ) {
+                        Text(
+                            category.display,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.DarkGray,
+                            modifier = Modifier.padding(horizontal = KoalaPlotTheme.sizes.gap)
+                                .background(Color.LightGray, RoundedCornerShape(4.dp))
+                                .padding(horizontal = KoalaPlotTheme.sizes.gap)
+                        )
+                    }
+                }
+            }
         }
     }
 }
 
-@Suppress("MagicNumber")
-private val xAxisValues: List<Float> = buildList {
-    val numSamples = 500
-    val min = -5f
-    val max = 5f
-
-    for (i in 0..numSamples) {
-        add(min + (max - min) * i / numSamples)
-    }
-}
-
-@Suppress("MagicNumber")
-private fun normalDistribution(x: List<Float>, sigma: Float, mu: Float): List<Point<Float, Float>> = buildList {
-    x.forEach {
-        add(Point(it, normalDistribution(it, sigma, mu)))
-    }
-}
-
-@Suppress("MagicNumber")
-private fun normalDistribution(x: Float, sigma: Float, mu: Float): Float =
-    (1.0 / (sigma * sqrt(2.0 * PI)) * exp(-0.5 * ((x - mu) / sigma).pow(2))).toFloat()
-
-private val curve1 = normalDistribution(xAxisValues, 1.0f, 1.0f)
-
-@Suppress("MagicNumber")
-private val curve2 = normalDistribution(xAxisValues, 1.5f, -0.5f)
-
 private val stackedAreaData = buildList {
-    xAxisValues.forEachIndexed { index, fl ->
-        add(DefaultMultiPoint(fl, listOf(curve1[index].y, curve2[index].y)))
+    PopulationData.years.forEachIndexed { index, year ->
+        add(DefaultMultiPoint(year.toFloat(), PopulationData.data.values.map { it[index].toFloat() / 1E6f }))
     }
 }

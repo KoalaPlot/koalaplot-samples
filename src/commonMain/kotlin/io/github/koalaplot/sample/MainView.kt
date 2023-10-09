@@ -28,7 +28,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import io.github.koalaplot.core.theme.KoalaPlotTheme
+import io.github.koalaplot.core.style.KoalaPlotTheme
+import io.github.koalaplot.sample.polar.polarScatterPlotSample
+import io.github.koalaplot.sample.polar.radialLinePlotSample
+import io.github.koalaplot.sample.polar.spiderPlotSample
 
 // https://developer.android.com/guide/topics/large-screens/support-different-screen-sizes#window_size_classes
 enum class WindowWidthSizeClass(private val threshold: Dp) {
@@ -86,6 +89,9 @@ private val samples = buildList {
     add(trigSampleView)
     add(areaPlotSample1View)
     add(stackedAreaSampleView)
+    add(radialLinePlotSample)
+    add(spiderPlotSample)
+    add(polarScatterPlotSample)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

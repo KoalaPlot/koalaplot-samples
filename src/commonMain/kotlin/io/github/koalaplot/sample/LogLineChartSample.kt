@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package io.github.koalaplot.sample
 
 import androidx.compose.foundation.layout.absolutePadding
@@ -12,12 +14,12 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
-import io.github.koalaplot.core.line.DefaultPoint
 import io.github.koalaplot.core.line.LineChart
+import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.rotateVertically
-import io.github.koalaplot.core.xychart.LineStyle
+import io.github.koalaplot.core.xychart.DefaultPoint
 import io.github.koalaplot.core.xychart.LinearAxisModel
 import io.github.koalaplot.core.xychart.LogAxisModel
 import io.github.koalaplot.core.xychart.XYChart

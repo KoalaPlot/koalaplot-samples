@@ -2,7 +2,7 @@ package io.github.koalaplot.sample
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import io.github.koalaplot.core.theme.KoalaPlotTheme
+import io.github.koalaplot.core.style.KoalaPlotTheme
 
 /**
  * Sets the KoalaPlotTheme with values used for Thumbnail chart views.

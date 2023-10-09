@@ -14,14 +14,14 @@ import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
 import io.github.koalaplot.core.legend.FlowLegend
 import io.github.koalaplot.core.legend.LegendLocation
-import io.github.koalaplot.core.line.DefaultPoint
 import io.github.koalaplot.core.line.StairstepChart
+import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.xychart.CategoryAxisModel
-import io.github.koalaplot.core.xychart.LineStyle
+import io.github.koalaplot.core.xychart.DefaultPoint
 import io.github.koalaplot.core.xychart.LinearAxisModel
 import io.github.koalaplot.core.xychart.XYChart
 import io.github.koalaplot.core.xychart.XYChartScope

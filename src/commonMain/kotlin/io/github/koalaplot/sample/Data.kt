@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package io.github.koalaplot.sample
 
 import androidx.compose.foundation.layout.padding
@@ -52,8 +54,16 @@ internal object PopulationData {
         )
     }
 
-    val maxPopulation = data.maxOf { entry ->
-        entry.value.maxOf { it }
+    val maxPopulation by lazy {
+        data.maxOf { entry ->
+            entry.value.maxOf { it }
+        }
+    }
+
+    val minPopulation by lazy {
+        data.minOf { entry ->
+            entry.value.minOf { it }
+        }
     }
 }
 

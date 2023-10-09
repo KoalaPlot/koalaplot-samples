@@ -28,14 +28,14 @@ import io.github.koalaplot.core.bar.DefaultVerticalBar
 import io.github.koalaplot.core.bar.VerticalBarChart
 import io.github.koalaplot.core.legend.FlowLegend
 import io.github.koalaplot.core.legend.LegendLocation
-import io.github.koalaplot.core.theme.KoalaPlotTheme
+import io.github.koalaplot.core.style.KoalaPlotTheme
+import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.core.xychart.CategoryAxisModel
-import io.github.koalaplot.core.xychart.LineStyle
 import io.github.koalaplot.core.xychart.LinearAxisModel
 import io.github.koalaplot.core.xychart.XYChart
 import io.github.koalaplot.core.xychart.rememberAxisStyle

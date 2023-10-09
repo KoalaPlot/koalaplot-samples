@@ -26,7 +26,7 @@ import io.github.koalaplot.core.bar.FixedFraction
 import io.github.koalaplot.core.bar.HorizontalBarIndicator
 import io.github.koalaplot.core.bar.LineIndicator
 import io.github.koalaplot.core.bar.VariableFraction
-import io.github.koalaplot.core.theme.KoalaPlotTheme
+import io.github.koalaplot.core.style.KoalaPlotTheme
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.xychart.LinearAxisModel
 
