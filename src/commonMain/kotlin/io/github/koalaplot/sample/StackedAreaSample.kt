@@ -15,7 +15,7 @@ import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.line.AreaBaseline
 import io.github.koalaplot.core.line.DefaultMultiPoint
-import io.github.koalaplot.core.line.StackedAreaChart
+import io.github.koalaplot.core.line.StackedAreaPlot
 import io.github.koalaplot.core.line.StackedAreaStyle
 import io.github.koalaplot.core.style.AreaStyle
 import io.github.koalaplot.core.style.KoalaPlotTheme
@@ -24,11 +24,11 @@ import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
-import io.github.koalaplot.core.xychart.AnchorPoint
-import io.github.koalaplot.core.xychart.LinearAxisModel
-import io.github.koalaplot.core.xychart.Point
-import io.github.koalaplot.core.xychart.XYAnnotation
-import io.github.koalaplot.core.xychart.XYChart
+import io.github.koalaplot.core.xygraph.AnchorPoint
+import io.github.koalaplot.core.xygraph.LinearAxisModel
+import io.github.koalaplot.core.xygraph.Point
+import io.github.koalaplot.core.xygraph.XYAnnotation
+import io.github.koalaplot.core.xygraph.XYGraph
 
 val stackedAreaSampleView = object : SampleView {
     override val name: String = "Stacked Area Chart"
@@ -62,7 +62,7 @@ private fun StackedAreaSample(thumbnail: Boolean, title: String) {
         title = { ChartTitle(title) },
         legendLocation = LegendLocation.BOTTOM
     ) {
-        XYChart(
+        XYGraph(
             xAxisModel = LinearAxisModel(PopulationData.years.first().toFloat()..PopulationData.years.last().toFloat()),
             yAxisModel = LinearAxisModel(0f..10f),
             horizontalMajorGridLineStyle = null,
@@ -87,7 +87,7 @@ private fun StackedAreaSample(thumbnail: Boolean, title: String) {
                 }
             }
         ) {
-            StackedAreaChart(
+            StackedAreaPlot(
                 stackedAreaData,
                 colorPalette.map {
                     StackedAreaStyle(

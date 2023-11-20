@@ -15,17 +15,17 @@ import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
 import io.github.koalaplot.core.legend.FlowLegend
 import io.github.koalaplot.core.legend.LegendLocation
-import io.github.koalaplot.core.line.LineChart
+import io.github.koalaplot.core.line.LinePlot
 import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.rotateVertically
-import io.github.koalaplot.core.xychart.CategoryAxisModel
-import io.github.koalaplot.core.xychart.DefaultPoint
-import io.github.koalaplot.core.xychart.LinearAxisModel
-import io.github.koalaplot.core.xychart.XYChart
-import io.github.koalaplot.core.xychart.XYChartScope
+import io.github.koalaplot.core.xygraph.CategoryAxisModel
+import io.github.koalaplot.core.xygraph.DefaultPoint
+import io.github.koalaplot.core.xygraph.LinearAxisModel
+import io.github.koalaplot.core.xygraph.XYGraph
+import io.github.koalaplot.core.xygraph.XYGraphScope
 import kotlin.math.ceil
 
 val xyLineSampleView = object : SampleView {
@@ -60,7 +60,7 @@ private fun XYSamplePlot(thumbnail: Boolean, title: String) {
         legend = { Legend(thumbnail) },
         legendLocation = LegendLocation.BOTTOM
     ) {
-        XYChart(
+        XYGraph(
             xAxisModel = CategoryAxisModel(RainData.months),
             yAxisModel = LinearAxisModel(
                 0f..(ceil(RainData.max / 50.0) * 50.0).toFloat(),
@@ -100,12 +100,12 @@ private fun XYSamplePlot(thumbnail: Boolean, title: String) {
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
-private fun XYChartScope<String, Float>.chart(
+private fun XYGraphScope<String, Float>.chart(
     city: String,
     data: List<DefaultPoint<String, Float>>,
     thumbnail: Boolean
 ) {
-    LineChart(
+    LinePlot(
         data = data,
         lineStyle = LineStyle(
             brush = SolidColor(colorMap[city] ?: Color.Black),

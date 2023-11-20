@@ -10,16 +10,16 @@ import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.line.AreaBaseline
-import io.github.koalaplot.core.line.LineChart
+import io.github.koalaplot.core.line.LinePlot
 import io.github.koalaplot.core.style.AreaStyle
 import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.rotateVertically
-import io.github.koalaplot.core.xychart.DefaultPoint
-import io.github.koalaplot.core.xychart.LinearAxisModel
-import io.github.koalaplot.core.xychart.Point
-import io.github.koalaplot.core.xychart.XYChart
+import io.github.koalaplot.core.xygraph.DefaultPoint
+import io.github.koalaplot.core.xygraph.LinearAxisModel
+import io.github.koalaplot.core.xygraph.Point
+import io.github.koalaplot.core.xygraph.XYGraph
 import kotlin.math.PI
 import kotlin.math.cos
 
@@ -46,7 +46,7 @@ private fun CosineSamplePlot(thumbnail: Boolean, title: String) {
         title = { ChartTitle(title) },
         legendLocation = LegendLocation.BOTTOM
     ) {
-        XYChart(
+        XYGraph(
             xAxisModel = LinearAxisModel(0f..4.0.toFloat()), // units of PI
             yAxisModel = LinearAxisModel(-1.1f..1.1f, minimumMajorTickSpacing = 50.dp),
             xAxisLabels = {
@@ -68,7 +68,7 @@ private fun CosineSamplePlot(thumbnail: Boolean, title: String) {
                 }
             }
         ) {
-            LineChart(
+            LinePlot(
                 data = cosineData,
                 lineStyle = LineStyle(brush = SolidColor(Color.Blue), strokeWidth = 2.dp),
                 areaStyle = AreaStyle(

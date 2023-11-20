@@ -12,43 +12,42 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
-import io.github.koalaplot.core.bar.BarChartEntry
+import io.github.koalaplot.core.bar.BarPlotEntry
 import io.github.koalaplot.core.bar.DefaultVerticalBar
-import io.github.koalaplot.core.bar.VerticalBarChart
+import io.github.koalaplot.core.bar.DefaultVerticalBarPosition
+import io.github.koalaplot.core.bar.VerticalBarPlot
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.toString
-import io.github.koalaplot.core.xychart.CategoryAxisModel
-import io.github.koalaplot.core.xychart.LinearAxisModel
-import io.github.koalaplot.core.xychart.XYChart
+import io.github.koalaplot.core.xygraph.CategoryAxisModel
+import io.github.koalaplot.core.xygraph.LinearAxisModel
+import io.github.koalaplot.core.xygraph.XYGraph
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 
 private val BOROUGH = PopulationData.Categories.Manhattan
 
-private fun barChartEntries(): List<List<BarChartEntry<Int, Float>>> {
-    return buildList {
-        var last = 0f
-        add(
-            PopulationData.data[BOROUGH]!!.mapIndexed { index, population ->
-                val entry = if (index == PopulationData.data[BOROUGH]!!.lastIndex) {
-                    object : BarChartEntry<Int, Float> {
-                        override val xValue = PopulationData.years[index]
-                        override val yMin = 0f
-                        override val yMax = population.toFloat()
-                    }
-                } else {
-                    object : BarChartEntry<Int, Float> {
-                        override val xValue = PopulationData.years[index]
-                        override val yMin = min(last, population.toFloat())
-                        override val yMax = max(last, population.toFloat())
-                    }
-                }
+private fun barChartEntries(): List<BarPlotEntry<Int, Float>> {
+    var last = 0f
 
-                last = population.toFloat()
-                entry
+    return PopulationData.data[BOROUGH]!!.mapIndexed { index, population ->
+        val entry = if (index == PopulationData.data[BOROUGH]!!.lastIndex) {
+            object : BarPlotEntry<Int, Float> {
+                override val x = PopulationData.years[index]
+                override val y = DefaultVerticalBarPosition(0f, population.toFloat())
             }
-        )
+        } else {
+            object : BarPlotEntry<Int, Float> {
+                override val x = PopulationData.years[index]
+                override val y = DefaultVerticalBarPosition(
+                    min(last, population.toFloat()),
+                    max(last, population.toFloat())
+                )
+            }
+        }
+
+        last = population.toFloat()
+        entry
     }
 }
 
@@ -89,7 +88,7 @@ private fun WaterfallChart(thumbnail: Boolean) {
     @Suppress("MagicNumber")
     val p = ceil(PopulationData.data[BOROUGH]!!.last() / 1E6f) * 1E6f
 
-    XYChart(
+    XYGraph(
         xAxisModel = CategoryAxisModel(PopulationData.years),
         yAxisModel = LinearAxisModel(0f..p),
         xAxisTitle = "Year",
@@ -114,9 +113,9 @@ private fun WaterfallChart(thumbnail: Boolean) {
         horizontalMajorGridLineStyle = null,
     ) {
         @Suppress("MagicNumber")
-        VerticalBarChart(
-            series = barChartEntries,
-            bar = { _, index, _ ->
+        VerticalBarPlot(
+            barChartEntries,
+            bar = { index ->
                 val color = when {
                     index == 0 -> SolidColor(Color(0xFF00498F))
                     index == PopulationData.data[BOROUGH]!!.lastIndex -> SolidColor(Color(0xFF00498F))
@@ -130,10 +129,7 @@ private fun WaterfallChart(thumbnail: Boolean) {
 
                     else -> SolidColor(Color.Black) // Shouldn't happen
                 }
-                DefaultVerticalBar(
-                    brush = color,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                DefaultVerticalBar(brush = color, modifier = Modifier.fillMaxWidth())
             }
         )
     }

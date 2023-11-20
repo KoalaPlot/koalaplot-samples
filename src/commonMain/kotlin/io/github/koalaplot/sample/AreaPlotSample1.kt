@@ -14,20 +14,20 @@ import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.line.AreaBaseline
-import io.github.koalaplot.core.line.LineChart
+import io.github.koalaplot.core.line.LinePlot
 import io.github.koalaplot.core.style.AreaStyle
 import io.github.koalaplot.core.style.KoalaPlotTheme
 import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.toString
-import io.github.koalaplot.core.xychart.AnchorPoint
-import io.github.koalaplot.core.xychart.HorizontalLineAnnotation
-import io.github.koalaplot.core.xychart.LinearAxisModel
-import io.github.koalaplot.core.xychart.Point
-import io.github.koalaplot.core.xychart.VerticalLineAnnotation
-import io.github.koalaplot.core.xychart.XYAnnotation
-import io.github.koalaplot.core.xychart.XYChart
-import io.github.koalaplot.core.xychart.XYChartScope
+import io.github.koalaplot.core.xygraph.AnchorPoint
+import io.github.koalaplot.core.xygraph.HorizontalLineAnnotation
+import io.github.koalaplot.core.xygraph.LinearAxisModel
+import io.github.koalaplot.core.xygraph.Point
+import io.github.koalaplot.core.xygraph.VerticalLineAnnotation
+import io.github.koalaplot.core.xygraph.XYAnnotation
+import io.github.koalaplot.core.xygraph.XYGraph
+import io.github.koalaplot.core.xygraph.XYGraphScope
 import kotlin.math.PI
 import kotlin.math.exp
 import kotlin.math.pow
@@ -56,7 +56,7 @@ private fun AreaPlotSample1Plot(thumbnail: Boolean, title: String) {
         title = { ChartTitle(title) },
         legendLocation = LegendLocation.BOTTOM
     ) {
-        XYChart(
+        XYGraph(
             xAxisModel = LinearAxisModel(-5f..5.0f),
             yAxisModel = LinearAxisModel(0f..1.0f, minimumMajorTickSpacing = 50.dp),
             xAxisLabels = {
@@ -71,7 +71,7 @@ private fun AreaPlotSample1Plot(thumbnail: Boolean, title: String) {
             horizontalMinorGridLineStyle = null,
             verticalMinorGridLineStyle = null
         ) {
-            LineChart(
+            LinePlot(
                 data = distribution1,
                 lineStyle = LineStyle(brush = SolidColor(Color(0xFF00498F)), strokeWidth = 2.dp),
                 areaStyle = AreaStyle(
@@ -80,7 +80,7 @@ private fun AreaPlotSample1Plot(thumbnail: Boolean, title: String) {
                 ),
                 areaBaseline = AreaBaseline.ConstantLine(0f)
             )
-            LineChart(
+            LinePlot(
                 data = distribution2,
                 lineStyle = LineStyle(brush = SolidColor(Color(0xFF37A78F)), strokeWidth = 2.dp),
                 areaStyle = AreaStyle(
@@ -99,7 +99,7 @@ private fun AreaPlotSample1Plot(thumbnail: Boolean, title: String) {
 
 @Suppress("MagicNumber")
 @Composable
-private fun XYChartScope<Float, Float>.Annotations() {
+private fun XYGraphScope<Float, Float>.Annotations() {
     val markerLineStyle = LineStyle(
         brush = SolidColor(Color.DarkGray),
         strokeWidth = 2.dp,

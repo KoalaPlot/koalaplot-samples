@@ -81,7 +81,6 @@ private val samples = buildList {
     add(verticalBarSampleView)
     add(groupedVerticalBarSampleView)
     add(stackedVerticalBarSampleView)
-    add(minimalBarChartSampleView)
     add(waterfallChartSampleView)
     add(bulletGraphSampleView)
     add(xyLineSampleView)

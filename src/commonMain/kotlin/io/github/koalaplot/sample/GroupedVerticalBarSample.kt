@@ -14,8 +14,11 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
+import io.github.koalaplot.core.bar.BarPlotGroupedPointEntry
 import io.github.koalaplot.core.bar.DefaultVerticalBar
-import io.github.koalaplot.core.bar.VerticalBarChart
+import io.github.koalaplot.core.bar.DefaultVerticalBarPosition
+import io.github.koalaplot.core.bar.GroupedVerticalBarPlot
+import io.github.koalaplot.core.bar.VerticalBarPosition
 import io.github.koalaplot.core.legend.FlowLegend
 import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
@@ -23,23 +26,29 @@ import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
-import io.github.koalaplot.core.xychart.CategoryAxisModel
-import io.github.koalaplot.core.xychart.LinearAxisModel
-import io.github.koalaplot.core.xychart.XYChart
+import io.github.koalaplot.core.xygraph.CategoryAxisModel
+import io.github.koalaplot.core.xygraph.LinearAxisModel
+import io.github.koalaplot.core.xygraph.XYGraph
 import kotlin.math.ceil
 
 private val colors = generateHueColorPalette(PopulationData.Categories.values().size)
 
-private fun barChartEntries(): List<List<PopulationBarChartEntry<Int, Float>>> {
-    return PopulationData.Categories.values().map { borough ->
-        PopulationData.data[borough]!!.mapIndexed { index, population ->
-            PopulationBarChartEntry(
-                xValue = PopulationData.years[index],
-                yMin = 0f,
-                yMax = population.toFloat(),
-                borough,
-                population
-            )
+private fun barChartEntries(): List<BarPlotGroupedPointEntry<Int, Float>> {
+    return PopulationData.years.mapIndexed { yearIndex, year ->
+        object : BarPlotGroupedPointEntry<Int, Float> {
+            override val x: Int = year
+
+            override val y: List<VerticalBarPosition<Float>> = object : AbstractList<VerticalBarPosition<Float>>() {
+                override val size: Int
+                    get() = PopulationData.Categories.entries.size
+
+                override fun get(index: Int): VerticalBarPosition<Float> {
+                    return DefaultVerticalBarPosition(
+                        0f,
+                        PopulationData.data[PopulationData.Categories.entries[index]]!![yearIndex].toFloat()
+                    )
+                }
+            }
         }
     }
 }
@@ -86,7 +95,7 @@ private const val PopulationScale = 1E6f
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
 private fun BarSample2Plot(thumbnail: Boolean, title: String) {
-    val barChartEntries = remember(thumbnail) { barChartEntries() }
+    val barChartEntries: List<BarPlotGroupedPointEntry<Int, Float>> = remember(thumbnail) { barChartEntries() }
 
     ChartLayout(
         modifier = paddingMod,
@@ -94,22 +103,24 @@ private fun BarSample2Plot(thumbnail: Boolean, title: String) {
         legend = { Legend(thumbnail) },
         legendLocation = LegendLocation.BOTTOM
     ) {
-        XYChart(
+        XYGraph(
             xAxisModel = CategoryAxisModel(PopulationData.years),
             yAxisModel = LinearAxisModel(
                 0f..(ceil(PopulationData.maxPopulation / PopulationScale) * PopulationScale),
                 minorTickCount = 0
             ),
             content = {
-                VerticalBarChart(
-                    series = barChartEntries,
-                    bar = { series, _, value ->
+                GroupedVerticalBarPlot(
+                    data = barChartEntries,
+                    bar = { dataIndex, groupIndex, _ ->
                         DefaultVerticalBar(
-                            brush = SolidColor(colors[series]),
+                            brush = SolidColor(colors[groupIndex]),
                             modifier = Modifier.sizeIn(minWidth = 5.dp, maxWidth = 20.dp),
                         ) {
                             if (!thumbnail) {
-                                HoverSurface { Text("${value.borough}: ${value.population}") }
+                                val borough = PopulationData.Categories.entries[groupIndex]
+                                val pop = PopulationData.data[borough]!![dataIndex]
+                                HoverSurface { Text("$borough: $pop") }
                             }
                         }
                     }

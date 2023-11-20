@@ -23,9 +23,9 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
-import io.github.koalaplot.core.bar.BarChartEntry
+import io.github.koalaplot.core.bar.BarPlotStackedPointEntry
 import io.github.koalaplot.core.bar.DefaultVerticalBar
-import io.github.koalaplot.core.bar.VerticalBarChart
+import io.github.koalaplot.core.bar.StackedVerticalBarPlot
 import io.github.koalaplot.core.legend.FlowLegend
 import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.style.KoalaPlotTheme
@@ -35,12 +35,11 @@ import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
-import io.github.koalaplot.core.xychart.CategoryAxisModel
-import io.github.koalaplot.core.xychart.LinearAxisModel
-import io.github.koalaplot.core.xychart.XYChart
-import io.github.koalaplot.core.xychart.rememberAxisStyle
+import io.github.koalaplot.core.xygraph.CategoryAxisModel
+import io.github.koalaplot.core.xygraph.LinearAxisModel
+import io.github.koalaplot.core.xygraph.XYGraph
+import io.github.koalaplot.core.xygraph.rememberAxisStyle
 import kotlin.math.ceil
-import kotlin.math.max
 
 private val colors = generateHueColorPalette(PopulationData.Categories.values().size)
 
@@ -48,41 +47,24 @@ private const val BarWidth = 0.8f
 
 private val rotationOptions = listOf(0, 30, 45, 60, 90)
 
-internal data class PopulationBarChartEntry<X, Y>(
-    override val xValue: X,
-    override val yMin: Y,
-    override val yMax: Y,
-    val borough: PopulationData.Categories,
-    val population: Int
-) : BarChartEntry<X, Y>
+private fun barChartEntries(): List<BarPlotStackedPointEntry<Int, Float>> {
+    return PopulationData.years.mapIndexed { yearIndex, year ->
+        object : BarPlotStackedPointEntry<Int, Float> {
+            override val x: Int = year
+            override val yOrigin: Float = 0f
 
-private fun barChartEntries(): Pair<List<List<PopulationBarChartEntry<Int, Float>>>, Float> {
-    val series =
-        Array<MutableList<PopulationBarChartEntry<Int, Float>>>(PopulationData.Categories.values().size) {
-            ArrayList(PopulationData.years.size)
+            override val y: List<Float> = object : AbstractList<Float>() {
+                override val size: Int
+                    get() = PopulationData.Categories.entries.size
+
+                override fun get(index: Int): Float {
+                    return PopulationData.Categories.entries.subList(0, index + 1).fold(0f) { acc, cat ->
+                        acc + PopulationData.data[cat]!![yearIndex]
+                    }
+                }
+            }
         }
-
-    var maxPopulation = 0f
-
-    PopulationData.years.forEachIndexed { yearIndex, year ->
-        var yearTotal = 0f
-
-        PopulationData.Categories.values().forEachIndexed { bIndex, borough ->
-            series[bIndex] += PopulationBarChartEntry(
-                xValue = year,
-                yMin = yearTotal,
-                yMax = yearTotal + PopulationData.data[borough]!![yearIndex].toFloat(),
-                borough,
-                PopulationData.data[borough]!![yearIndex]
-            )
-
-            yearTotal += PopulationData.data[borough]!![yearIndex].toFloat()
-        }
-
-        maxPopulation = max(maxPopulation, yearTotal)
     }
-
-    return series.toList() to maxPopulation
 }
 
 @OptIn(ExperimentalKoalaPlotApi::class)
@@ -157,7 +139,12 @@ private fun StackedBarSamplePlot(
     modifier: Modifier = Modifier,
     xAxisLabelRotation: Int = 0
 ) {
-    val (barChartEntries, maxPopulation) = remember { barChartEntries() }
+    val barChartEntries = remember { barChartEntries() }
+    val maxPopulation = remember {
+        barChartEntries.maxOf {
+            it.y.max()
+        }
+    }
 
     ChartLayout(
         modifier = modifier.then(paddingMod),
@@ -165,7 +152,7 @@ private fun StackedBarSamplePlot(
         legend = { Legend(thumbnail) },
         legendLocation = LegendLocation.BOTTOM
     ) {
-        XYChart(
+        XYGraph(
             xAxisModel = CategoryAxisModel(PopulationData.years),
             yAxisModel = LinearAxisModel(
                 0f..(ceil(maxPopulation / PopulationScale) * PopulationScale).toFloat(),
@@ -197,17 +184,18 @@ private fun StackedBarSamplePlot(
             },
             verticalMajorGridLineStyle = null
         ) {
-            VerticalBarChart(
-                series = barChartEntries,
-                stacked = true,
-                bar = { series, _, value ->
+            StackedVerticalBarPlot(
+                barChartEntries,
+                bar = { xIndex, barIndex ->
                     DefaultVerticalBar(
-                        brush = SolidColor(colors[series]),
+                        brush = SolidColor(colors[barIndex]),
                         modifier = Modifier.fillMaxWidth(BarWidth)
                     ) {
                         if (!thumbnail) {
                             HoverSurface {
-                                Text("${value.borough}: ${value.population}")
+                                val borough = PopulationData.Categories.entries[barIndex]
+                                val pop = PopulationData.data[borough]!![xIndex]
+                                Text("$borough: $pop")
                             }
                         }
                     }

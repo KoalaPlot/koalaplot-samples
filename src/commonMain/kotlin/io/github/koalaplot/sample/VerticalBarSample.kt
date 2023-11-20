@@ -20,33 +20,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
-import io.github.koalaplot.core.bar.BarChartEntry
-import io.github.koalaplot.core.bar.DefaultBarChartEntry
+import io.github.koalaplot.core.bar.BarPlotEntry
+import io.github.koalaplot.core.bar.DefaultBarPlotEntry
 import io.github.koalaplot.core.bar.DefaultVerticalBar
-import io.github.koalaplot.core.bar.VerticalBarChart
+import io.github.koalaplot.core.bar.DefaultVerticalBarPosition
+import io.github.koalaplot.core.bar.VerticalBarPlot
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
-import io.github.koalaplot.core.xychart.LinearAxisModel
-import io.github.koalaplot.core.xychart.TickPosition
-import io.github.koalaplot.core.xychart.XYChart
-import io.github.koalaplot.core.xychart.rememberAxisStyle
+import io.github.koalaplot.core.xygraph.LinearAxisModel
+import io.github.koalaplot.core.xygraph.TickPosition
+import io.github.koalaplot.core.xygraph.XYGraph
+import io.github.koalaplot.core.xygraph.rememberAxisStyle
 
 private val colors = generateHueColorPalette(fibonacci.size)
 private const val BarWidth = 0.8f
 
-private fun barChartEntries(): List<BarChartEntry<Float, Float>> {
+private fun barChartEntries(): List<BarPlotEntry<Float, Float>> {
     return buildList {
         fibonacci.forEachIndexed { index, fl ->
-            add(
-                DefaultBarChartEntry(
-                    xValue = (index + 1).toFloat(),
-                    yMin = 0f,
-                    yMax = fl,
-                )
-            )
+            add(DefaultBarPlotEntry((index + 1).toFloat(), DefaultVerticalBarPosition(0f, fl)))
         }
     }
 }
@@ -101,7 +96,7 @@ private fun BarSamplePlot(
         modifier = paddingMod,
         title = { ChartTitle(title) }
     ) {
-        XYChart(
+        XYGraph(
             xAxisModel = LinearAxisModel(
                 XAxisRange,
                 minimumMajorTickIncrement = 1f,
@@ -139,19 +134,19 @@ private fun BarSamplePlot(
             },
             verticalMajorGridLineStyle = null
         ) {
-            VerticalBarChart(
-                series = listOf(barChartEntries),
-                bar = { series, _, value ->
+            VerticalBarPlot(
+                barChartEntries,
+                bar = { index ->
                     DefaultVerticalBar(
-                        brush = SolidColor(colors[series]),
+                        brush = SolidColor(colors[0]),
                         modifier = Modifier.fillMaxWidth(BarWidth),
                     ) {
                         if (!thumbnail) {
-                            HoverSurface { Text(value.yMax.toString()) }
+                            HoverSurface { Text(barChartEntries[index].y.yMax.toString()) }
                         }
                     }
-                }
-
+                },
+                barWidth = 1f
             )
         }
     }

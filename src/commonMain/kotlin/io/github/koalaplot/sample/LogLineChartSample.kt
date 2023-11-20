@@ -14,15 +14,15 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
-import io.github.koalaplot.core.line.LineChart
+import io.github.koalaplot.core.line.LinePlot
 import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.rotateVertically
-import io.github.koalaplot.core.xychart.DefaultPoint
-import io.github.koalaplot.core.xychart.LinearAxisModel
-import io.github.koalaplot.core.xychart.LogAxisModel
-import io.github.koalaplot.core.xychart.XYChart
+import io.github.koalaplot.core.xygraph.DefaultPoint
+import io.github.koalaplot.core.xygraph.LinearAxisModel
+import io.github.koalaplot.core.xygraph.LogAxisModel
+import io.github.koalaplot.core.xygraph.XYGraph
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 val xyLogLineSampleView = object : SampleView {
@@ -49,7 +49,7 @@ private fun XYSamplePlot(thumbnail: Boolean, title: String) {
         modifier = paddingMod,
         title = { ChartTitle(title) }
     ) {
-        XYChart(
+        XYGraph(
             xAxisModel = LinearAxisModel(
                 XAxisRange,
                 minimumMajorTickIncrement = 1f,
@@ -75,7 +75,7 @@ private fun XYSamplePlot(thumbnail: Boolean, title: String) {
                 }
             },
         ) {
-            LineChart(
+            LinePlot(
                 data = fibonacciExtended.mapIndexed { index, fl ->
                     DefaultPoint(index.toFloat(), fl)
                 },
