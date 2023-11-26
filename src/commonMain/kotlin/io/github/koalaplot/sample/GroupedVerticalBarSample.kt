@@ -14,10 +14,10 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
-import io.github.koalaplot.core.bar.BarPlotGroupedPointEntry
 import io.github.koalaplot.core.bar.DefaultVerticalBar
 import io.github.koalaplot.core.bar.DefaultVerticalBarPosition
 import io.github.koalaplot.core.bar.GroupedVerticalBarPlot
+import io.github.koalaplot.core.bar.VerticalBarPlotGroupedPointEntry
 import io.github.koalaplot.core.bar.VerticalBarPosition
 import io.github.koalaplot.core.legend.FlowLegend
 import io.github.koalaplot.core.legend.LegendLocation
@@ -33,9 +33,9 @@ import kotlin.math.ceil
 
 private val colors = generateHueColorPalette(PopulationData.Categories.values().size)
 
-private fun barChartEntries(): List<BarPlotGroupedPointEntry<Int, Float>> {
+private fun barChartEntries(): List<VerticalBarPlotGroupedPointEntry<Int, Float>> {
     return PopulationData.years.mapIndexed { yearIndex, year ->
-        object : BarPlotGroupedPointEntry<Int, Float> {
+        object : VerticalBarPlotGroupedPointEntry<Int, Float> {
             override val x: Int = year
 
             override val y: List<VerticalBarPosition<Float>> = object : AbstractList<VerticalBarPosition<Float>>() {
@@ -95,7 +95,7 @@ private const val PopulationScale = 1E6f
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
 private fun BarSample2Plot(thumbnail: Boolean, title: String) {
-    val barChartEntries: List<BarPlotGroupedPointEntry<Int, Float>> = remember(thumbnail) { barChartEntries() }
+    val barChartEntries: List<VerticalBarPlotGroupedPointEntry<Int, Float>> = remember(thumbnail) { barChartEntries() }
 
     ChartLayout(
         modifier = paddingMod,

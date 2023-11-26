@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.line.AreaBaseline
-import io.github.koalaplot.core.line.LinePlot
+import io.github.koalaplot.core.line.AreaPlot
 import io.github.koalaplot.core.style.AreaStyle
 import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
@@ -68,7 +68,7 @@ private fun CosineSamplePlot(thumbnail: Boolean, title: String) {
                 }
             }
         ) {
-            LinePlot(
+            AreaPlot(
                 data = cosineData,
                 lineStyle = LineStyle(brush = SolidColor(Color.Blue), strokeWidth = 2.dp),
                 areaStyle = AreaStyle(

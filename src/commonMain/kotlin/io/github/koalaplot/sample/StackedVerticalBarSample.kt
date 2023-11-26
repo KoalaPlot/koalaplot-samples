@@ -23,9 +23,9 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
-import io.github.koalaplot.core.bar.BarPlotStackedPointEntry
 import io.github.koalaplot.core.bar.DefaultVerticalBar
 import io.github.koalaplot.core.bar.StackedVerticalBarPlot
+import io.github.koalaplot.core.bar.VerticalBarPlotStackedPointEntry
 import io.github.koalaplot.core.legend.FlowLegend
 import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.style.KoalaPlotTheme
@@ -47,9 +47,9 @@ private const val BarWidth = 0.8f
 
 private val rotationOptions = listOf(0, 30, 45, 60, 90)
 
-private fun barChartEntries(): List<BarPlotStackedPointEntry<Int, Float>> {
+private fun barChartEntries(): List<VerticalBarPlotStackedPointEntry<Int, Float>> {
     return PopulationData.years.mapIndexed { yearIndex, year ->
-        object : BarPlotStackedPointEntry<Int, Float> {
+        object : VerticalBarPlotStackedPointEntry<Int, Float> {
             override val x: Int = year
             override val yOrigin: Float = 0f
 

@@ -20,11 +20,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
-import io.github.koalaplot.core.bar.BarPlotEntry
-import io.github.koalaplot.core.bar.DefaultBarPlotEntry
 import io.github.koalaplot.core.bar.DefaultVerticalBar
+import io.github.koalaplot.core.bar.DefaultVerticalBarPlotEntry
 import io.github.koalaplot.core.bar.DefaultVerticalBarPosition
 import io.github.koalaplot.core.bar.VerticalBarPlot
+import io.github.koalaplot.core.bar.VerticalBarPlotEntry
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.generateHueColorPalette
@@ -38,10 +38,10 @@ import io.github.koalaplot.core.xygraph.rememberAxisStyle
 private val colors = generateHueColorPalette(fibonacci.size)
 private const val BarWidth = 0.8f
 
-private fun barChartEntries(): List<BarPlotEntry<Float, Float>> {
+private fun barChartEntries(): List<VerticalBarPlotEntry<Float, Float>> {
     return buildList {
         fibonacci.forEachIndexed { index, fl ->
-            add(DefaultBarPlotEntry((index + 1).toFloat(), DefaultVerticalBarPosition(0f, fl)))
+            add(DefaultVerticalBarPlotEntry((index + 1).toFloat(), DefaultVerticalBarPosition(0f, fl)))
         }
     }
 }

@@ -12,10 +12,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
-import io.github.koalaplot.core.bar.BarPlotEntry
 import io.github.koalaplot.core.bar.DefaultVerticalBar
 import io.github.koalaplot.core.bar.DefaultVerticalBarPosition
 import io.github.koalaplot.core.bar.VerticalBarPlot
+import io.github.koalaplot.core.bar.VerticalBarPlotEntry
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.core.xygraph.CategoryAxisModel
@@ -27,17 +27,17 @@ import kotlin.math.min
 
 private val BOROUGH = PopulationData.Categories.Manhattan
 
-private fun barChartEntries(): List<BarPlotEntry<Int, Float>> {
+private fun barChartEntries(): List<VerticalBarPlotEntry<Int, Float>> {
     var last = 0f
 
     return PopulationData.data[BOROUGH]!!.mapIndexed { index, population ->
         val entry = if (index == PopulationData.data[BOROUGH]!!.lastIndex) {
-            object : BarPlotEntry<Int, Float> {
+            object : VerticalBarPlotEntry<Int, Float> {
                 override val x = PopulationData.years[index]
                 override val y = DefaultVerticalBarPosition(0f, population.toFloat())
             }
         } else {
-            object : BarPlotEntry<Int, Float> {
+            object : VerticalBarPlotEntry<Int, Float> {
                 override val x = PopulationData.years[index]
                 override val y = DefaultVerticalBarPosition(
                     min(last, population.toFloat()),

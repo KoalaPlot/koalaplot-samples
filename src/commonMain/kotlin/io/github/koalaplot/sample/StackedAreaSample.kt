@@ -14,8 +14,9 @@ import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.line.AreaBaseline
-import io.github.koalaplot.core.line.DefaultMultiPoint
 import io.github.koalaplot.core.line.StackedAreaPlot
+import io.github.koalaplot.core.line.StackedAreaPlotDataAdapter
+import io.github.koalaplot.core.line.StackedAreaPlotEntry
 import io.github.koalaplot.core.line.StackedAreaStyle
 import io.github.koalaplot.core.style.AreaStyle
 import io.github.koalaplot.core.style.KoalaPlotTheme
@@ -139,8 +140,11 @@ private fun StackedAreaSample(thumbnail: Boolean, title: String) {
     }
 }
 
-private val stackedAreaData = buildList {
-    PopulationData.years.forEachIndexed { index, year ->
-        add(DefaultMultiPoint(year.toFloat(), PopulationData.data.values.map { it[index].toFloat() / 1E6f }))
-    }
+private val stackedAreaData: List<StackedAreaPlotEntry<Float, Float>> by lazy {
+    StackedAreaPlotDataAdapter(
+        PopulationData.years.map { it.toFloat() },
+        PopulationData.data.values.map {
+            it.map { it.toFloat() / 1E6f }
+        }
+    )
 }
