@@ -15,13 +15,13 @@ import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
 import io.github.koalaplot.core.legend.FlowLegend
 import io.github.koalaplot.core.legend.LegendLocation
-import io.github.koalaplot.core.polar.AngularValueAxisModel
 import io.github.koalaplot.core.polar.DefaultPolarPoint
-import io.github.koalaplot.core.polar.PolarPlot
-import io.github.koalaplot.core.polar.PolarPlotDefaults
+import io.github.koalaplot.core.polar.PolarGraph
+import io.github.koalaplot.core.polar.PolarGraphDefaults
 import io.github.koalaplot.core.polar.PolarPlotSeries
 import io.github.koalaplot.core.polar.PolarPoint
-import io.github.koalaplot.core.polar.RadialAxisModel
+import io.github.koalaplot.core.polar.rememberAngularValueAxisModel
+import io.github.koalaplot.core.polar.rememberFloatRadialAxisModel
 import io.github.koalaplot.core.style.AreaStyle
 import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.AngularValue
@@ -80,12 +80,12 @@ private fun PolarScatterPlot(thumbnail: Boolean, title: String) {
             LineStyle(SolidColor(Color.LightGray), strokeWidth = 1.dp)
         }
 
-        PolarPlot(
-            RadialAxisModel(listOf(0f, 5f, 10f)),
-            AngularValueAxisModel(),
-            { if (!thumbnail) Text(it.toString()) },
+        PolarGraph(
+            rememberFloatRadialAxisModel(listOf(0f, 5f, 10f)),
+            rememberAngularValueAxisModel(),
+            radialAxisLabels = { if (!thumbnail) Text(it.toString()) },
             { if (!thumbnail) Text("${it.toDegrees().value}\u00B0") },
-            polarPlotProperties = PolarPlotDefaults.PolarPlotPropertyDefaults()
+            polarGraphProperties = PolarGraphDefaults.PolarGraphPropertyDefaults()
                 .copy(
                     angularAxisGridLineStyle = angularAxisGridLineStyle,
                     radialAxisGridLineStyle = angularAxisGridLineStyle,

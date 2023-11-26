@@ -14,13 +14,13 @@ import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
 import io.github.koalaplot.core.legend.FlowLegend
 import io.github.koalaplot.core.legend.LegendLocation
-import io.github.koalaplot.core.polar.CategoryAngularAxisModel
 import io.github.koalaplot.core.polar.DefaultPolarPoint
-import io.github.koalaplot.core.polar.PolarPlot
-import io.github.koalaplot.core.polar.PolarPlotDefaults
+import io.github.koalaplot.core.polar.PolarGraph
+import io.github.koalaplot.core.polar.PolarGraphDefaults
 import io.github.koalaplot.core.polar.PolarPlotSeries
 import io.github.koalaplot.core.polar.PolarPoint
-import io.github.koalaplot.core.polar.RadialAxisModel
+import io.github.koalaplot.core.polar.rememberCategoryAngularAxisModel
+import io.github.koalaplot.core.polar.rememberFloatRadialAxisModel
 import io.github.koalaplot.core.style.KoalaPlotTheme.axis
 import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
@@ -58,8 +58,8 @@ private fun RadialLinePlotSample(thumbnail: Boolean, title: String) {
         legend = { Legend(thumbnail) },
         legendLocation = LegendLocation.BOTTOM
     ) {
-        val ram = RadialAxisModel(listOf(0f, 0.5f, 1f, 1.5f, 2f, 2.5f, 3f)) // population in millions
-        val aam = CategoryAngularAxisModel(PopulationData.years)
+        val ram = rememberFloatRadialAxisModel(listOf(0f, 0.5f, 1f, 1.5f, 2f, 2.5f, 3f)) // population in millions
+        val aam = rememberCategoryAngularAxisModel(PopulationData.years)
 
         val angularAxisGridLineStyle = if (thumbnail) {
             LineStyle(SolidColor(Color.LightGray), strokeWidth = 1.dp)
@@ -67,12 +67,12 @@ private fun RadialLinePlotSample(thumbnail: Boolean, title: String) {
             axis.majorGridlineStyle
         }
 
-        PolarPlot(
+        PolarGraph(
             ram,
             aam,
-            { if (!thumbnail) Text(it.toString(1)) },
+            radialAxisLabels = { if (!thumbnail) Text(it.toString(1)) },
             { if (!thumbnail) Text(it.toString()) },
-            polarPlotProperties = PolarPlotDefaults.PolarPlotPropertyDefaults()
+            polarGraphProperties = PolarGraphDefaults.PolarGraphPropertyDefaults()
                 .copy(
                     angularAxisGridLineStyle = angularAxisGridLineStyle,
                     radialAxisGridLineStyle = angularAxisGridLineStyle

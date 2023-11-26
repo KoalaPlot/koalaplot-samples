@@ -15,14 +15,14 @@ import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
 import io.github.koalaplot.core.legend.FlowLegend
 import io.github.koalaplot.core.legend.LegendLocation
-import io.github.koalaplot.core.polar.CategoryAngularAxisModel
 import io.github.koalaplot.core.polar.DefaultPolarPoint
-import io.github.koalaplot.core.polar.PolarPlot
-import io.github.koalaplot.core.polar.PolarPlotDefaults
+import io.github.koalaplot.core.polar.PolarGraph
+import io.github.koalaplot.core.polar.PolarGraphDefaults
 import io.github.koalaplot.core.polar.PolarPlotSeries
 import io.github.koalaplot.core.polar.PolarPoint
-import io.github.koalaplot.core.polar.RadialAxisModel
 import io.github.koalaplot.core.polar.RadialGridType
+import io.github.koalaplot.core.polar.rememberCategoryAngularAxisModel
+import io.github.koalaplot.core.polar.rememberFloatRadialAxisModel
 import io.github.koalaplot.core.style.AreaStyle
 import io.github.koalaplot.core.style.KoalaPlotTheme.axis
 import io.github.koalaplot.core.style.LineStyle
@@ -80,12 +80,12 @@ private fun SpiderPlotSample(thumbnail: Boolean, title: String) {
             axis.majorGridlineStyle
         }
 
-        PolarPlot(
-            RadialAxisModel((0..5).toList().map { it.toFloat() }),
-            CategoryAngularAxisModel(categories),
-            { if (!thumbnail) Text(it.toString()) },
+        PolarGraph(
+            rememberFloatRadialAxisModel((0..5).toList().map { it.toFloat() }),
+            rememberCategoryAngularAxisModel(categories),
+            radialAxisLabels = { if (!thumbnail) Text(it.toString()) },
             { if (!thumbnail) Text(it) },
-            polarPlotProperties = PolarPlotDefaults.PolarPlotPropertyDefaults()
+            polarGraphProperties = PolarGraphDefaults.PolarGraphPropertyDefaults()
                 .copy(
                     radialGridType = RadialGridType.LINES,
                     angularAxisGridLineStyle = angularAxisGridLineStyle,
