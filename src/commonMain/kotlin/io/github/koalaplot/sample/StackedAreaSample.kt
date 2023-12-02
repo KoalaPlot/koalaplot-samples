@@ -1,11 +1,15 @@
 package io.github.koalaplot.sample
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -75,9 +79,19 @@ private fun StackedAreaSample(thumbnail: Boolean, title: String) {
                     AxisLabel(it.toString(0), Modifier.padding(top = 2.dp))
                 }
             },
-            xAxisTitle = { if (!thumbnail) AxisTitle("Year") },
+            xAxisTitle = {
+                if (!thumbnail) {
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        AxisTitle("Year")
+                    }
+                }
+            },
             yAxisLabels = {
-                if (!thumbnail) AxisLabel(it.toString(0))
+                if (!thumbnail) {
+                    Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.Center) {
+                        AxisLabel(it.toString(0))
+                    }
+                }
             },
             yAxisTitle = {
                 if (!thumbnail) {

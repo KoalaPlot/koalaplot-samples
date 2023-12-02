@@ -91,8 +91,8 @@ private fun WaterfallChart(thumbnail: Boolean) {
     XYGraph(
         xAxisModel = CategoryAxisModel(PopulationData.years),
         yAxisModel = LinearAxisModel(0f..p),
-        xAxisTitle = "Year",
-        yAxisTitle = "Population",
+        xAxisTitle = if (!thumbnail) "Year" else null,
+        yAxisTitle = if (!thumbnail) "Population" else null,
         xAxisLabels = {
             if (!thumbnail) {
                 it.toString()

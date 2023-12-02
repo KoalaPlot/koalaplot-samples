@@ -1,10 +1,13 @@
 package io.github.koalaplot.sample
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.absolutePadding
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
@@ -64,7 +67,13 @@ private fun AreaPlotSample1Plot(thumbnail: Boolean, title: String) {
                     AxisLabel(it.toString(1), Modifier.padding(top = 2.dp))
                 }
             },
-            xAxisTitle = { if (!thumbnail) AxisTitle("x") },
+            xAxisTitle = {
+                if (!thumbnail) {
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        AxisTitle("x")
+                    }
+                }
+            },
             yAxisLabels = {
                 if (!thumbnail) AxisLabel(it.toString(1), Modifier.absolutePadding(right = 2.dp))
             },

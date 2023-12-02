@@ -1,12 +1,16 @@
 package io.github.koalaplot.sample
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.absolutePadding
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -71,17 +75,31 @@ private fun XYSamplePlot(thumbnail: Boolean, title: String) {
                     AxisLabel(it, Modifier.padding(top = 2.dp))
                 }
             },
-            xAxisTitle = { if (!thumbnail) AxisTitle("Month") },
+            xAxisTitle = {
+                if (!thumbnail) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        AxisTitle("Month")
+                    }
+                }
+            },
             yAxisLabels = {
                 if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
             },
             yAxisTitle = {
                 if (!thumbnail) {
-                    AxisTitle(
-                        "Rainfall (mm)",
-                        modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                            .padding(bottom = padding)
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxHeight(),
+                        contentAlignment = Alignment.TopStart
+                    ) {
+                        AxisTitle(
+                            "Rainfall (mm)",
+                            modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                                .padding(bottom = padding)
+                        )
+                    }
                 }
             }
         ) {
