@@ -45,8 +45,14 @@ jobs:
                     build-root-directory: koalaplot-samples
 
             # jsBrowserWebpack in one step doesn't put skiko.wasm or skio.js in the distributions directory
-            -   name: Build koalaplot-samples
+            -   name: Build js koalaplot-samples
                 uses: gradle/gradle-build-action@v2
                 with:
                     arguments: jsBrowserWebpack
                     build-root-directory: koalaplot-samples
+
+            - name: Build wasm koalaplot-samples
+              uses: gradle/gradle-build-action@v2
+              with:
+                  arguments: wasmjsBrowserDistribution
+                  build-root-directory: koalaplot-samples

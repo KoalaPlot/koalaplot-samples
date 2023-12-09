@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+
 plugins {
     kotlin("multiplatform")
     id("com.android.application")
@@ -27,6 +29,12 @@ kotlin {
         binaries.executable()
     }
     androidTarget()
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+        binaries.executable()
+    }
 
     sourceSets {
         named("commonMain") {
@@ -68,22 +76,19 @@ compose.desktop {
         mainClass = "io.github.koalaplot.sample.desktop.MainKt"
 
         nativeDistributions {
-            targetFormats(
-                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg,
+            targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg,
                 org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi,
-                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb
-            )
+                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb)
             packageName = "KoalaPlot"
             packageVersion = "1.0.0"
 
             windows {
-                menu = true
-                // see https://wixtoolset.org/documentation/manual/v3/howtos/general/generate_guids.html
+                menu =
+                    true // see https://wixtoolset.org/documentation/manual/v3/howtos/general/generate_guids.html
                 upgradeUuid = "251c985b-942c-4f30-ba24-96aa7f9309d1"
             }
 
-            macOS {
-                // Use -Pcompose.desktop.mac.sign=true to sign and notarize.
+            macOS { // Use -Pcompose.desktop.mac.sign=true to sign and notarize.
                 bundleID = "io.github.koalaplot.sample.desktop.MainKt"
             }
         }
@@ -96,9 +101,7 @@ compose.experimental {
 
 // TODO: remove when https://youtrack.jetbrains.com/issue/KT-50778 fixed
 project.tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile::class.java).configureEach {
-    kotlinOptions.freeCompilerArgs += listOf(
-        "-Xir-dce-runtime-diagnostic=log"
-    )
+    kotlinOptions.freeCompilerArgs += listOf("-Xir-dce-runtime-diagnostic=log")
 }
 
 android {
@@ -134,9 +137,7 @@ rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.N
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + listOf(
-            "-opt-in=kotlin.RequiresOptIn"
-        )
+        freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
         jvmTarget = "17"
     }
 
@@ -148,16 +149,16 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     }
 }
 
-afterEvaluate {
-    // https://discuss.kotlinlang.org/t/disabling-androidandroidtestrelease-source-set-in-gradle-kotlin-dsl-script/21448
-    project.extensions.findByType<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension>()?.let { ext ->
-        ext.sourceSets.removeAll { sourceSet ->
-            setOf(
-                //"androidAndroidTestRelease",
-                "androidTestFixtures",
-                "androidTestFixturesDebug",
-                "androidTestFixturesRelease",
-            ).contains(sourceSet.name)
+afterEvaluate { // https://discuss.kotlinlang.org/t/disabling-androidandroidtestrelease-source-set-in-gradle-kotlin-dsl-script/21448
+    project.extensions.findByType<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension>()
+        ?.let { ext ->
+            ext.sourceSets.removeAll { sourceSet ->
+                setOf(
+                    //"androidAndroidTestRelease",
+                    "androidTestFixtures",
+                    "androidTestFixturesDebug",
+                    "androidTestFixturesRelease",
+                ).contains(sourceSet.name)
+            }
         }
-    }
 }
