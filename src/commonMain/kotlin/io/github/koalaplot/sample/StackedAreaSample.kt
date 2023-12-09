@@ -6,14 +6,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.legend.LegendLocation
@@ -34,6 +32,7 @@ import io.github.koalaplot.core.xygraph.LinearAxisModel
 import io.github.koalaplot.core.xygraph.Point
 import io.github.koalaplot.core.xygraph.XYAnnotation
 import io.github.koalaplot.core.xygraph.XYGraph
+import io.github.koalaplot.core.xygraph.XYGraphScope
 
 val stackedAreaSampleView = object : SampleView {
     override val name: String = "Stacked Area Chart"
@@ -113,42 +112,48 @@ private fun StackedAreaSample(thumbnail: Boolean, title: String) {
                 AreaBaseline.ConstantLine(0f)
             )
 
-            if (!thumbnail) {
-                val entries = PopulationData.data.entries.toList()
-                val max = entries.map { it.value.max() }
-                val maxIndices = entries.mapIndexed { index, entry ->
-                    entry.value.indexOfFirst { it == max[index] }
-                }
+            annotations(thumbnail)
+        }
+    }
+}
 
-                entries.forEachIndexed { index, (category, data) ->
-                    val yearIndex = maxIndices[index] // index into the year the max occurred
+@Suppress("MagicNumber")
+@Composable
+private fun XYGraphScope<Float, Float>.annotations(thumbnail: Boolean) {
+    if (!thumbnail) {
+        val entries = PopulationData.data.entries.toList()
+        val max = entries.map { it.value.max() }
+        val maxIndices = entries.mapIndexed { index, entry ->
+            entry.value.indexOfFirst { it == max[index] }
+        }
 
-                    var sum = 0
-                    for (i in 0..<index) {
-                        sum += entries[i].value[yearIndex]
-                    }
+        entries.forEachIndexed { index, (category, data) ->
+            val yearIndex = maxIndices[index] // index into the year the max occurred
 
-                    val anchorPoint = when (yearIndex) {
-                        0 -> AnchorPoint.LeftMiddle
-                        PopulationData.years.lastIndex -> AnchorPoint.RightMiddle
-                        else -> AnchorPoint.Center
-                    }
+            var sum = 0
+            for (i in 0..<index) {
+                sum += entries[i].value[yearIndex]
+            }
 
-                    XYAnnotation(
-                        Point(PopulationData.years[yearIndex].toFloat(), (sum + data[yearIndex] / 2f) / 1E6f),
-                        anchorPoint
-                    ) {
-                        Text(
-                            category.display,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.DarkGray,
-                            modifier = Modifier.padding(horizontal = KoalaPlotTheme.sizes.gap)
-                                .background(Color.LightGray, RoundedCornerShape(4.dp))
-                                .padding(horizontal = KoalaPlotTheme.sizes.gap)
-                        )
-                    }
-                }
+            val anchorPoint = when (yearIndex) {
+                0 -> AnchorPoint.LeftMiddle
+                PopulationData.years.lastIndex -> AnchorPoint.RightMiddle
+                else -> AnchorPoint.Center
+            }
+
+            XYAnnotation(
+                Point(PopulationData.years[yearIndex].toFloat(), (sum + data[yearIndex] / 2f) / 1E6f),
+                anchorPoint
+            ) {
+                Text(
+                    category.display,
+                    style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    color = Color.DarkGray,
+                    modifier = Modifier.padding(horizontal = KoalaPlotTheme.sizes.gap)
+                        .background(Color.LightGray, RoundedCornerShape(4.dp))
+                        .padding(horizontal = KoalaPlotTheme.sizes.gap)
+                )
             }
         }
     }
