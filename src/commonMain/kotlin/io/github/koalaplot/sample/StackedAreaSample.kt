@@ -87,17 +87,17 @@ private fun StackedAreaSample(thumbnail: Boolean, title: String) {
             },
             yAxisLabels = {
                 if (!thumbnail) {
-                    Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.Center) {
-                        AxisLabel(it.toString(0))
-                    }
+                    AxisLabel(it.toString(0))
                 }
             },
             yAxisTitle = {
                 if (!thumbnail) {
-                    AxisTitle(
-                        "Population (Millions)",
-                        modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                    )
+                    Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.Center) {
+                        AxisTitle(
+                            "Population (Millions)",
+                            modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                        )
+                    }
                 }
             }
         ) {
