@@ -19,7 +19,7 @@ dependencies {
 }
 
 group = "io.github.koalaplot"
-version = "0.5.1"
+version = "0.5.2"
 
 kotlin {
     jvmToolchain(17)
