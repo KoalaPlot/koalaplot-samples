@@ -20,7 +20,7 @@ import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.xygraph.DefaultPoint
-import io.github.koalaplot.core.xygraph.LinearAxisModel
+import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
 import io.github.koalaplot.core.xygraph.LogAxisModel
 import io.github.koalaplot.core.xygraph.XYGraph
 
@@ -50,7 +50,7 @@ private fun XYSamplePlot(thumbnail: Boolean, title: String) {
         title = { ChartTitle(title) }
     ) {
         XYGraph(
-            xAxisModel = LinearAxisModel(
+            xAxisModel = FloatLinearAxisModel(
                 XAxisRange,
                 minimumMajorTickIncrement = 1f,
                 minorTickCount = 0

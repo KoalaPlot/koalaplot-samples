@@ -11,7 +11,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -111,7 +111,7 @@ fun MainView() {
                         title = { Text(samples[selectedTabIndex].name) },
                         navigationIcon = {
                             IconButton({ selectedTabIndex = -1 }) {
-                                Icon(Icons.Default.ArrowBack, "Back")
+                                Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
                             }
                         }
                     )

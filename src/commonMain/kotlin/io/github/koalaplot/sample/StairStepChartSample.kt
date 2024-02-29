@@ -22,7 +22,7 @@ import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.xygraph.CategoryAxisModel
 import io.github.koalaplot.core.xygraph.DefaultPoint
-import io.github.koalaplot.core.xygraph.LinearAxisModel
+import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
 import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.XYGraphScope
 import kotlin.math.ceil
@@ -61,7 +61,7 @@ private fun StairStepSamplePlot(thumbnail: Boolean, title: String) {
     ) {
         XYGraph(
             xAxisModel = CategoryAxisModel(RainData.months),
-            yAxisModel = LinearAxisModel(
+            yAxisModel = FloatLinearAxisModel(
                 0f..(ceil(RainData.max / 50.0) * 50.0).toFloat(),
                 minimumMajorTickSpacing = 50.dp,
             ),

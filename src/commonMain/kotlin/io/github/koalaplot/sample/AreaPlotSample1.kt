@@ -24,8 +24,8 @@ import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.core.xygraph.AnchorPoint
+import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
 import io.github.koalaplot.core.xygraph.HorizontalLineAnnotation
-import io.github.koalaplot.core.xygraph.LinearAxisModel
 import io.github.koalaplot.core.xygraph.Point
 import io.github.koalaplot.core.xygraph.VerticalLineAnnotation
 import io.github.koalaplot.core.xygraph.XYAnnotation
@@ -60,8 +60,8 @@ private fun AreaPlotSample1Plot(thumbnail: Boolean, title: String) {
         legendLocation = LegendLocation.BOTTOM
     ) {
         XYGraph(
-            xAxisModel = LinearAxisModel(-5f..5.0f),
-            yAxisModel = LinearAxisModel(0f..1.0f, minimumMajorTickSpacing = 50.dp),
+            xAxisModel = FloatLinearAxisModel(-5f..5.0f),
+            yAxisModel = FloatLinearAxisModel(0f..1.0f, minimumMajorTickSpacing = 50.dp),
             xAxisLabels = {
                 if (!thumbnail) {
                     AxisLabel(it.toString(1), Modifier.padding(top = 2.dp))

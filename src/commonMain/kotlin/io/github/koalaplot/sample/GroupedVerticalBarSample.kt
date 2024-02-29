@@ -27,11 +27,11 @@ import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.core.xygraph.CategoryAxisModel
-import io.github.koalaplot.core.xygraph.LinearAxisModel
+import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
 import io.github.koalaplot.core.xygraph.XYGraph
 import kotlin.math.ceil
 
-private val colors = generateHueColorPalette(PopulationData.Categories.values().size)
+private val colors = generateHueColorPalette(PopulationData.Categories.entries.size)
 
 private fun barChartEntries(): List<VerticalBarPlotGroupedPointEntry<Int, Float>> {
     return PopulationData.years.mapIndexed { yearIndex, year ->
@@ -58,12 +58,12 @@ private fun barChartEntries(): List<VerticalBarPlotGroupedPointEntry<Int, Float>
 private fun Legend(thumbnail: Boolean = false) {
     if (!thumbnail) {
         FlowLegend(
-            itemCount = PopulationData.Categories.values().size,
+            itemCount = PopulationData.Categories.entries.size,
             symbol = { i ->
                 Symbol(modifier = Modifier.size(padding), fillBrush = SolidColor(colors[i]))
             },
             label = { i ->
-                Text(PopulationData.Categories.values()[i].toString())
+                Text(PopulationData.Categories.entries[i].toString())
             },
         )
     }
@@ -105,7 +105,7 @@ private fun BarSample2Plot(thumbnail: Boolean, title: String) {
     ) {
         XYGraph(
             xAxisModel = CategoryAxisModel(PopulationData.years),
-            yAxisModel = LinearAxisModel(
+            yAxisModel = FloatLinearAxisModel(
                 0f..(ceil(PopulationData.maxPopulation / PopulationScale) * PopulationScale),
                 minorTickCount = 0
             ),

@@ -36,29 +36,28 @@ import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.core.xygraph.CategoryAxisModel
-import io.github.koalaplot.core.xygraph.LinearAxisModel
+import io.github.koalaplot.core.xygraph.LongLinearAxisModel
 import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.rememberAxisStyle
-import kotlin.math.ceil
 
-private val colors = generateHueColorPalette(PopulationData.Categories.values().size)
+private val colors = generateHueColorPalette(PopulationData.Categories.entries.size)
 
 private const val BarWidth = 0.8f
 
 private val rotationOptions = listOf(0, 30, 45, 60, 90)
 
-private fun barChartEntries(): List<VerticalBarPlotStackedPointEntry<Int, Float>> {
+private fun barChartEntries(): List<VerticalBarPlotStackedPointEntry<Int, Long>> {
     return PopulationData.years.mapIndexed { yearIndex, year ->
-        object : VerticalBarPlotStackedPointEntry<Int, Float> {
+        object : VerticalBarPlotStackedPointEntry<Int, Long> {
             override val x: Int = year
-            override val yOrigin: Float = 0f
+            override val yOrigin: Long = 0L
 
-            override val y: List<Float> = object : AbstractList<Float>() {
+            override val y: List<Long> = object : AbstractList<Long>() {
                 override val size: Int
                     get() = PopulationData.Categories.entries.size
 
-                override fun get(index: Int): Float {
-                    return PopulationData.Categories.entries.subList(0, index + 1).fold(0f) { acc, cat ->
+                override fun get(index: Int): Long {
+                    return PopulationData.Categories.entries.subList(0, index + 1).fold(0L) { acc, cat ->
                         acc + PopulationData.data[cat]!![yearIndex]
                     }
                 }
@@ -73,12 +72,12 @@ private fun Legend(thumbnail: Boolean = false) {
     if (!thumbnail) {
         Surface(shadowElevation = 2.dp) {
             FlowLegend(
-                itemCount = PopulationData.Categories.values().size,
+                itemCount = PopulationData.Categories.entries.size,
                 symbol = { i ->
                     Symbol(modifier = Modifier.size(padding), fillBrush = SolidColor(colors[i]))
                 },
                 label = { i ->
-                    Text(PopulationData.Categories.values()[i].toString())
+                    Text(PopulationData.Categories.entries[i].toString())
                 },
                 modifier = paddingMod
             )
@@ -140,11 +139,6 @@ private fun StackedBarSamplePlot(
     xAxisLabelRotation: Int = 0
 ) {
     val barChartEntries = remember { barChartEntries() }
-    val maxPopulation = remember {
-        barChartEntries.maxOf {
-            it.y.max()
-        }
-    }
 
     ChartLayout(
         modifier = modifier.then(paddingMod),
@@ -152,11 +146,10 @@ private fun StackedBarSamplePlot(
         legend = { Legend(thumbnail) },
         legendLocation = LegendLocation.BOTTOM
     ) {
+        @Suppress("MagicNumber")
         XYGraph(
             xAxisModel = CategoryAxisModel(PopulationData.years),
-            yAxisModel = LinearAxisModel(
-                0f..(ceil(maxPopulation / PopulationScale) * PopulationScale).toFloat(),
-            ),
+            yAxisModel = LongLinearAxisModel(0L..10000000, minimumMajorTickIncrement = 1000000),
             xAxisStyle = rememberAxisStyle(labelRotation = xAxisLabelRotation),
             xAxisLabels = {
                 if (!thumbnail) AxisLabel("$it", Modifier.padding(top = 2.dp))
@@ -186,10 +179,11 @@ private fun StackedBarSamplePlot(
         ) {
             StackedVerticalBarPlot(
                 barChartEntries,
+                barWidth = BarWidth,
                 bar = { xIndex, barIndex ->
                     DefaultVerticalBar(
                         brush = SolidColor(colors[barIndex]),
-                        modifier = Modifier.fillMaxWidth(BarWidth)
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         if (!thumbnail) {
                             HoverSurface {

@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +30,7 @@ import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
-import io.github.koalaplot.core.xygraph.LinearAxisModel
+import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
 import io.github.koalaplot.core.xygraph.TickPosition
 import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.rememberAxisStyle
@@ -72,7 +72,7 @@ val verticalBarSampleView = object : SampleView {
             ) {
                 BarSamplePlot(false, tickPositionState, "Fibonacci Sequence")
             }
-            Divider(modifier = Modifier.fillMaxWidth())
+            HorizontalDivider(modifier = Modifier.fillMaxWidth())
             TickPositionSelector(tickPositionState) {
                 tickPositionState = it
             }
@@ -97,14 +97,14 @@ private fun BarSamplePlot(
         title = { ChartTitle(title) }
     ) {
         XYGraph(
-            xAxisModel = LinearAxisModel(
+            xAxisModel = FloatLinearAxisModel(
                 XAxisRange,
                 minimumMajorTickIncrement = 1f,
                 minimumMajorTickSpacing = 10.dp,
                 zoomRangeLimit = 3f,
                 minorTickCount = 0
             ),
-            yAxisModel = LinearAxisModel(
+            yAxisModel = FloatLinearAxisModel(
                 YAxisRange,
                 minimumMajorTickIncrement = 1f,
                 minorTickCount = 0
@@ -139,14 +139,14 @@ private fun BarSamplePlot(
                 bar = { index ->
                     DefaultVerticalBar(
                         brush = SolidColor(colors[0]),
-                        modifier = Modifier.fillMaxWidth(BarWidth),
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         if (!thumbnail) {
                             HoverSurface { Text(barChartEntries[index].y.yMax.toString()) }
                         }
                     }
                 },
-                barWidth = 1f
+                barWidth = BarWidth
             )
         }
     }
@@ -169,7 +169,7 @@ private fun TickPositionSelector(
         Row {
             Column {
                 Text("Vertical")
-                TickPosition.values().forEach {
+                TickPosition.entries.forEach {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         RadioButton(
                             it == state.verticalAxis,
@@ -181,7 +181,7 @@ private fun TickPositionSelector(
             }
             Column {
                 Text("Horizontal")
-                TickPosition.values().forEach {
+                TickPosition.entries.forEach {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         RadioButton(
                             it == state.horizontalAxis,

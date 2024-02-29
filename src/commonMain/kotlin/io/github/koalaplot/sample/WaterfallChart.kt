@@ -19,7 +19,7 @@ import io.github.koalaplot.core.bar.VerticalBarPlotEntry
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.core.xygraph.CategoryAxisModel
-import io.github.koalaplot.core.xygraph.LinearAxisModel
+import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
 import io.github.koalaplot.core.xygraph.XYGraph
 import kotlin.math.ceil
 import kotlin.math.max
@@ -90,7 +90,7 @@ private fun WaterfallChart(thumbnail: Boolean) {
 
     XYGraph(
         xAxisModel = CategoryAxisModel(PopulationData.years),
-        yAxisModel = LinearAxisModel(0f..p),
+        yAxisModel = FloatLinearAxisModel(0f..p),
         xAxisTitle = if (!thumbnail) "Year" else null,
         yAxisTitle = if (!thumbnail) "Population" else null,
         xAxisLabels = {

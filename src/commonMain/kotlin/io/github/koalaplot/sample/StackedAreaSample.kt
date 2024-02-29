@@ -28,7 +28,8 @@ import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.core.xygraph.AnchorPoint
-import io.github.koalaplot.core.xygraph.LinearAxisModel
+import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
+import io.github.koalaplot.core.xygraph.IntLinearAxisModel
 import io.github.koalaplot.core.xygraph.Point
 import io.github.koalaplot.core.xygraph.XYAnnotation
 import io.github.koalaplot.core.xygraph.XYGraph
@@ -67,15 +68,18 @@ private fun StackedAreaSample(thumbnail: Boolean, title: String) {
         legendLocation = LegendLocation.BOTTOM
     ) {
         XYGraph(
-            xAxisModel = LinearAxisModel(PopulationData.years.first().toFloat()..PopulationData.years.last().toFloat()),
-            yAxisModel = LinearAxisModel(0f..10f),
+            xAxisModel = IntLinearAxisModel(
+                PopulationData.years.first()..PopulationData.years.last(),
+                minimumMajorTickIncrement = 10
+            ),
+            yAxisModel = FloatLinearAxisModel(0f..10f),
             horizontalMajorGridLineStyle = null,
             horizontalMinorGridLineStyle = null,
             verticalMajorGridLineStyle = null,
             verticalMinorGridLineStyle = null,
             xAxisLabels = {
                 if (!thumbnail) {
-                    AxisLabel(it.toString(0), Modifier.padding(top = 2.dp))
+                    AxisLabel(it.toString(), Modifier.padding(top = 2.dp))
                 }
             },
             xAxisTitle = {
@@ -119,7 +123,7 @@ private fun StackedAreaSample(thumbnail: Boolean, title: String) {
 
 @Suppress("MagicNumber")
 @Composable
-private fun XYGraphScope<Float, Float>.annotations(thumbnail: Boolean) {
+private fun XYGraphScope<Int, Float>.annotations(thumbnail: Boolean) {
     if (!thumbnail) {
         val entries = PopulationData.data.entries.toList()
         val max = entries.map { it.value.max() }
@@ -142,7 +146,7 @@ private fun XYGraphScope<Float, Float>.annotations(thumbnail: Boolean) {
             }
 
             XYAnnotation(
-                Point(PopulationData.years[yearIndex].toFloat(), (sum + data[yearIndex] / 2f) / 1E6f),
+                Point(PopulationData.years[yearIndex], (sum + data[yearIndex] / 2f) / 1E6f),
                 anchorPoint
             ) {
                 Text(
@@ -159,9 +163,9 @@ private fun XYGraphScope<Float, Float>.annotations(thumbnail: Boolean) {
     }
 }
 
-private val stackedAreaData: List<StackedAreaPlotEntry<Float, Float>> by lazy {
+private val stackedAreaData: List<StackedAreaPlotEntry<Int, Float>> by lazy {
     StackedAreaPlotDataAdapter(
-        PopulationData.years.map { it.toFloat() },
+        PopulationData.years,
         PopulationData.data.values.map {
             it.map { it.toFloat() / 1E6f }
         }

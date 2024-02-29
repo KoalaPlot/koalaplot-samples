@@ -19,7 +19,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
-import io.github.koalaplot.core.bar.BulletGraph
 import io.github.koalaplot.core.bar.BulletGraphScope
 import io.github.koalaplot.core.bar.BulletGraphs
 import io.github.koalaplot.core.bar.FixedFraction
@@ -28,7 +27,9 @@ import io.github.koalaplot.core.bar.LineIndicator
 import io.github.koalaplot.core.bar.VariableFraction
 import io.github.koalaplot.core.style.KoalaPlotTheme
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
-import io.github.koalaplot.core.xychart.LinearAxisModel
+import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
+import io.github.koalaplot.core.xygraph.IntLinearAxisModel
+import io.github.koalaplot.core.xygraph.LongLinearAxisModel
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 val bulletGraphSampleView = object : SampleView {
@@ -77,7 +78,7 @@ private fun BulletGraphSample() {
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Suppress("MagicNumber")
 private fun BulletGraphScope.bulletGraphSample1() {
-    bullet {
+    bullet(FloatLinearAxisModel(0f..300f)) {
         label {
             Column(
                 horizontalAlignment = Alignment.End,
@@ -87,9 +88,7 @@ private fun BulletGraphScope.bulletGraphSample1() {
                 Text("(US $ in thousands)", style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.End)
             }
         }
-        axis {
-            labels { AxisText("${it.toInt()}") }
-        }
+        axis { labels { AxisText("${it.toInt()}") } }
         comparativeMeasure(260f)
         comparativeMeasure(210f) { LineIndicator(Color.DarkGray) }
         featuredMeasureBar(275f)
@@ -100,7 +99,7 @@ private fun BulletGraphScope.bulletGraphSample1() {
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Suppress("MagicNumber")
 private fun BulletGraphScope.bulletGraphSample2() {
-    bullet {
+    bullet(FloatLinearAxisModel(0f..30f)) {
         label {
             Column(
                 horizontalAlignment = Alignment.End,
@@ -110,7 +109,9 @@ private fun BulletGraphScope.bulletGraphSample2() {
                 Text("%", style = MaterialTheme.typography.bodySmall)
             }
         }
-        axis { labels { AxisText("${it.toInt()}%") } }
+        axis {
+            labels { AxisText("${it.toInt()}%") }
+        }
         comparativeMeasure(27f)
         featuredMeasureBar(22.5f)
         ranges(0f, 20f, 25f, 30f)
@@ -120,7 +121,7 @@ private fun BulletGraphScope.bulletGraphSample2() {
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Suppress("MagicNumber")
 private fun BulletGraphScope.bulletGraphSample3() {
-    bullet {
+    bullet(FloatLinearAxisModel(0f..600f)) {
         label {
             Column(
                 horizontalAlignment = Alignment.End,
@@ -140,7 +141,7 @@ private fun BulletGraphScope.bulletGraphSample3() {
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Suppress("MagicNumber")
 private fun BulletGraphScope.bulletGraphSample4() {
-    bullet {
+    bullet(FloatLinearAxisModel(0f..3000f)) {
         label {
             Column(
                 horizontalAlignment = Alignment.End,
@@ -160,7 +161,15 @@ private fun BulletGraphScope.bulletGraphSample4() {
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Suppress("MagicNumber")
 private fun BulletGraphScope.bulletGraphSample5() {
-    bullet {
+    bullet(
+        FloatLinearAxisModel(
+            0f..5f,
+            minimumMajorTickIncrement = 1f,
+            minorTickCount = 0,
+            allowZooming = false,
+            allowPanning = false
+        )
+    ) {
         label {
             Column(
                 horizontalAlignment = Alignment.End,
@@ -172,13 +181,6 @@ private fun BulletGraphScope.bulletGraphSample5() {
         }
         axis {
             labels { AxisText("${it.toInt()}") }
-            model = LinearAxisModel(
-                0f..5f,
-                minimumMajorTickIncrement = 1f,
-                minorTickCount = 0,
-                allowZooming = false,
-                allowPanning = false
-            )
         }
 
         comparativeMeasure(4.5f)
@@ -194,7 +196,7 @@ private fun BulletGraphScope.bulletGraphSample5() {
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Suppress("MagicNumber")
 private fun BulletGraphScope.bulletGraphSample6() {
-    bullet {
+    bullet(LongLinearAxisModel(700L..1300L)) {
         label {
             Column(
                 horizontalAlignment = Alignment.End,
@@ -204,13 +206,13 @@ private fun BulletGraphScope.bulletGraphSample6() {
                 Text("(US $ in thousands)", style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.End)
             }
         }
-        axis { labels { AxisText("${it.toInt()}") } }
-        comparativeMeasure(1225f)
-        featuredMeasureSymbol(1150f)
-        ranges(700f) {
-            range(1100f)
-            range(1200f)
-            range(1300f)
+        axis { labels { AxisText("$it") } }
+        comparativeMeasure(1225L)
+        featuredMeasureSymbol(1150L)
+        ranges(700L) {
+            range(1100L)
+            range(1200L)
+            range(1300L)
         }
     }
 }
@@ -218,7 +220,7 @@ private fun BulletGraphScope.bulletGraphSample6() {
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Suppress("MagicNumber")
 private fun BulletGraphScope.bulletGraphSample7() {
-    bullet {
+    bullet(FloatLinearAxisModel(-50f..250f)) {
         label {
             Column(
                 horizontalAlignment = Alignment.End,
@@ -247,7 +249,12 @@ private fun BulletGraphScope.bulletGraphSample7() {
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Suppress("MagicNumber")
 private fun BulletGraphScope.bulletGraphSample8() {
-    bullet {
+    bullet(
+        IntLinearAxisModel(
+            -120..0,
+            minimumMajorTickIncrement = 10
+        )
+    ) {
         label {
             Column(
                 horizontalAlignment = Alignment.End,
@@ -256,15 +263,15 @@ private fun BulletGraphScope.bulletGraphSample8() {
                 Text("Expenses (1,000s)", style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.End)
             }
         }
-        axis { labels { AxisText("${it.toInt()}") } }
-        comparativeMeasure(-45f)
-        featuredMeasureBar(-65f)
-        ranges(-120f) {
-            range(-80f) {
+        axis { labels { AxisText("$it") } }
+        comparativeMeasure(-45)
+        featuredMeasureBar(-65)
+        ranges(-120) {
+            range(-80) {
                 HorizontalBarIndicator(SolidColor(Color.Red))
             }
-            range(-40f)
-            range(0f)
+            range(-40)
+            range(0)
         }
     }
 }
@@ -275,17 +282,20 @@ private fun BulletGraphScope.bulletGraphSample8() {
 private fun BulletGraphThumbnail() {
     ChartLayout(paddingMod, title = { Text("Bullet Graph") }) {
         Box(contentAlignment = Alignment.Center) {
-            BulletGraph(modifier = Modifier.fillMaxHeight(0.25f)) {
-                comparativeMeasure(260f) {
-                    LineIndicator(width = 4.dp)
-                }
-                featuredMeasureBar(275f)
+            BulletGraphs(modifier = Modifier.fillMaxHeight(0.25f)) {
                 labelWidth = FixedFraction(0f)
 
-                ranges(0f) {
-                    range(200f)
-                    range(250f)
-                    range(300f)
+                bullet(FloatLinearAxisModel(0f..300f)) {
+                    comparativeMeasure(260f) {
+                        LineIndicator(width = 4.dp)
+                    }
+                    featuredMeasureBar(275f)
+
+                    ranges(0f) {
+                        range(200f)
+                        range(250f)
+                        range(300f)
+                    }
                 }
             }
         }
