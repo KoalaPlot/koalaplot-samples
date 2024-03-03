@@ -36,7 +36,7 @@ import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.core.xygraph.CategoryAxisModel
-import io.github.koalaplot.core.xygraph.LongLinearAxisModel
+import io.github.koalaplot.core.xygraph.LinearAxisModel
 import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.rememberAxisStyle
 
@@ -46,18 +46,18 @@ private const val BarWidth = 0.8f
 
 private val rotationOptions = listOf(0, 30, 45, 60, 90)
 
-private fun barChartEntries(): List<VerticalBarPlotStackedPointEntry<Int, Long>> {
+private fun barChartEntries(): List<VerticalBarPlotStackedPointEntry<Float, Float>> {
     return PopulationData.years.mapIndexed { yearIndex, year ->
-        object : VerticalBarPlotStackedPointEntry<Int, Long> {
-            override val x: Int = year
-            override val yOrigin: Long = 0L
+        object : VerticalBarPlotStackedPointEntry<Float, Float> {
+            override val x: Float = year
+            override val yOrigin: Float = 0f
 
-            override val y: List<Long> = object : AbstractList<Long>() {
+            override val y: List<Float> = object : AbstractList<Float>() {
                 override val size: Int
                     get() = PopulationData.Categories.entries.size
 
-                override fun get(index: Int): Long {
-                    return PopulationData.Categories.entries.subList(0, index + 1).fold(0L) { acc, cat ->
+                override fun get(index: Int): Float {
+                    return PopulationData.Categories.entries.subList(0, index + 1).fold(0f) { acc, cat ->
                         acc + PopulationData.data[cat]!![yearIndex]
                     }
                 }
@@ -149,7 +149,7 @@ private fun StackedBarSamplePlot(
         @Suppress("MagicNumber")
         XYGraph(
             xAxisModel = CategoryAxisModel(PopulationData.years),
-            yAxisModel = LongLinearAxisModel(0L..10000000, minimumMajorTickIncrement = 1000000),
+            yAxisModel = LinearAxisModel(0f..10000000f, minimumMajorTickIncrement = 1000000f),
             xAxisStyle = rememberAxisStyle(labelRotation = xAxisLabelRotation),
             xAxisLabels = {
                 if (!thumbnail) AxisLabel("$it", Modifier.padding(top = 2.dp))

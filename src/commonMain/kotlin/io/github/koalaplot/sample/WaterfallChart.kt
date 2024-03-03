@@ -19,7 +19,7 @@ import io.github.koalaplot.core.bar.VerticalBarPlotEntry
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.core.xygraph.CategoryAxisModel
-import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
+import io.github.koalaplot.core.xygraph.LinearAxisModel
 import io.github.koalaplot.core.xygraph.XYGraph
 import kotlin.math.ceil
 import kotlin.math.max
@@ -27,17 +27,17 @@ import kotlin.math.min
 
 private val BOROUGH = PopulationData.Categories.Manhattan
 
-private fun barChartEntries(): List<VerticalBarPlotEntry<Int, Float>> {
+private fun barChartEntries(): List<VerticalBarPlotEntry<Float, Float>> {
     var last = 0f
 
     return PopulationData.data[BOROUGH]!!.mapIndexed { index, population ->
         val entry = if (index == PopulationData.data[BOROUGH]!!.lastIndex) {
-            object : VerticalBarPlotEntry<Int, Float> {
+            object : VerticalBarPlotEntry<Float, Float> {
                 override val x = PopulationData.years[index]
                 override val y = DefaultVerticalBarPosition(0f, population.toFloat())
             }
         } else {
-            object : VerticalBarPlotEntry<Int, Float> {
+            object : VerticalBarPlotEntry<Float, Float> {
                 override val x = PopulationData.years[index]
                 override val y = DefaultVerticalBarPosition(
                     min(last, population.toFloat()),
@@ -90,7 +90,7 @@ private fun WaterfallChart(thumbnail: Boolean) {
 
     XYGraph(
         xAxisModel = CategoryAxisModel(PopulationData.years),
-        yAxisModel = FloatLinearAxisModel(0f..p),
+        yAxisModel = LinearAxisModel(0f..p),
         xAxisTitle = if (!thumbnail) "Year" else null,
         yAxisTitle = if (!thumbnail) "Population" else null,
         xAxisLabels = {

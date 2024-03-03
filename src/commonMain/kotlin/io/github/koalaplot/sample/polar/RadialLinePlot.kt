@@ -80,11 +80,11 @@ private fun RadialLinePlotSample(thumbnail: Boolean, title: String) {
         ) {
             PopulationData.data.forEach { (category, data) ->
                 PolarPlotSeries(
-                    object : AbstractList<PolarPoint<Float, Int>>() {
+                    object : AbstractList<PolarPoint<Float, Float>>() {
                         override val size: Int
                             get() = PopulationData.years.size
 
-                        override fun get(index: Int): PolarPoint<Float, Int> {
+                        override fun get(index: Int): PolarPoint<Float, Float> {
                             return DefaultPolarPoint(data[index] / 1E6f, PopulationData.years[index])
                         }
                     },

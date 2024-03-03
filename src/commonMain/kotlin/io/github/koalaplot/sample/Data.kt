@@ -29,7 +29,7 @@ internal object PopulationData {
         }
     }
 
-    val years = listOf(1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020)
+    val years = listOf(1950f, 1960f, 1970f, 1980f, 1990f, 2000f, 2010f, 2020f)
 
     val data = buildMap {
         put(

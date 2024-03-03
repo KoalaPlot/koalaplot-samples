@@ -27,16 +27,16 @@ import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.core.xygraph.CategoryAxisModel
-import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
+import io.github.koalaplot.core.xygraph.LinearAxisModel
 import io.github.koalaplot.core.xygraph.XYGraph
 import kotlin.math.ceil
 
 private val colors = generateHueColorPalette(PopulationData.Categories.entries.size)
 
-private fun barChartEntries(): List<VerticalBarPlotGroupedPointEntry<Int, Float>> {
+private fun barChartEntries(): List<VerticalBarPlotGroupedPointEntry<Float, Float>> {
     return PopulationData.years.mapIndexed { yearIndex, year ->
-        object : VerticalBarPlotGroupedPointEntry<Int, Float> {
-            override val x: Int = year
+        object : VerticalBarPlotGroupedPointEntry<Float, Float> {
+            override val x: Float = year
 
             override val y: List<VerticalBarPosition<Float>> = object : AbstractList<VerticalBarPosition<Float>>() {
                 override val size: Int
@@ -95,7 +95,7 @@ private const val PopulationScale = 1E6f
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
 private fun BarSample2Plot(thumbnail: Boolean, title: String) {
-    val barChartEntries: List<VerticalBarPlotGroupedPointEntry<Int, Float>> = remember(thumbnail) { barChartEntries() }
+    val barChartEntries: List<VerticalBarPlotGroupedPointEntry<Float, Float>> = remember(thumbnail) { barChartEntries() }
 
     ChartLayout(
         modifier = paddingMod,
@@ -105,7 +105,7 @@ private fun BarSample2Plot(thumbnail: Boolean, title: String) {
     ) {
         XYGraph(
             xAxisModel = CategoryAxisModel(PopulationData.years),
-            yAxisModel = FloatLinearAxisModel(
+            yAxisModel = LinearAxisModel(
                 0f..(ceil(PopulationData.maxPopulation / PopulationScale) * PopulationScale),
                 minorTickCount = 0
             ),

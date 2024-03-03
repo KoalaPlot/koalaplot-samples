@@ -17,7 +17,7 @@ import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.xygraph.DefaultPoint
-import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
+import io.github.koalaplot.core.xygraph.LinearAxisModel
 import io.github.koalaplot.core.xygraph.Point
 import io.github.koalaplot.core.xygraph.XYGraph
 import kotlin.math.PI
@@ -47,8 +47,8 @@ private fun CosineSamplePlot(thumbnail: Boolean, title: String) {
         legendLocation = LegendLocation.BOTTOM
     ) {
         XYGraph(
-            xAxisModel = FloatLinearAxisModel(0f..4.0.toFloat()), // units of PI
-            yAxisModel = FloatLinearAxisModel(-1.1f..1.1f, minimumMajorTickSpacing = 50.dp),
+            xAxisModel = LinearAxisModel(0f..4.0.toFloat()), // units of PI
+            yAxisModel = LinearAxisModel(-1.1f..1.1f, minimumMajorTickSpacing = 50.dp),
             xAxisLabels = {
                 if (!thumbnail) {
                     AxisLabel("$it \u03C0", Modifier.padding(top = 2.dp))

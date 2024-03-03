@@ -28,8 +28,7 @@ import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.core.xygraph.AnchorPoint
-import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
-import io.github.koalaplot.core.xygraph.IntLinearAxisModel
+import io.github.koalaplot.core.xygraph.LinearAxisModel
 import io.github.koalaplot.core.xygraph.Point
 import io.github.koalaplot.core.xygraph.XYAnnotation
 import io.github.koalaplot.core.xygraph.XYGraph
@@ -68,11 +67,11 @@ private fun StackedAreaSample(thumbnail: Boolean, title: String) {
         legendLocation = LegendLocation.BOTTOM
     ) {
         XYGraph(
-            xAxisModel = IntLinearAxisModel(
-                PopulationData.years.first()..PopulationData.years.last(),
-                minimumMajorTickIncrement = 10
+            xAxisModel = LinearAxisModel(
+                PopulationData.years.first().toFloat()..PopulationData.years.last().toFloat(),
+                minimumMajorTickIncrement = 10f
             ),
-            yAxisModel = FloatLinearAxisModel(0f..10f),
+            yAxisModel = LinearAxisModel(0f..10f),
             horizontalMajorGridLineStyle = null,
             horizontalMinorGridLineStyle = null,
             verticalMajorGridLineStyle = null,
@@ -123,7 +122,7 @@ private fun StackedAreaSample(thumbnail: Boolean, title: String) {
 
 @Suppress("MagicNumber")
 @Composable
-private fun XYGraphScope<Int, Float>.annotations(thumbnail: Boolean) {
+private fun XYGraphScope<Float, Float>.annotations(thumbnail: Boolean) {
     if (!thumbnail) {
         val entries = PopulationData.data.entries.toList()
         val max = entries.map { it.value.max() }
@@ -163,7 +162,7 @@ private fun XYGraphScope<Int, Float>.annotations(thumbnail: Boolean) {
     }
 }
 
-private val stackedAreaData: List<StackedAreaPlotEntry<Int, Float>> by lazy {
+private val stackedAreaData: List<StackedAreaPlotEntry<Float, Float>> by lazy {
     StackedAreaPlotDataAdapter(
         PopulationData.years,
         PopulationData.data.values.map {

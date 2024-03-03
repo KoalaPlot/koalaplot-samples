@@ -30,7 +30,7 @@ import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
-import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
+import io.github.koalaplot.core.xygraph.LinearAxisModel
 import io.github.koalaplot.core.xygraph.TickPosition
 import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.rememberAxisStyle
@@ -97,14 +97,14 @@ private fun BarSamplePlot(
         title = { ChartTitle(title) }
     ) {
         XYGraph(
-            xAxisModel = FloatLinearAxisModel(
+            xAxisModel = LinearAxisModel(
                 XAxisRange,
                 minimumMajorTickIncrement = 1f,
                 minimumMajorTickSpacing = 10.dp,
                 zoomRangeLimit = 3f,
                 minorTickCount = 0
             ),
-            yAxisModel = FloatLinearAxisModel(
+            yAxisModel = LinearAxisModel(
                 YAxisRange,
                 minimumMajorTickIncrement = 1f,
                 minorTickCount = 0
