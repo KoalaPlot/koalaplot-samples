@@ -92,6 +92,7 @@ private val samples = buildList {
     add(radialLinePlotSample)
     add(spiderPlotSample)
     add(polarScatterPlotSample)
+    add(timeLineSampleView)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

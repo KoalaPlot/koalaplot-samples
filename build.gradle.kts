@@ -19,7 +19,7 @@ dependencies {
 }
 
 group = "io.github.koalaplot"
-version = "0.6.0"
+version = "0.6.1"
 
 kotlin {
     jvmToolchain(17)
@@ -46,6 +46,7 @@ kotlin {
                 implementation(compose.ui)
                 implementation(compose.animation)
                 implementation("io.github.koalaplot:koalaplot-core:_")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
             }
         }
 
@@ -76,9 +77,11 @@ compose.desktop {
         mainClass = "io.github.koalaplot.sample.desktop.MainKt"
 
         nativeDistributions {
-            targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg,
+            targetFormats(
+                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg,
                 org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi,
-                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb)
+                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb
+            )
             packageName = "KoalaPlot"
             packageVersion = "1.0.0"
 
@@ -93,10 +96,6 @@ compose.desktop {
             }
         }
     }
-}
-
-compose.experimental {
-    web.application {}
 }
 
 // TODO: remove when https://youtrack.jetbrains.com/issue/KT-50778 fixed
