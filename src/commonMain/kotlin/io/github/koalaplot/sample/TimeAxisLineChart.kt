@@ -71,7 +71,8 @@ private fun TimeSamplePlot(thumbnail: Boolean, title: String) {
                     data.add(DefaultPoint(Clock.System.now().epochSeconds, yNext))
                     yDataMin = minOf(yDataMin, yNext)
                     yDataMax = maxOf(yDataMax, yNext)
-                }) {
+                }
+            ) {
                 Text("Add Step")
             }
         }
