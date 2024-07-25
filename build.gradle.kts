@@ -1,10 +1,11 @@
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
-    kotlin("multiplatform")
-    id("com.android.application")
-    id("org.jetbrains.compose")
-    id("io.gitlab.arturbosch.detekt")
+    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.androidApplication)
 }
 
 repositories {
@@ -15,11 +16,11 @@ repositories {
 }
 
 dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:_")
+    detektPlugins(libs.detekt.formatting)
 }
 
 group = "io.github.koalaplot"
-version = "0.6.1"
+version = "0.6.2"
 
 kotlin {
     jvmToolchain(17)
@@ -45,28 +46,26 @@ kotlin {
                 implementation(compose.material3)
                 implementation(compose.ui)
                 implementation(compose.animation)
-                implementation("io.github.koalaplot:koalaplot-core:_")
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
+                implementation(libs.koalaplot.core)
+                implementation(libs.kotlinx.datetime)
             }
         }
 
         named("jvmMain") {
             dependencies {
-                implementation("io.github.koalaplot:koalaplot-core:_")
                 implementation(compose.desktop.currentOs)
             }
         }
 
         named("androidMain") {
             dependencies {
-                implementation("io.github.koalaplot:koalaplot-core:_")
-                implementation(AndroidX.activity.compose)
+                implementation(libs.androidx.activity)
+                implementation(libs.androidx.activity.compose)
             }
         }
 
         named("jsMain") {
             dependencies {
-                implementation("io.github.koalaplot:koalaplot-core:_")
             }
         }
     }
@@ -98,11 +97,6 @@ compose.desktop {
     }
 }
 
-// TODO: remove when https://youtrack.jetbrains.com/issue/KT-50778 fixed
-project.tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile::class.java).configureEach {
-    kotlinOptions.freeCompilerArgs += listOf("-Xir-dce-runtime-diagnostic=log")
-}
-
 android {
     namespace = "io.github.koalaplot.sample.android"
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -126,12 +120,6 @@ android {
             isMinifyEnabled = false
         }
     }
-}
-
-// Fixes webpack-cli incompatibility by pinning the newest version.
-// See https://stackoverflow.com/questions/72731436/kotlin-multiplatform-gradle-task-jsrun-gives-error-webpack-cli-typeerror-c
-rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
-    versions.webpackCli.version = "4.10.0"
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
