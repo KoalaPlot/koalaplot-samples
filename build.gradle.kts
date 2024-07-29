@@ -20,7 +20,7 @@ dependencies {
 }
 
 group = "io.github.koalaplot"
-version = "0.6.2"
+version = "0.6.3"
 
 kotlin {
     jvmToolchain(17)
@@ -48,6 +48,7 @@ kotlin {
                 implementation(compose.animation)
                 implementation(libs.koalaplot.core)
                 implementation(libs.kotlinx.datetime)
+                implementation(libs.kotlinx.collections.immutable)
             }
         }
 
