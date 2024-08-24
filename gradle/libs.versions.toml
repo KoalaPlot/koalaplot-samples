@@ -10,9 +10,28 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 
 [versions]
 
-agp = "8.2.2"
+agp = "8.5.2"
+##⬆= "8.6.0-alpha01"
+##⬆= "8.6.0-alpha02"
+##⬆= "8.6.0-alpha03"
+##⬆= "8.6.0-alpha04"
+##⬆= "8.6.0-alpha05"
+##⬆= "8.6.0-alpha06"
+##⬆= "8.6.0-alpha07"
+##⬆= "8.6.0-alpha08"
+##⬆= "8.6.0-beta01"
+##⬆= "8.6.0-beta02"
+##⬆= "8.6.0-rc01"
+##⬆= "8.7.0-alpha01"
+##⬆= "8.7.0-alpha02"
+##⬆= "8.7.0-alpha03"
+##⬆= "8.7.0-alpha04"
+##⬆= "8.7.0-alpha05"
+##⬆= "8.7.0-alpha06"
+##⬆= "8.7.0-alpha07"
 
 androidx-activity = "1.9.1"
+##             ⬆ = "1.10.0-alpha01"
 
 compose-plugin = "1.6.11"
 ##          ⬆ = "1.6.20-dev1646"
@@ -38,14 +57,18 @@ compose-plugin = "1.6.11"
 ##          ⬆ = "1.7.0-dev1731"
 ##          ⬆ = "1.7.0-dev1739"
 ##          ⬆ = "1.7.0-dev1742"
+##          ⬆ = "1.7.0-dev1743"
+##          ⬆ = "1.7.0-dev1750"
+##          ⬆ = "1.7.0-dev1756"
+##          ⬆ = "1.7.0-dev1762"
+##          ⬆ = "1.7.0-dev1771"
 ##          ⬆ = "1.7.0-alpha01"
+##          ⬆ = "1.7.0-alpha02"
+##          ⬆ = "1.7.0-alpha03"
 
-koalaplot = "0.6.3"
+koalaplot = "0.7.0-dev1"
 
-kotlin = "2.0.0"
-##  ⬆ = "2.0.10-RC"
-##  ⬆ = "2.0.20-Beta1"
-##  ⬆ = "2.0.20-Beta2"
+kotlin = "2.0.20"
 
 [libraries]
 
@@ -54,5 +77,5 @@ androidx-activity-compose = { group = "androidx.activity", name = "activity-comp
 
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version = "1.23.6" }
 koalaplot-core = { group = "io.github.koalaplot", name = "koalaplot-core", version.ref = "koalaplot" }
-kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.6.0" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.6.1" }
 kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.3.7" }

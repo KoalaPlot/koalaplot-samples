@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     alias(libs.plugins.jetbrainsCompose)
@@ -20,9 +20,14 @@ dependencies {
 }
 
 group = "io.github.koalaplot"
-version = "0.6.3"
+version = "0.7.0"
 
 kotlin {
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        optIn.add("kotlin.RequiresOptIn")
+    }
+
     jvmToolchain(17)
     jvm()
     js(IR) {
@@ -31,44 +36,35 @@ kotlin {
     }
     androidTarget()
 
-    @OptIn(ExperimentalWasmDsl::class)
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs {
         browser()
         binaries.executable()
     }
 
     sourceSets {
-        named("commonMain") {
-            dependencies {
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material)
-                implementation(compose.material3)
-                implementation(compose.ui)
-                implementation(compose.animation)
-                implementation(libs.koalaplot.core)
-                implementation(libs.kotlinx.datetime)
-                implementation(libs.kotlinx.collections.immutable)
-            }
+        commonMain.dependencies {
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material)
+            implementation(compose.material3)
+            implementation(compose.ui)
+            implementation(compose.animation)
+            implementation(libs.koalaplot.core)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.collections.immutable)
         }
 
-        named("jvmMain") {
-            dependencies {
-                implementation(compose.desktop.currentOs)
-            }
+        jvmMain.dependencies {
+            implementation(compose.desktop.currentOs)
         }
 
-        named("androidMain") {
-            dependencies {
-                implementation(libs.androidx.activity)
-                implementation(libs.androidx.activity.compose)
-            }
+        androidMain.dependencies {
+            implementation(libs.androidx.activity)
+            implementation(libs.androidx.activity.compose)
         }
 
-        named("jsMain") {
-            dependencies {
-            }
-        }
+        jsMain.dependencies { }
     }
 }
 
@@ -106,7 +102,7 @@ android {
     defaultConfig {
         applicationId = "io.github.koalaplot.sample.android"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
     }
@@ -123,30 +119,9 @@ android {
     }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
-        jvmTarget = "17"
-    }
-
-    detekt {
-        source.setFrom("src")
-        parallel = true
-        config.setFrom("$rootDir/detekt.yml")
-        buildUponDefaultConfig = true
-    }
-}
-
-afterEvaluate { // https://discuss.kotlinlang.org/t/disabling-androidandroidtestrelease-source-set-in-gradle-kotlin-dsl-script/21448
-    project.extensions.findByType<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension>()
-        ?.let { ext ->
-            ext.sourceSets.removeAll { sourceSet ->
-                setOf(
-                    //"androidAndroidTestRelease",
-                    "androidTestFixtures",
-                    "androidTestFixturesDebug",
-                    "androidTestFixturesRelease",
-                ).contains(sourceSet.name)
-            }
-        }
+detekt {
+    source.setFrom("src")
+    parallel = true
+    config.setFrom("$rootDir/detekt.yml")
+    buildUponDefaultConfig = true
 }
