@@ -38,9 +38,15 @@ cd koalaplot-samples
    ```shell
     ./gradlew jsBrowserRun
     ```
-    3. For Android, to run in an emulator on your mahcine:
+    3. For Android, to run in an emulator on your machine:
         1. Download [Android Studio](https://developer.android.com/studio/)
         2. Open the koalaplot-samples folder as a project in Android Studio
         3. Run kaoalaplot-samples in the emulator. Further instructions on using the
            emulator [are available online](https://developer.android.com/studio/run/emulator).
+    4. For iOS, to run in a simulator on your machine (only for macOS):
+        1. Download [Xcode](https://apps.apple.com/ru/app/xcode/id497799835?mt=12)
+        2. Open the iosApp folder as a project in Xcode
+        3. Run kaoalaplot-samples in the simulator. Further instructions on using the
+           simulator [are available online](https://developer.apple.com/documentation/xcode/running-your-app-in-simulator-or-on-a-device)
+        4. You can also [launch the iOS app in Android Studio](https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-create-first-app.html#run-your-application-on-ios) 
    
