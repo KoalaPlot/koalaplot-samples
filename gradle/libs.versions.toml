@@ -4,7 +4,7 @@
 
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.6" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.7" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 
@@ -22,6 +22,8 @@ agp = "8.5.2"
 ##⬆= "8.6.0-beta01"
 ##⬆= "8.6.0-beta02"
 ##⬆= "8.6.0-rc01"
+##⬆= "8.6.0"
+##⬆= "8.6.1"
 ##⬆= "8.7.0-alpha01"
 ##⬆= "8.7.0-alpha02"
 ##⬆= "8.7.0-alpha03"
@@ -29,53 +31,46 @@ agp = "8.5.2"
 ##⬆= "8.7.0-alpha05"
 ##⬆= "8.7.0-alpha06"
 ##⬆= "8.7.0-alpha07"
+##⬆= "8.7.0-alpha08"
+##⬆= "8.7.0-alpha09"
+##⬆= "8.7.0-beta01"
+##⬆= "8.7.0-beta02"
+##⬆= "8.7.0-rc01"
+##⬆= "8.7.0"
+##⬆= "8.7.1"
+##⬆= "8.8.0-alpha01"
+##⬆= "8.8.0-alpha02"
+##⬆= "8.8.0-alpha03"
+##⬆= "8.8.0-alpha04"
+##⬆= "8.8.0-alpha05"
+##⬆= "8.8.0-alpha06"
+##⬆= "8.8.0-alpha07"
+##⬆= "8.8.0-alpha08"
 
-androidx-activity = "1.9.1"
+androidx-activity = "1.9.3"
 ##             ⬆ = "1.10.0-alpha01"
+##             ⬆ = "1.10.0-alpha02"
 
-compose-plugin = "1.6.11"
-##          ⬆ = "1.6.20-dev1646"
-##          ⬆ = "1.6.20-dev1652"
-##          ⬆ = "1.6.20-dev1653"
-##          ⬆ = "1.6.20-dev1663"
-##          ⬆ = "1.6.20-dev1667"
-##          ⬆ = "1.6.20-dev1673"
-##          ⬆ = "1.7.0-dev1686"
-##          ⬆ = "1.7.0-dev1688"
-##          ⬆ = "1.7.0-dev1689"
-##          ⬆ = "1.7.0-dev1690"
-##          ⬆ = "1.7.0-dev1692"
-##          ⬆ = "1.7.0-dev1695"
-##          ⬆ = "1.7.0-dev1698"
-##          ⬆ = "1.7.0-dev1703"
-##          ⬆ = "1.7.0-dev1707"
-##          ⬆ = "1.7.0-dev1721"
-##          ⬆ = "1.7.0-dev1723"
-##          ⬆ = "1.7.0-dev1725"
-##          ⬆ = "1.7.0-dev1727"
-##          ⬆ = "1.7.0-dev1730"
-##          ⬆ = "1.7.0-dev1731"
-##          ⬆ = "1.7.0-dev1739"
-##          ⬆ = "1.7.0-dev1742"
-##          ⬆ = "1.7.0-dev1743"
-##          ⬆ = "1.7.0-dev1750"
-##          ⬆ = "1.7.0-dev1756"
-##          ⬆ = "1.7.0-dev1762"
-##          ⬆ = "1.7.0-dev1771"
-##          ⬆ = "1.7.0-alpha01"
-##          ⬆ = "1.7.0-alpha02"
-##          ⬆ = "1.7.0-alpha03"
+compose-plugin = "1.7.0"
+##          ⬆ = "1.8.0-dev1868"
+##          ⬆ = "1.8.0-dev1869"
+##          ⬆ = "1.8.0-dev1873"
+##          ⬆ = "1.8.0-dev1875"
+##          ⬆ = "1.8.0-dev1883"
+##          ⬆ = "1.8.0-dev1890"
 
 koalaplot = "0.7.0-dev1"
 
-kotlin = "2.0.20"
+kotlin = "2.0.21"
+##  ⬆ = "2.1.0-Beta1"
+##  ⬆ = "2.1.0-Beta2"
 
 [libraries]
 
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity" }
 
-detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version = "1.23.6" }
+detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version = "1.23.7" }
 koalaplot-core = { group = "io.github.koalaplot", name = "koalaplot-core", version.ref = "koalaplot" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.6.1" }
-kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.3.7" }
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.3.8" }
