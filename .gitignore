@@ -17,9 +17,23 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
+.kotlin
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 *.hprof
+
+# iOS ignores
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/project.xcworkspace/
+!*.xcworkspace/contents.xcworkspacedata
+**/xcshareddata/WorkspaceSettings.xcsettings
+xcuserdata
+.DS_Store
+captures
+.externalNativeBuild
+.cxx
 
 local.properties

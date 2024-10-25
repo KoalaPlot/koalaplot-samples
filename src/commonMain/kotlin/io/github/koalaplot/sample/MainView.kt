@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -94,6 +95,7 @@ private val samples = buildList {
     add(polarScatterPlotSample)
     add(timeLineSampleView)
     add(liveTimeChartSampleView)
+    add(xyLineChartGestureSampleView)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -119,7 +121,11 @@ fun MainView() {
                     )
                 }
             }) {
-                Column(Modifier.fillMaxWidth()) {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .systemBarsPadding()
+                ) {
                     if (selectedTabIndex == -1) {
                         ThumbnailsView(
                             modifier = Modifier.align(Alignment.CenterHorizontally)

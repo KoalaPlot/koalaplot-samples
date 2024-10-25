@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.koalaplot.core.xygraph.Point
+import kotlin.math.withSign
+import kotlin.random.Random
 
 internal val padding = 8.dp
 internal val paddingMod = Modifier.padding(padding)
@@ -101,4 +104,37 @@ internal object RainData {
 
     val max = rainfall.maxOf { it.value.maxOf { it } }
     val min = rainfall.minOf { it.value.minOf { it } }
+}
+
+internal object FakeData {
+
+    val DataSetXRange = 0f..100f
+    val DataSetYRange = -100f..100f
+
+    val floatDataSet1 = generateDataSet(
+        range = DataSetYRange.endInclusive - 25,
+        size = DataSetXRange.endInclusive.toInt(),
+        rangeOffset = 25f,
+    )
+    val floatDataSet2 = generateDataSet(
+        range = DataSetYRange.endInclusive - 25,
+        size = DataSetXRange.endInclusive.toInt(),
+        rangeOffset = -25f
+    )
+
+    val floatData = listOf(
+        floatDataSet1,
+        floatDataSet2,
+    )
+
+    fun generateDataSet(
+        range: Float,
+        size: Int,
+        rangeOffset: Float,
+    ): List<Point<Float, Float>> = List(size) {
+        val isPositive = Random.nextBoolean()
+        val sign = if (isPositive) 1f else -1f
+        val nextValue = (Random.nextFloat() * range).withSign(sign) + rangeOffset
+        Point(it.toFloat(), nextValue)
+    }
 }
