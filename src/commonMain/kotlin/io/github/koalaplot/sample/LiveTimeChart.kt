@@ -25,8 +25,10 @@ import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.math.max
@@ -78,34 +80,34 @@ fun LiveTimeChart(thumbnail: Boolean) {
     }
 
     LaunchedEffect(thumbnail) {
-        var count = 0
-        while (isActive) {
-            count++
-            delay(UpdateDelay)
-            val yLast = info.value.yAxis.last()
-            val yNext = if (Random.nextBoolean()) {
-                yLast + 1
-            } else {
-                yLast - 1
-            }
+        withContext(Dispatchers.Main) {
+            var count = 0
+            while (isActive) {
+                count++
+                delay(UpdateDelay)
+                val yLast = info.value.yAxis.last()
+                val yNext = if (Random.nextBoolean()) {
+                    yLast + 1
+                } else {
+                    yLast - 1
+                }
 
-            val x = Clock.System.now().toEpochMilliseconds()
-            info.value = info.value.copy(
-                info.value.xAxis.toPersistentList().mutate {
-                    it.add(Instant.fromEpochMilliseconds(x).toString())
-                }.takeLast(HistorySize).toImmutableList(),
-                info.value.yAxis.toPersistentList().mutate {
-                    it.add(yNext)
-                }.takeLast(HistorySize).toImmutableList(),
-                info.value.points.toPersistentList().mutate {
-                    it.add(DefaultPoint(Instant.fromEpochMilliseconds(x).toString(), yNext))
-                }.takeLast(HistorySize).toImmutableList(),
-                min(info.value.yRange.start, yNext)..max(info.value.yRange.endInclusive, yNext)
-            )
+                val x = Clock.System.now().toEpochMilliseconds()
+                info.value = info.value.copy(
+                    info.value.xAxis.toPersistentList().mutate {
+                        it.add(Instant.fromEpochMilliseconds(x).toString())
+                    }.takeLast(HistorySize).toImmutableList(),
+                    info.value.yAxis.toPersistentList().mutate {
+                        it.add(yNext)
+                    }.takeLast(HistorySize).toImmutableList(),
+                    info.value.points.toPersistentList().mutate {
+                        it.add(DefaultPoint(Instant.fromEpochMilliseconds(x).toString(), yNext))
+                    }.takeLast(HistorySize).toImmutableList(),
+                    min(info.value.yRange.start, yNext)..max(info.value.yRange.endInclusive, yNext)
+                )
+            }
         }
     }
-
-    val data = info.value
 
     ChartLayout(
         title = { ChartTitle("Live Time Chart") },
@@ -114,7 +116,7 @@ fun LiveTimeChart(thumbnail: Boolean) {
         XYGraph(
             xAxisModel = CategoryAxisModel(info.value.xAxis),
             yAxisModel = FloatLinearAxisModel(
-                range = data.yRange,
+                range = info.value.yRange,
                 minimumMajorTickSpacing = 50.dp,
             ),
             yAxisLabels = {
@@ -132,7 +134,7 @@ fun LiveTimeChart(thumbnail: Boolean) {
             xAxisStyle = rememberAxisStyle(labelRotation = 45),
         ) {
             LinePlot(
-                data.points,
+                info.value.points,
                 symbol = { Symbol(fillBrush = SolidColor(Color.Black)) },
                 animationSpec = TweenSpec(0)
             )

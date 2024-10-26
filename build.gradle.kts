@@ -64,15 +64,18 @@ kotlin {
             implementation(libs.koalaplot.core)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.collections.immutable)
+            implementation(libs.kotlinx.coroutines)
         }
 
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
+            implementation(libs.kotlinx.coroutines.swing)
         }
 
         androidMain.dependencies {
             implementation(libs.androidx.activity)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.kotlinx.coroutines.android)
         }
 
         jsMain.dependencies { }
