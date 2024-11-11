@@ -100,7 +100,7 @@ private fun XYSamplePlot(
         val xAxis = remember(gestureOptions.allowPanX, gestureOptions.allowZoomX) {
             FloatLinearAxisModel(
                 range = FakeData.DataSetXRange,
-                zoomRangeLimit = 10f,
+                minViewExtent = 10f,
                 minimumMajorTickSpacing = 40.dp,
                 allowPanning = gestureOptions.allowPanX,
                 allowZooming = gestureOptions.allowZoomX,
@@ -109,7 +109,7 @@ private fun XYSamplePlot(
         val yAxis = remember(gestureOptions.allowPanY, gestureOptions.allowZoomY) {
             FloatLinearAxisModel(
                 range = FakeData.DataSetYRange,
-                zoomRangeLimit = 10f,
+                minViewExtent = 10f,
                 minimumMajorTickSpacing = 40.dp,
                 allowPanning = gestureOptions.allowPanY,
                 allowZooming = gestureOptions.allowZoomY,

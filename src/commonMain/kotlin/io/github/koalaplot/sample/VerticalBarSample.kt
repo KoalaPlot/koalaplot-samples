@@ -101,7 +101,7 @@ private fun BarSamplePlot(
                 XAxisRange,
                 minimumMajorTickIncrement = 1f,
                 minimumMajorTickSpacing = 10.dp,
-                zoomRangeLimit = 3f,
+                minViewExtent = 3f,
                 minorTickCount = 0
             ),
             yAxisModel = FloatLinearAxisModel(

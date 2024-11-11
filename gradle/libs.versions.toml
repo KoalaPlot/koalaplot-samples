@@ -59,7 +59,7 @@ compose-plugin = "1.7.0"
 ##          ⬆ = "1.8.0-dev1883"
 ##          ⬆ = "1.8.0-dev1890"
 
-koalaplot = "0.7.0-dev1"
+koalaplot = "0.7.0"
 
 kotlin = "2.0.21"
 ##  ⬆ = "2.1.0-Beta1"
