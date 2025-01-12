@@ -63,7 +63,7 @@ private val colorPalette = listOf(
 @Suppress("MagicNumber")
 private fun StackedAreaSample(thumbnail: Boolean, title: String) {
     ChartLayout(
-        modifier = paddingMod,
+        modifier = paddingMod.padding(end = 16.dp),
         title = { ChartTitle(title) },
         legendLocation = LegendLocation.BOTTOM
     ) {

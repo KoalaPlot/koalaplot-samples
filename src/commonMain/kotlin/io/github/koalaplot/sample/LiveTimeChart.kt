@@ -110,6 +110,7 @@ fun LiveTimeChart(thumbnail: Boolean) {
     }
 
     ChartLayout(
+        modifier = paddingMod.padding(horizontal = 8.dp),
         title = { ChartTitle("Live Time Chart") },
         legendLocation = LegendLocation.NONE,
     ) {

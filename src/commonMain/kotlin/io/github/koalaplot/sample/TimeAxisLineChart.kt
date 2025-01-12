@@ -78,7 +78,7 @@ private fun TimeSamplePlot(thumbnail: Boolean, title: String) {
         }
 
         ChartLayout(
-            modifier = paddingMod,
+            modifier = paddingMod.padding(end = 16.dp),
             title = { ChartTitle(title) },
             legendLocation = LegendLocation.BOTTOM
         ) {

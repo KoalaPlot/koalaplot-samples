@@ -93,7 +93,7 @@ private fun XYSamplePlot(
     modifier: Modifier = Modifier,
 ) {
     ChartLayout(
-        modifier = modifier.then(paddingMod),
+        modifier = modifier.then(paddingMod).padding(end = 16.dp),
         title = { ChartTitle(title) },
         legendLocation = LegendLocation.BOTTOM
     ) {
