@@ -26,7 +26,6 @@ import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.xygraph.*
 
-
 private val colors = listOf(Color.Green, Color.Red)
 
 private val rotationOptions = listOf(0, 30, 45, 60, 90)
@@ -55,10 +54,10 @@ private fun Legend(thumbnail: Boolean = false) {
                             .size(padding)
                             .background(color = colors[i])
                     )
-                         },
+                },
                 label = { i ->
                     Text(if (i == 0) "Increasing" else "Decreasing")
-                        },
+                },
                 modifier = paddingMod
             )
         }
@@ -119,86 +118,78 @@ private fun CandleStickSamplePlot(
     val candleStickEntries = remember { candleStickEntries() }
     var cursorPosition by remember { mutableStateOf<Point<Int, Float>?>(null) }
 
-        ChartLayout(
-            modifier = modifier.then(paddingMod),
-            title = { ChartTitle(title) },
-            legend = { Legend(thumbnail) },
-            legendLocation = LegendLocation.BOTTOM
+    ChartLayout(
+        modifier = modifier.then(paddingMod),
+        title = { ChartTitle(title) },
+        legend = { Legend(thumbnail) },
+        legendLocation = LegendLocation.BOTTOM
+    ) {
+        XYGraph(
+            xAxisModel = CategoryAxisModel(CandleStickData.dates),
+            yAxisModel = FloatLinearAxisModel(CandleStickData.low.min()..CandleStickData.high.max()),
+            xAxisStyle = rememberAxisStyle(labelRotation = xAxisLabelRotation),
+            xAxisLabels = {
+                if (!thumbnail) AxisLabel("$it", Modifier.padding(top = 2.dp))
+            },
+            xAxisTitle = {
+                if (!thumbnail) AxisTitle("Date", modifier = paddingMod)
+            },
+            yAxisStyle = rememberAxisStyle(minorTickSize = 0.dp),
+            yAxisLabels = {
+                if (!thumbnail) {
+                    AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
+                }
+            },
+            yAxisTitle = {
+                if (!thumbnail) {
+                    AxisTitle(
+                        "Price",
+                        modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                            .padding(bottom = padding)
+                    )
+                }
+            },
+            verticalMajorGridLineStyle = null
         ) {
-            XYGraph(
-                xAxisModel = CategoryAxisModel(CandleStickData.dates),
-                yAxisModel = FloatLinearAxisModel(CandleStickData.low.min()..CandleStickData.high.max()),
-                xAxisStyle = rememberAxisStyle(labelRotation = xAxisLabelRotation),
-                xAxisLabels = {
-                    if (!thumbnail) AxisLabel("$it", Modifier.padding(top = 2.dp))
-                },
-                xAxisTitle = {
-                    if (!thumbnail) AxisTitle("Date", modifier = paddingMod)
-                },
-                yAxisStyle = rememberAxisStyle(minorTickSize = 0.dp),
-                yAxisLabels = {
+            CandleStickPlot(
+                defaultCandle = { entry ->
                     if (!thumbnail) {
-                        AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
-                    }
-                },
-                yAxisTitle = {
-                    if (!thumbnail) {
-                        AxisTitle(
-                            "Price",
-                            modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                                .padding(bottom = padding)
-                        )
-                    }
-                },
-                verticalMajorGridLineStyle = null
-            ) {
-                CandleStickPlot(
-                    defaultCandle = { entry ->
-                        if (!thumbnail) {
 
-                              Box(
-                                  modifier = Modifier.hoverableElement {
-                                      cursorPosition = Point(entry.x, getCurrentPointer().y )
-                                    }
-                                ) {
-
-                                  HoverSurface {
-                                    Column(Modifier.padding(1.dp).background(Color.White)) {
-                                        Text("Close: ${entry.close}")
-                                    }
+                        Box(
+                            modifier = Modifier.hoverableElement {
+                                val pd = pointerData
+                                if (pd != null) {
+                                    cursorPosition = Point(pd.x, pd.y)
+                                } else {
+                                    cursorPosition = null
                                 }
                             }
+                        ) {
 
+                            HoverSurface {
+                                Column(Modifier.padding(1.dp).background(Color.White)) {
+                                    Text("Close: ${entry.close}")
+                                }
+                            }
                         }
                     }
-
-                ) {
-                    candleStickEntries.forEach { entry ->
-                        item(entry)
-                    }
+                },
+            ) {
+                candleStickEntries.forEach { entry ->
+                    item(entry)
                 }
-                cursorPosition?.let { position ->
-                    val chartScope = this
-                    chartScope.getCurrentPointer()
-//                    println("Pointer Position: $pointerPosition")
-                    val (_, chartY) = chartScope.mouseToChartOffset
-                    val graphSize = chartScope.graphSize
-//                    println("adjusted Y: $chartY")
-                    val yMin = CandleStickData.low.min()
-                    val yMax = CandleStickData.high.max()
-//                    println("Y Height: ${graphSize.height}")
+            }
 
-                    val yValue = yMax - (chartY / graphSize.height.toFloat()) * (yMax - yMin)
-//                    println("Y Value: $yValue")
-
-                    HorizontalLineAnnotation(yValue, LineStyle(SolidColor(Color.Red)))
-                    XYAnnotation(Point(position.x, yValue), AnchorPoint.TopLeft) {
-                        Text("Price: $yValue")
-                    }
+            pointerData?.let {
+                HorizontalLineAnnotation(it.y, LineStyle(SolidColor(Color.Red)))
+                XYAnnotation(Point(it.x, it.y), AnchorPoint.TopLeft) {
+                    Text("Price: ${it.y.toString()}")
                 }
             }
         }
     }
+}
+
 private val minorGridLineStyle = LineStyle(
     brush = SolidColor(Color.LightGray),
     pathEffect = PathEffect.dashPathEffect(floatArrayOf(2f, 2f))
