@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
+import io.github.koalaplot.core.gestures.GestureConfig
 import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.line.LinePlot
 import io.github.koalaplot.core.style.LineStyle
@@ -40,13 +41,14 @@ import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.XYGraphScope
 
 private data class GestureOptionsState(
-    val panEnabled: Boolean = true,
-    val zoomEnabled: Boolean = true,
     val independentZoom: Boolean = true,
     val allowZoomX: Boolean = true,
     val allowZoomY: Boolean = true,
     val allowPanX: Boolean = true,
     val allowPanY: Boolean = true,
+    val allowConsumePanX: Boolean = true,
+    val allowConsumePanY: Boolean = true,
+    val enablePanFlingAnimation: Boolean = true,
 )
 
 val xyLineChartGestureSampleView = object : SampleView {
@@ -55,7 +57,16 @@ val xyLineChartGestureSampleView = object : SampleView {
 
     override val thumbnail = @Composable {
         ThumbnailTheme {
-            XYSamplePlot(true, name, GestureOptionsState(false, false, false))
+            XYSamplePlot(
+                thumbnail = true,
+                title = name,
+                gestureOptions = GestureOptionsState(
+                    allowZoomX = false,
+                    allowZoomY = false,
+                    allowPanX = false,
+                    allowPanY = false
+                ),
+            )
         }
     }
 
@@ -102,8 +113,6 @@ private fun XYSamplePlot(
                 range = FakeData.DataSetXRange,
                 minViewExtent = 10f,
                 minimumMajorTickSpacing = 40.dp,
-                allowPanning = gestureOptions.allowPanX,
-                allowZooming = gestureOptions.allowZoomX,
             )
         }
         val yAxis = remember(gestureOptions.allowPanY, gestureOptions.allowZoomY) {
@@ -111,8 +120,6 @@ private fun XYSamplePlot(
                 range = FakeData.DataSetYRange,
                 minViewExtent = 10f,
                 minimumMajorTickSpacing = 40.dp,
-                allowPanning = gestureOptions.allowPanY,
-                allowZooming = gestureOptions.allowZoomY,
             )
         }
         XYGraph(
@@ -150,9 +157,16 @@ private fun XYSamplePlot(
                     }
                 }
             },
-            panEnabled = gestureOptions.panEnabled,
-            zoomEnabled = gestureOptions.zoomEnabled,
-            allowIndependentZoom = gestureOptions.independentZoom,
+            gestureConfig = GestureConfig(
+                panXEnabled = gestureOptions.allowPanX,
+                panYEnabled = gestureOptions.allowPanY,
+                panXConsumptionEnabled = gestureOptions.allowConsumePanX,
+                panYConsumptionEnabled = gestureOptions.allowConsumePanY,
+                zoomXEnabled = gestureOptions.allowZoomX,
+                zoomYEnabled = gestureOptions.allowZoomY,
+                independentZoomEnabled = gestureOptions.independentZoom,
+                panFlingAnimationEnabled = gestureOptions.enablePanFlingAnimation
+            ),
         ) {
             FakeData.floatData.forEachIndexed { index, points ->
                 chart(
@@ -207,14 +221,14 @@ private fun GestureOptionsSelector(state: GestureOptionsState, onUpdate: (Gestur
     ) {
         FlowRow {
             OptionCheckbox(
-                title = "Pan enabled",
-                checked = state.panEnabled,
-                onCheckedChange = { onUpdate(state.copy(panEnabled = it)) }
+                title = "Allow pan X consumption",
+                checked = state.allowConsumePanX,
+                onCheckedChange = { onUpdate(state.copy(allowConsumePanX = it)) }
             )
             OptionCheckbox(
-                title = "Zoom enabled",
-                checked = state.zoomEnabled,
-                onCheckedChange = { onUpdate(state.copy(zoomEnabled = it)) }
+                title = "Allow pan Y consumption",
+                checked = state.allowConsumePanY,
+                onCheckedChange = { onUpdate(state.copy(allowConsumePanY = it)) }
             )
             OptionCheckbox(
                 title = "Independent zoom",
@@ -240,6 +254,11 @@ private fun GestureOptionsSelector(state: GestureOptionsState, onUpdate: (Gestur
                 title = "Allow pan Y",
                 checked = state.allowPanY,
                 onCheckedChange = { onUpdate(state.copy(allowPanY = it)) }
+            )
+            OptionCheckbox(
+                title = "Enable pan fling animation",
+                checked = state.enablePanFlingAnimation,
+                onCheckedChange = { onUpdate(state.copy(enablePanFlingAnimation = it)) }
             )
         }
     }
