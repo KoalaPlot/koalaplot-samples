@@ -21,6 +21,7 @@ import io.github.koalaplot.core.bar.VerticalBarPlotGroupedPointEntry
 import io.github.koalaplot.core.bar.VerticalBarPosition
 import io.github.koalaplot.core.legend.FlowLegend
 import io.github.koalaplot.core.legend.LegendLocation
+import io.github.koalaplot.core.style.KoalaPlotTheme
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.generateHueColorPalette
@@ -123,7 +124,8 @@ private fun BarSample2Plot(thumbnail: Boolean, title: String) {
                                 HoverSurface { Text("$borough: $pop") }
                             }
                         }
-                    }
+                    },
+                    animationSpec = KoalaPlotTheme.animationSpec,
                 )
             },
             xAxisLabels = {

@@ -166,8 +166,6 @@ private fun BulletGraphScope.bulletGraphSample5() {
             0f..5f,
             minimumMajorTickIncrement = 1f,
             minorTickCount = 0,
-            allowZooming = false,
-            allowPanning = false
         )
     ) {
         label {
