@@ -59,6 +59,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
             implementation(compose.ui)
             implementation(compose.animation)
             implementation(libs.koalaplot.core)
@@ -111,7 +112,7 @@ compose.desktop {
 android {
     namespace = "io.github.koalaplot.sample.android"
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "io.github.koalaplot.sample.android"

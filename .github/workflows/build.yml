@@ -9,50 +9,39 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
-            -   uses: actions/checkout@v3
+            -   uses: actions/checkout@v4
                 with:
                     path: koalaplot-samples
 
             -   name: Set up JDK 17
-                uses: actions/setup-java@v3
+                uses: actions/setup-java@v4
                 with:
                     java-version: '17'
                     distribution: 'corretto'
                     cache: 'gradle'
 
             -   name: Setup Gradle
-                uses: gradle/gradle-build-action@v2
-
-            -   name: Validate Gradle wrapper
-                uses: gradle/wrapper-validation-action@v1
+                uses: gradle/actions/setup-gradle@v4
 
             -   name: Checkout koalaplot-core
-                uses: actions/checkout@v3
+                uses: actions/checkout@v4
                 with:
                     repository: koalaplot/koalaplot-core
                     path: koalaplot-core
 
             -   name: Publish koalaplot-core to Maven Local
-                uses: gradle/gradle-build-action@v2
-                with:
-                    arguments: check publishToMavenLocal
-                    build-root-directory: koalaplot-core
+                run: ./gradlew check publishToMavenLocal
+                working-directory: koalaplot-core
 
             -   name: Build koalaplot-samples
-                uses: gradle/gradle-build-action@v2
-                with:
-                    arguments: build
-                    build-root-directory: koalaplot-samples
+                run: ./gradlew build
+                working-directory: koalaplot-samples
 
             # jsBrowserWebpack in one step doesn't put skiko.wasm or skio.js in the distributions directory
             -   name: Build js koalaplot-samples
-                uses: gradle/gradle-build-action@v2
-                with:
-                    arguments: jsBrowserWebpack
-                    build-root-directory: koalaplot-samples
+                run: ./gradlew jsBrowserWebpack
+                working-directory: koalaplot-samples
 
-            - name: Build wasm koalaplot-samples
-              uses: gradle/gradle-build-action@v2
-              with:
-                  arguments: wasmjsBrowserDistribution
-                  build-root-directory: koalaplot-samples
+            -   name: Build wasm koalaplot-samples
+                run: ./gradlew wasmjsBrowserDistribution
+                working-directory: koalaplot-samples
