@@ -458,7 +458,9 @@ private fun PieChartSample(
                 }
             },
             holeSize = otherOptionsState.holeSize,
-            holeContent = { holeTotalLabel() },
+            holeContent = {
+                HoleTotalLabel(Modifier.fillMaxSize().padding(it))
+            },
             maxPieDiameter = Dp.Infinity,
             forceCenteredPie = otherOptionsState.forcePieCentering
         )
@@ -490,9 +492,9 @@ private fun PieChartThumbnail(
 
 @Suppress("MagicNumber")
 @Composable
-private fun holeTotalLabel() {
+private fun HoleTotalLabel(modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center),
+        modifier = modifier,
         verticalArrangement = Arrangement.Center
     ) {
         ResponsiveText(
