@@ -32,9 +32,9 @@ import io.github.koalaplot.core.xygraph.LongLinearAxisModel
 import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.XYGraphScope
 import io.github.koalaplot.core.xygraph.rememberAxisStyle
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlin.random.Random
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 val timeLineSampleView = object : SampleView {
     override val name: String = "Time Chart"
@@ -50,11 +50,11 @@ val timeLineSampleView = object : SampleView {
     }
 }
 
-@OptIn(ExperimentalKoalaPlotApi::class)
+@OptIn(ExperimentalKoalaPlotApi::class, ExperimentalTime::class)
 @Composable
 @Suppress("MagicNumber")
 private fun TimeSamplePlot(thumbnail: Boolean, title: String) {
-    val data = remember { mutableStateListOf(DefaultPoint(Clock.System.now().epochSeconds, 0)) }
+    val data = remember { mutableStateListOf(DefaultPoint(kotlin.time.Clock.System.now().epochSeconds, 0)) }
     var yDataMin by remember { mutableStateOf(0) }
     var yDataMax by remember { mutableStateOf(1) }
 
@@ -68,7 +68,7 @@ private fun TimeSamplePlot(thumbnail: Boolean, title: String) {
                     } else {
                         yLast - 1
                     }
-                    data.add(DefaultPoint(Clock.System.now().epochSeconds, yNext))
+                    data.add(DefaultPoint(kotlin.time.Clock.System.now().epochSeconds, yNext))
                     yDataMin = minOf(yDataMin, yNext)
                     yDataMax = maxOf(yDataMax, yNext)
                 }

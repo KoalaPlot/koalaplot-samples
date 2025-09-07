@@ -29,11 +29,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 val liveTimeChartSampleView = object : SampleView {
     override val name: String = "Live Time Chart"
@@ -59,11 +59,11 @@ data class GraphData<X, Y : Comparable<Y>>(
 private const val HistorySize = 20
 private const val UpdateDelay = 500L
 
-@OptIn(ExperimentalKoalaPlotApi::class)
+@OptIn(ExperimentalKoalaPlotApi::class, ExperimentalTime::class)
 @Composable
 fun LiveTimeChart(thumbnail: Boolean) {
     val info = remember {
-        val x = Clock.System.now().toEpochMilliseconds()
+        val x = kotlin.time.Clock.System.now().toEpochMilliseconds()
         val y = if (Random.nextBoolean()) {
             1f
         } else {
@@ -92,7 +92,7 @@ fun LiveTimeChart(thumbnail: Boolean) {
                     yLast - 1
                 }
 
-                val x = Clock.System.now().toEpochMilliseconds()
+                val x = kotlin.time.Clock.System.now().toEpochMilliseconds()
                 info.value = info.value.copy(
                     info.value.xAxis.toPersistentList().mutate {
                         it.add(Instant.fromEpochMilliseconds(x).toString())
