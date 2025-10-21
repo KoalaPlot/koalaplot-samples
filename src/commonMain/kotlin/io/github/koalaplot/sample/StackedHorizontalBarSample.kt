@@ -1,21 +1,14 @@
 package io.github.koalaplot.sample
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
@@ -24,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
 import io.github.koalaplot.core.bar.DefaultBar
-import io.github.koalaplot.core.bar.StackedVerticalBarPlot
-import io.github.koalaplot.core.bar.VerticalBarPlotStackedPointEntry
+import io.github.koalaplot.core.bar.HorizontalBarPlotStackedPointEntry
+import io.github.koalaplot.core.bar.StackedHorizontalBarPlot
 import io.github.koalaplot.core.legend.FlowLegend
 import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.style.KoalaPlotTheme
@@ -44,15 +37,13 @@ private val colors = generateHueColorPalette(PopulationData.Categories.entries.s
 
 private const val BarWidth = 0.8f
 
-private val rotationOptions = listOf(0, 30, 45, 60, 90)
-
-private fun barChartEntries(): List<VerticalBarPlotStackedPointEntry<Int, Long>> {
+private fun barChartEntries(): List<HorizontalBarPlotStackedPointEntry<Long, Int>> {
     return PopulationData.years.mapIndexed { yearIndex, year ->
-        object : VerticalBarPlotStackedPointEntry<Int, Long> {
-            override val x: Int = year
-            override val yOrigin: Long = 0L
+        object : HorizontalBarPlotStackedPointEntry<Long, Int> {
+            override val y: Int = year
+            override val xOrigin: Long = 0L
 
-            override val y: List<Long> = object : AbstractList<Long>() {
+            override val x: List<Long> = object : AbstractList<Long>() {
                 override val size: Int
                     get() = PopulationData.Categories.entries.size
 
@@ -85,8 +76,8 @@ private fun Legend(thumbnail: Boolean = false) {
     }
 }
 
-val stackedVerticalBarSampleView = object : SampleView {
-    override val name: String = "Stacked Vertical Bar"
+val stackedHorizontalBarSampleView = object : SampleView {
+    override val name: String = "Stacked Horizontal Bar"
 
     override val thumbnail = @Composable {
         ThumbnailTheme {
@@ -95,34 +86,13 @@ val stackedVerticalBarSampleView = object : SampleView {
     }
 
     override val content: @Composable () -> Unit = @Composable {
-        var selectedOption by remember { mutableStateOf(rotationOptions[0]) }
         KoalaPlotTheme(axis = KoalaPlotTheme.axis.copy(minorGridlineStyle = minorGridLineStyle)) {
             Column {
                 StackedBarSamplePlot(
                     false,
                     "New York City Population",
-                    Modifier.weight(1f),
-                    selectedOption
+                    Modifier.weight(1f)
                 )
-                ExpandableCard(
-                    colors = CardDefaults.elevatedCardColors(),
-                    elevation = CardDefaults.elevatedCardElevation(),
-                    titleContent = {
-                        Text("X-Axis Label Angle", modifier = paddingMod)
-                    }
-                ) {
-                    Column {
-                        rotationOptions.forEach {
-                            Row(
-                                Modifier.fillMaxWidth()
-                                    .selectable(selected = (it == selectedOption), onClick = { selectedOption = it })
-                            ) {
-                                RadioButton(selected = (it == selectedOption), onClick = { selectedOption = it })
-                                Text(text = it.toString())
-                            }
-                        }
-                    }
-                }
             }
         }
     }
@@ -135,8 +105,7 @@ private const val PopulationScale = 1E6
 private fun StackedBarSamplePlot(
     thumbnail: Boolean = false,
     title: String,
-    modifier: Modifier = Modifier,
-    xAxisLabelRotation: Int = 0
+    modifier: Modifier = Modifier
 ) {
     val barChartEntries = remember { barChartEntries() }
 
@@ -148,17 +117,21 @@ private fun StackedBarSamplePlot(
     ) {
         @Suppress("MagicNumber")
         XYGraph(
-            xAxisModel = CategoryAxisModel(PopulationData.years),
-            yAxisModel = LongLinearAxisModel(0L..10000000, minimumMajorTickIncrement = 1000000),
-            xAxisStyle = rememberAxisStyle(labelRotation = xAxisLabelRotation),
-            xAxisLabels = {
+            yAxisModel = CategoryAxisModel(PopulationData.years),
+            xAxisModel = LongLinearAxisModel(0L..10000000, minimumMajorTickIncrement = 1000000),
+            yAxisLabels = {
                 if (!thumbnail) AxisLabel("$it", Modifier.padding(top = 2.dp))
             },
-            xAxisTitle = {
-                if (!thumbnail) AxisTitle("Year", modifier = paddingMod)
+            yAxisTitle = {
+                if (!thumbnail) {
+                    AxisTitle(
+                        "Year",
+                        modifier = paddingMod.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                    )
+                }
             },
-            yAxisStyle = rememberAxisStyle(minorTickSize = 0.dp),
-            yAxisLabels = {
+            xAxisStyle = rememberAxisStyle(minorTickSize = 0.dp),
+            xAxisLabels = {
                 if (!thumbnail) {
                     AxisLabel(
                         (it / PopulationScale).toString(2),
@@ -166,18 +139,17 @@ private fun StackedBarSamplePlot(
                     )
                 }
             },
-            yAxisTitle = {
+            xAxisTitle = {
                 if (!thumbnail) {
                     AxisTitle(
                         "Population (Millions)",
-                        modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                            .padding(bottom = padding)
+                        modifier = paddingMod
                     )
                 }
             },
-            verticalMajorGridLineStyle = null
+            horizontalMajorGridLineStyle = null,
         ) {
-            StackedVerticalBarPlot(
+            StackedHorizontalBarPlot(
                 barChartEntries,
                 barWidth = BarWidth,
                 bar = { xIndex, barIndex ->

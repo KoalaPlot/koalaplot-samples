@@ -10,13 +10,13 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -80,8 +80,11 @@ class WindowSizeClass(
 private val samples = buildList {
     add(pieSampleView)
     add(verticalBarSampleView)
+    add(horizontalBarSampleView)
     add(groupedVerticalBarSampleView)
+    add(groupedHorizontalBarSampleView)
     add(stackedVerticalBarSampleView)
+    add(stackedHorizontalBarSampleView)
     add(waterfallChartSampleView)
     add(bulletGraphSampleView)
     add(xyLineSampleView)

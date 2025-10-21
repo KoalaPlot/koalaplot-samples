@@ -12,8 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
-import io.github.koalaplot.core.bar.DefaultVerticalBar
-import io.github.koalaplot.core.bar.DefaultVerticalBarPosition
+import io.github.koalaplot.core.bar.DefaultBar
+import io.github.koalaplot.core.bar.DefaultBarPosition
 import io.github.koalaplot.core.bar.VerticalBarPlot
 import io.github.koalaplot.core.bar.VerticalBarPlotEntry
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
@@ -34,12 +34,12 @@ private fun barChartEntries(): List<VerticalBarPlotEntry<Int, Float>> {
         val entry = if (index == PopulationData.data[BOROUGH]!!.lastIndex) {
             object : VerticalBarPlotEntry<Int, Float> {
                 override val x = PopulationData.years[index]
-                override val y = DefaultVerticalBarPosition(0f, population.toFloat())
+                override val y = DefaultBarPosition(0f, population.toFloat())
             }
         } else {
             object : VerticalBarPlotEntry<Int, Float> {
                 override val x = PopulationData.years[index]
-                override val y = DefaultVerticalBarPosition(
+                override val y = DefaultBarPosition(
                     min(last, population.toFloat()),
                     max(last, population.toFloat())
                 )
@@ -129,7 +129,7 @@ private fun WaterfallChart(thumbnail: Boolean) {
 
                     else -> SolidColor(Color.Black) // Shouldn't happen
                 }
-                DefaultVerticalBar(brush = color, modifier = Modifier.fillMaxWidth())
+                DefaultBar(brush = color, modifier = Modifier.fillMaxWidth())
             }
         )
     }

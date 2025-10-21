@@ -1,7 +1,6 @@
 package io.github.koalaplot.sample
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
@@ -18,7 +17,7 @@ import io.github.koalaplot.core.bar.BarPlotGroupedPointEntry
 import io.github.koalaplot.core.bar.BarPosition
 import io.github.koalaplot.core.bar.DefaultBar
 import io.github.koalaplot.core.bar.DefaultBarPosition
-import io.github.koalaplot.core.bar.GroupedVerticalBarPlot
+import io.github.koalaplot.core.bar.GroupedHorizontalBarPlot
 import io.github.koalaplot.core.legend.FlowLegend
 import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
@@ -70,8 +69,8 @@ private fun Legend(thumbnail: Boolean = false) {
 }
 
 @OptIn(ExperimentalKoalaPlotApi::class)
-val groupedVerticalBarSampleView = object : SampleView {
-    override val name: String = "Grouped Vertical Bar"
+val groupedHorizontalBarSampleView = object : SampleView {
+    override val name: String = "Grouped Horizontal Bar"
 
     override val thumbnail = @Composable {
         ThumbnailTheme {
@@ -98,60 +97,63 @@ private fun BarSample2Plot(thumbnail: Boolean, title: String) {
     val barChartEntries: List<BarPlotGroupedPointEntry<Int, Float>> = remember(thumbnail) { barChartEntries() }
 
     ChartLayout(
-        modifier = paddingMod,
+        // modifier = paddingMod,
+        modifier = paddingMod.padding(end = 16.dp),
         title = { ChartTitle(title) },
         legend = { Legend(thumbnail) },
         legendLocation = LegendLocation.BOTTOM
     ) {
         XYGraph(
-            xAxisModel = CategoryAxisModel(PopulationData.years),
-            yAxisModel = FloatLinearAxisModel(
+            yAxisModel = CategoryAxisModel(PopulationData.years),
+            xAxisModel = FloatLinearAxisModel(
                 0f..(ceil(PopulationData.maxPopulation / PopulationScale) * PopulationScale),
                 minorTickCount = 0
             ),
-            content = {
-                GroupedVerticalBarPlot(
-                    data = barChartEntries,
-                    bar = { dataIndex, groupIndex, _ ->
-                        DefaultBar(
-                            brush = SolidColor(colors[groupIndex]),
-                            modifier = Modifier.sizeIn(minWidth = 5.dp, maxWidth = 20.dp),
-                        ) {
-                            if (!thumbnail) {
-                                val borough = PopulationData.Categories.entries[groupIndex]
-                                val pop = PopulationData.data[borough]!![dataIndex]
-                                HoverSurface { Text("$borough: $pop") }
-                            }
-                        }
-                    }
-                )
-            },
-            xAxisLabels = {
+            yAxisLabels = {
                 if (!thumbnail) AxisLabel("$it", Modifier.padding(top = 2.dp))
             },
-            xAxisTitle = {
-                if (!thumbnail) AxisTitle("Year")
-            },
-            yAxisLabels = {
+            yAxisTitle = {
                 if (!thumbnail) {
-                    AxisLabel(
-                        (it / PopulationScale).toString(2),
-                        Modifier.absolutePadding(right = 2.dp)
+                    AxisTitle(
+                        "Year",
+                        modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                            .padding(bottom = padding)
                     )
                 }
             },
-            yAxisTitle = {
+            xAxisLabels = {
+                if (!thumbnail) {
+                    AxisLabel(
+                        (it / PopulationScale).toString(2),
+                    )
+                }
+            },
+            xAxisTitle = {
                 if (!thumbnail) {
                     Text(
                         "Population (Millions)",
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                            .padding(bottom = padding),
                     )
                 }
             },
-            verticalMajorGridLineStyle = null
-        )
+            horizontalMajorGridLineStyle = null
+        ) {
+            GroupedHorizontalBarPlot(
+                data = barChartEntries,
+                bar = { dataIndex, groupIndex, _ ->
+                    DefaultBar(
+                        brush = SolidColor(colors[groupIndex]),
+                        // modifier = Modifier.sizeIn(minWidth = 5.dp, maxWidth = 20.dp),
+                    ) {
+                        if (!thumbnail) {
+                            val borough = PopulationData.Categories.entries[groupIndex]
+                            val pop = PopulationData.data[borough]!![dataIndex]
+                            HoverSurface { Text("$borough: $pop") }
+                        }
+                    }
+                }
+            )
+        }
     }
 }
