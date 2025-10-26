@@ -4,9 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -123,11 +123,12 @@ fun MainView() {
                         }
                     )
                 }
-            }) {
+            }) { innerPadding ->
                 Column(
                     Modifier
-                        .fillMaxWidth()
-                        .systemBarsPadding()
+                        .consumeWindowInsets(innerPadding)
+                        .padding(innerPadding)
+                        .fillMaxSize()
                 ) {
                     if (selectedTabIndex == -1) {
                         ThumbnailsView(

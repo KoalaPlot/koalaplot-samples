@@ -115,7 +115,7 @@ private fun WaterfallChart(thumbnail: Boolean) {
         @Suppress("MagicNumber")
         VerticalBarPlot(
             barChartEntries,
-            bar = { index ->
+            bar = { index, _, _ ->
                 val color = when {
                     index == 0 -> SolidColor(Color(0xFF00498F))
                     index == PopulationData.data[BOROUGH]!!.lastIndex -> SolidColor(Color(0xFF00498F))

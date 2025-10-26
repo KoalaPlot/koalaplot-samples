@@ -138,7 +138,7 @@ private fun BarSamplePlot(
         ) {
             HorizontalBarPlot(
                 barChartEntries,
-                bar = { index ->
+                bar = { index, _, _ ->
                     DefaultBar(
                         brush = SolidColor(colors[0]),
                         modifier = Modifier.fillMaxWidth(),

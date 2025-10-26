@@ -152,7 +152,7 @@ private fun StackedBarSamplePlot(
             StackedHorizontalBarPlot(
                 barChartEntries,
                 barWidth = BarWidth,
-                bar = { xIndex, barIndex ->
+                bar = { xIndex, barIndex, _ ->
                     DefaultBar(
                         brush = SolidColor(colors[barIndex]),
                         modifier = Modifier.fillMaxWidth()
