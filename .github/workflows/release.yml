@@ -27,13 +27,8 @@ jobs:
                 run: ./gradlew build
                 working-directory: koalaplot-samples
 
-            # jsBrowserWebpack in one step doesn't put skiko.wasm or skio.js in the distributions directory
             -   name: Build js koalaplot-samples
-                run: ./gradlew jsBrowserProductionWebpack
-                working-directory: koalaplot-samples
-
-            -   name: Build wasm koalaplot-samples
-                run: ./gradlew wasmjsBrowserDistribution
+                run: ./gradlew composeCompatibilityBrowserDistribution
                 working-directory: koalaplot-samples
 
             -   name: Deploy compose-web samples to GitHub Pages
@@ -41,7 +36,7 @@ jobs:
                 uses: crazy-max/ghaction-github-pages@v4
                 with:
                     target_branch: gh-pages
-                    build_dir: koalaplot-samples/build/dist
+                    build_dir: koalaplot-samples/build/dist/composeWebCompatibility
                     keep_history: false
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

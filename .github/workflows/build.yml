@@ -37,11 +37,6 @@ jobs:
                 run: ./gradlew build
                 working-directory: koalaplot-samples
 
-            # jsBrowserWebpack in one step doesn't put skiko.wasm or skio.js in the distributions directory
             -   name: Build js koalaplot-samples
-                run: ./gradlew jsBrowserProductionWebpack
-                working-directory: koalaplot-samples
-
-            -   name: Build wasm koalaplot-samples
-                run: ./gradlew wasmjsBrowserDistribution
+                run: ./gradlew composeCompatibilityBrowserDistribution
                 working-directory: koalaplot-samples

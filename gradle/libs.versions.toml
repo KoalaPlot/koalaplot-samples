@@ -7,6 +7,7 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.8" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
 
 [versions]
 
@@ -34,6 +35,8 @@ androidx-activity = "1.11.0"
 ##             ⬆ = "1.12.0-alpha08"
 ##             ⬆ = "1.12.0-alpha09"
 ##             ⬆ = "1.12.0-beta01"
+
+composeHotReload = "1.0.0-beta07"
 
 compose-plugin = "1.9.1"
 ##          ⬆ = "1.9.2-SNAPSHOT+release-1-9"

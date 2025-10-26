@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.detekt)
     alias(libs.plugins.androidApplication)
+    alias(libs.plugins.composeHotReload)
 }
 
 repositories {
@@ -78,8 +79,6 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.kotlinx.coroutines.android)
         }
-
-        jsMain.dependencies { }
     }
 }
 
