@@ -20,7 +20,7 @@ dependencies {
 }
 
 group = "io.github.koalaplot"
-version = "0.8.0"
+version = "0.10.0-dev"
 
 kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -112,7 +112,7 @@ compose.desktop {
 android {
     namespace = "io.github.koalaplot.sample.android"
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "io.github.koalaplot.sample.android"

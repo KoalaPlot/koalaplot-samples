@@ -136,7 +136,7 @@ private fun BarSamplePlot(
         ) {
             VerticalBarPlot(
                 barChartEntries,
-                bar = { index , _, _->
+                bar = { index, _, _ ->
                     DefaultBar(
                         brush = SolidColor(colors[0]),
                         modifier = Modifier.fillMaxWidth(),
