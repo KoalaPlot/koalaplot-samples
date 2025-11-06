@@ -3,12 +3,9 @@
 This repository houses samples demonstrating the use and features of Koala Plot libraries.
 
 Try out
-the [web version of the samples](https://koalaplot.github.io/koalaplot-samples/wasmJs/productionExecutable/index.html)
+the [web version of the samples](https://koalaplot.github.io/koalaplot-samples/productionExecutable/index.html)
 for a quick look at
-the possibilities when using Koala Plot. Note that this uses
-the [alpha Kotlin wasm Compose web-canvas](https://kotlinlang.org/docs/wasm-overview.html) capability, and you'll
-need a browser supporting the [wasm garbage collection feature](https://github.com/WebAssembly/gc). For more information
-see [https://kotl.in/wasm_help](https://kotl.in/wasm_help).
+the possibilities when using Koala Plot.
 
 # How to run with a development build of koalaplot-core
 
