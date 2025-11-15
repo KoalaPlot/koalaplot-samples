@@ -2,9 +2,15 @@ package io.github.koalaplot.sample.polar
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipAnchorPosition
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,7 +23,7 @@ import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.polar.DefaultPolarPoint
 import io.github.koalaplot.core.polar.PolarGraph
 import io.github.koalaplot.core.polar.PolarGraphDefaults
-import io.github.koalaplot.core.polar.PolarPlotSeries
+import io.github.koalaplot.core.polar.PolarPlotSeries2
 import io.github.koalaplot.core.polar.PolarPoint
 import io.github.koalaplot.core.polar.rememberCategoryAngularAxisModel
 import io.github.koalaplot.core.polar.rememberFloatRadialAxisModel
@@ -27,7 +33,6 @@ import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.sample.ChartTitle
-import io.github.koalaplot.sample.HoverSurface
 import io.github.koalaplot.sample.PopulationData
 import io.github.koalaplot.sample.SampleView
 import io.github.koalaplot.sample.ThumbnailTheme
@@ -48,7 +53,7 @@ val radialLinePlotSample = object : SampleView {
     }
 }
 
-@OptIn(ExperimentalKoalaPlotApi::class)
+@OptIn(ExperimentalKoalaPlotApi::class, ExperimentalMaterial3Api::class)
 @Composable
 @Suppress("MagicNumber")
 private fun RadialLinePlotSample(thumbnail: Boolean, title: String) {
@@ -79,7 +84,7 @@ private fun RadialLinePlotSample(thumbnail: Boolean, title: String) {
                 )
         ) {
             PopulationData.data.forEach { (category, data) ->
-                PolarPlotSeries(
+                PolarPlotSeries2(
                     object : AbstractList<PolarPoint<Float, Int>>() {
                         override val size: Int
                             get() = PopulationData.years.size
@@ -90,24 +95,27 @@ private fun RadialLinePlotSample(thumbnail: Boolean, title: String) {
                     },
                     lineStyle = LineStyle(SolidColor(colorMap[category]!!), strokeWidth = 1.dp),
                     symbols = {
-                        Symbol(
-                            shape = CircleShape,
-                            fillBrush = SolidColor(colorMap[category]!!),
-                            modifier = Modifier.then(
+                        TooltipBox(
+                            positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
+                                TooltipAnchorPosition.Above
+                            ),
+                            tooltip = {
                                 if (!thumbnail) {
-                                    Modifier.hoverableElement {
-                                        HoverSurface {
-                                            Text(
-                                                "${(it.r * 1E6).toInt()}",
-                                                style = MaterialTheme.typography.bodySmall
-                                            )
-                                        }
+                                    PlainTooltip {
+                                        Text(
+                                            "${(it.r * 1E6).toInt()}",
+                                            style = MaterialTheme.typography.bodySmall
+                                        )
                                     }
-                                } else {
-                                    Modifier
                                 }
+                            },
+                            state = rememberTooltipState(),
+                        ) {
+                            Symbol(
+                                shape = CircleShape,
+                                fillBrush = SolidColor(colorMap[category]!!)
                             )
-                        )
+                        }
                     }
                 )
             }

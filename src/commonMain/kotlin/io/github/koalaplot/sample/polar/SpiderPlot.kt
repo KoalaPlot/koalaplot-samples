@@ -18,7 +18,7 @@ import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.polar.DefaultPolarPoint
 import io.github.koalaplot.core.polar.PolarGraph
 import io.github.koalaplot.core.polar.PolarGraphDefaults
-import io.github.koalaplot.core.polar.PolarPlotSeries
+import io.github.koalaplot.core.polar.PolarPlotSeries2
 import io.github.koalaplot.core.polar.PolarPoint
 import io.github.koalaplot.core.polar.RadialGridType
 import io.github.koalaplot.core.polar.rememberCategoryAngularAxisModel
@@ -93,7 +93,7 @@ private fun SpiderPlotSample(thumbnail: Boolean, title: String) {
                 )
         ) {
             data.forEachIndexed { index, seriesData ->
-                PolarPlotSeries(
+                PolarPlotSeries2(
                     seriesData,
                     lineStyle = LineStyle(SolidColor(palette[index]), strokeWidth = 1.5.dp),
                     areaStyle = AreaStyle(SolidColor(palette[index]), alpha = 0.3f),

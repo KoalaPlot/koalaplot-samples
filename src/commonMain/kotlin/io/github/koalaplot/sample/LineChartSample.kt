@@ -7,8 +7,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipAnchorPosition
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,7 +25,7 @@ import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
 import io.github.koalaplot.core.legend.FlowLegend
 import io.github.koalaplot.core.legend.LegendLocation
-import io.github.koalaplot.core.line.LinePlot
+import io.github.koalaplot.core.line.LinePlot2
 import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
@@ -104,7 +110,7 @@ private fun XYSamplePlot(thumbnail: Boolean, title: String) {
             }
         ) {
             RainData.rainfall.entries.sortedBy { it.key }.forEach { (city, rain) ->
-                chart(
+                Chart(
                     city,
                     rain.mapIndexed { index, d ->
                         DefaultPoint(RainData.months[index], d.toFloat())
@@ -116,33 +122,36 @@ private fun XYSamplePlot(thumbnail: Boolean, title: String) {
     }
 }
 
-@OptIn(ExperimentalKoalaPlotApi::class)
+@OptIn(ExperimentalKoalaPlotApi::class, ExperimentalMaterial3Api::class)
 @Composable
-private fun XYGraphScope<String, Float>.chart(
+private fun XYGraphScope<String, Float>.Chart(
     city: String,
     data: List<DefaultPoint<String, Float>>,
     thumbnail: Boolean
 ) {
-    LinePlot(
+    LinePlot2(
         data = data,
         lineStyle = LineStyle(
             brush = SolidColor(colorMap[city] ?: Color.Black),
             strokeWidth = 2.dp
         ),
         symbol = { point ->
-            Symbol(
-                shape = CircleShape,
-                fillBrush = SolidColor(colorMap[city] ?: Color.Black),
-                modifier = Modifier.then(
+            TooltipBox(
+                positionProvider = TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
+                tooltip = {
                     if (!thumbnail) {
-                        Modifier.hoverableElement {
-                            HoverSurface { Text(point.y.toString()) }
+                        PlainTooltip {
+                            Text(point.y.toString())
                         }
-                    } else {
-                        Modifier
                     }
+                },
+                state = rememberTooltipState(),
+            ) {
+                Symbol(
+                    shape = CircleShape,
+                    fillBrush = SolidColor(colorMap[city] ?: Color.Black)
                 )
-            )
+            }
         }
     )
 }

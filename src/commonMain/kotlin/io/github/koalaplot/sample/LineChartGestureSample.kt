@@ -14,7 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipAnchorPosition
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,7 +35,7 @@ import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
 import io.github.koalaplot.core.gestures.GestureConfig
 import io.github.koalaplot.core.legend.LegendLocation
-import io.github.koalaplot.core.line.LinePlot
+import io.github.koalaplot.core.line.LinePlot2
 import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
@@ -169,7 +175,7 @@ private fun XYSamplePlot(
             ),
         ) {
             FakeData.floatData.forEachIndexed { index, points ->
-                chart(
+                Chart(
                     dataSetIndex = index,
                     data = points,
                     thumbnail = thumbnail,
@@ -179,33 +185,36 @@ private fun XYSamplePlot(
     }
 }
 
-@OptIn(ExperimentalKoalaPlotApi::class)
+@OptIn(ExperimentalKoalaPlotApi::class, ExperimentalMaterial3Api::class)
 @Composable
-private fun XYGraphScope<Float, Float>.chart(
+private fun XYGraphScope<Float, Float>.Chart(
     dataSetIndex: Int,
     data: List<Point<Float, Float>>,
     thumbnail: Boolean,
 ) {
-    LinePlot(
+    LinePlot2(
         data = data,
         lineStyle = LineStyle(
             brush = SolidColor(colorMap[dataSetIndex] ?: Color.Black),
             strokeWidth = 2.dp
         ),
         symbol = { point ->
-            Symbol(
-                shape = CircleShape,
-                fillBrush = SolidColor(colorMap[dataSetIndex] ?: Color.Black),
-                modifier = Modifier.then(
+            TooltipBox(
+                positionProvider = TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
+                tooltip = {
                     if (!thumbnail) {
-                        Modifier.hoverableElement {
-                            HoverSurface { Text(point.y.toString()) }
+                        PlainTooltip {
+                            Text(point.y.toString())
                         }
-                    } else {
-                        Modifier
                     }
+                },
+                state = rememberTooltipState(),
+            ) {
+                Symbol(
+                    shape = CircleShape,
+                    fillBrush = SolidColor(colorMap[dataSetIndex] ?: Color.Black),
                 )
-            )
+            }
         }
     )
 }

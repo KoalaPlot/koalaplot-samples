@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
 import io.github.koalaplot.core.legend.LegendLocation
-import io.github.koalaplot.core.line.LinePlot
+import io.github.koalaplot.core.line.LinePlot2
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.xygraph.CategoryAxisModel
 import io.github.koalaplot.core.xygraph.DefaultPoint
@@ -134,7 +134,7 @@ fun LiveTimeChart(thumbnail: Boolean) {
             xAxisTitle = { },
             xAxisStyle = rememberAxisStyle(labelRotation = 45),
         ) {
-            LinePlot(
+            LinePlot2(
                 info.value.points,
                 symbol = { Symbol(fillBrush = SolidColor(Color.Black)) },
                 animationSpec = TweenSpec(0)

@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.line.AreaBaseline
-import io.github.koalaplot.core.line.AreaPlot
+import io.github.koalaplot.core.line.AreaPlot2
 import io.github.koalaplot.core.style.AreaStyle
 import io.github.koalaplot.core.style.KoalaPlotTheme
 import io.github.koalaplot.core.style.LineStyle
@@ -80,16 +80,17 @@ private fun AreaPlotSample1Plot(thumbnail: Boolean, title: String) {
             horizontalMinorGridLineStyle = null,
             verticalMinorGridLineStyle = null
         ) {
-            AreaPlot(
+            AreaPlot2(
                 data = distribution1,
                 lineStyle = LineStyle(brush = SolidColor(Color(0xFF00498F)), strokeWidth = 2.dp),
                 areaStyle = AreaStyle(
                     brush = SolidColor(Color(0xFF00498F)),
                     alpha = 0.5f,
                 ),
-                areaBaseline = AreaBaseline.ConstantLine(0f)
+                areaBaseline = AreaBaseline.ConstantLine(0f),
+                // symbol = {}
             )
-            AreaPlot(
+            AreaPlot2(
                 data = distribution2,
                 lineStyle = LineStyle(brush = SolidColor(Color(0xFF37A78F)), strokeWidth = 2.dp),
                 areaStyle = AreaStyle(
@@ -167,7 +168,6 @@ private val xAxisValues: List<Float> = buildList {
     }
 }
 
-@Suppress("MagicNumber")
 private fun normalDistribution(x: List<Float>, sigma: Float, mu: Float): List<Point<Float, Float>> = buildList {
     x.forEach {
         add(Point(it, normalDistribution(it, sigma, mu)))

@@ -14,7 +14,7 @@ import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
 import io.github.koalaplot.core.legend.FlowLegend
 import io.github.koalaplot.core.legend.LegendLocation
-import io.github.koalaplot.core.line.StairstepPlot
+import io.github.koalaplot.core.line.StairstepPlot2
 import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
@@ -85,7 +85,7 @@ private fun StairStepSamplePlot(thumbnail: Boolean, title: String) {
             }
         ) {
             RainData.rainfall.entries.sortedBy { it.key }.forEach { (city, rain) ->
-                chart(
+                Chart(
                     city,
                     rain.mapIndexed { index, d ->
                         DefaultPoint(RainData.months[index], d.toFloat())
@@ -98,11 +98,11 @@ private fun StairStepSamplePlot(thumbnail: Boolean, title: String) {
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
-private fun XYGraphScope<String, Float>.chart(
+private fun XYGraphScope<String, Float>.Chart(
     city: String,
     data: List<DefaultPoint<String, Float>>,
 ) {
-    StairstepPlot(
+    StairstepPlot2(
         data = data,
         lineStyle = LineStyle(
             brush = SolidColor(colorMap[city] ?: Color.Black),

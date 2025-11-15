@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.legend.LegendLocation
-import io.github.koalaplot.core.line.LinePlot
+import io.github.koalaplot.core.line.LinePlot2
 import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
@@ -123,7 +123,7 @@ private fun TimeSamplePlot(thumbnail: Boolean, title: String) {
                     }
                 }
             ) {
-                chart(data)
+                Chart(data)
             }
         }
     }
@@ -131,8 +131,8 @@ private fun TimeSamplePlot(thumbnail: Boolean, title: String) {
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
-private fun XYGraphScope<Long, Int>.chart(data: List<DefaultPoint<Long, Int>>) {
-    LinePlot(
+private fun XYGraphScope<Long, Int>.Chart(data: List<DefaultPoint<Long, Int>>) {
+    LinePlot2(
         data = data,
         lineStyle = LineStyle(
             brush = SolidColor(Color.Black),
