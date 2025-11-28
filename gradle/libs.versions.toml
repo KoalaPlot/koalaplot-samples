@@ -155,7 +155,7 @@ compose-plugin = "1.9.2"
 ##          ⬆ = "1.10.0-alpha03"
 ##          ⬆ = "1.10.0-beta01"
 
-koalaplot = "0.10.2"
+koalaplot = "0.10.3"
 
 kotlin = "2.2.21"
 ##  ⬆ = "2.3.0-Beta1"

@@ -12,7 +12,6 @@ plugins {
 repositories {
     google()
     mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     mavenLocal()
 }
 
@@ -21,7 +20,7 @@ dependencies {
 }
 
 group = "io.github.koalaplot"
-version = "0.10.2"
+version = "0.10.3"
 
 kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
