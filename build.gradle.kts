@@ -20,7 +20,7 @@ dependencies {
 }
 
 group = "io.github.koalaplot"
-version = "0.10.3"
+version = "0.11.0-dev2"
 
 kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
