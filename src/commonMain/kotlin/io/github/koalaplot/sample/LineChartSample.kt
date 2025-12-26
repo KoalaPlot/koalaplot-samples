@@ -104,7 +104,7 @@ private fun LineChartSample(
 }
 
 @Composable
-private fun BezierOptions(
+internal fun BezierOptions(
     bezierOn: Boolean,
     tau: Float,
     modifier: Modifier = Modifier,
