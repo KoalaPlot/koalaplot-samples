@@ -99,6 +99,7 @@ private val samples = buildList {
     add(timeLineSampleView)
     add(liveTimeChartSampleView)
     add(xyLineChartGestureSampleView)
+    add(heatMapSampleView)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
