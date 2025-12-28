@@ -10,8 +10,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,11 +52,23 @@ val timeLineSampleView = object : SampleView {
 
 @OptIn(ExperimentalKoalaPlotApi::class, ExperimentalTime::class)
 @Composable
-@Suppress("MagicNumber")
-private fun TimeSamplePlot(thumbnail: Boolean, title: String) {
-    val data = remember { mutableStateListOf(DefaultPoint(kotlin.time.Clock.System.now().epochSeconds, 0)) }
-    var yDataMin by remember { mutableStateOf(0) }
-    var yDataMax by remember { mutableStateOf(1) }
+@Suppress("MagicNumber", "LongMethod")
+private fun TimeSamplePlot(
+    thumbnail: Boolean,
+    title: String,
+) {
+    val data = remember {
+        mutableStateListOf(
+            DefaultPoint(
+                kotlin.time.Clock.System
+                    .now()
+                    .epochSeconds,
+                0,
+            ),
+        )
+    }
+    var yDataMin by remember { mutableIntStateOf(0) }
+    var yDataMax by remember { mutableIntStateOf(1) }
 
     Column {
         if (!thumbnail) {
@@ -68,10 +80,17 @@ private fun TimeSamplePlot(thumbnail: Boolean, title: String) {
                     } else {
                         yLast - 1
                     }
-                    data.add(DefaultPoint(kotlin.time.Clock.System.now().epochSeconds, yNext))
+                    data.add(
+                        DefaultPoint(
+                            kotlin.time.Clock.System
+                                .now()
+                                .epochSeconds,
+                            yNext,
+                        ),
+                    )
                     yDataMin = minOf(yDataMin, yNext)
                     yDataMax = maxOf(yDataMax, yNext)
-                }
+                },
             ) {
                 Text("Add Step")
             }
@@ -80,14 +99,14 @@ private fun TimeSamplePlot(thumbnail: Boolean, title: String) {
         ChartLayout(
             modifier = paddingMod.padding(end = 16.dp),
             title = { ChartTitle(title) },
-            legendLocation = LegendLocation.BOTTOM
+            legendLocation = LegendLocation.BOTTOM,
         ) {
             XYGraph(
                 xAxisModel = LongLinearAxisModel(
-                    range = (data.first().x)..(data.last().x) + 1
+                    range = (data.first().x)..(data.last().x) + 1,
                 ),
                 yAxisModel = IntLinearAxisModel(
-                    range = yDataMin..yDataMax
+                    range = yDataMin..yDataMax,
                 ),
                 xAxisLabels = {
                     if (!thumbnail) {
@@ -99,7 +118,7 @@ private fun TimeSamplePlot(thumbnail: Boolean, title: String) {
                     if (!thumbnail) {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
+                            contentAlignment = Alignment.Center,
                         ) {
                             AxisTitle("Time")
                         }
@@ -112,16 +131,17 @@ private fun TimeSamplePlot(thumbnail: Boolean, title: String) {
                     if (!thumbnail) {
                         Box(
                             modifier = Modifier.fillMaxHeight(),
-                            contentAlignment = Alignment.TopStart
+                            contentAlignment = Alignment.TopStart,
                         ) {
                             AxisTitle(
                                 "Value",
-                                modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                                    .padding(bottom = padding)
+                                modifier = Modifier
+                                    .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                                    .padding(bottom = padding),
                             )
                         }
                     }
-                }
+                },
             ) {
                 Chart(data)
             }
@@ -136,7 +156,7 @@ private fun XYGraphScope<Long, Int>.Chart(data: List<DefaultPoint<Long, Int>>) {
         data = data,
         lineStyle = LineStyle(
             brush = SolidColor(Color.Black),
-            strokeWidth = 2.dp
+            strokeWidth = 2.dp,
         ),
     )
 }

@@ -14,8 +14,8 @@ fun ThumbnailTheme(content: @Composable () -> Unit) {
             majorTickSize = 0.dp,
             minorTickSize = 0.dp,
             majorGridlineStyle = null,
-            minorGridlineStyle = null
+            minorGridlineStyle = null,
         ),
-        content = content
+        content = content,
     )
 }

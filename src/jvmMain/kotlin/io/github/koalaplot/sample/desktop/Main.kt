@@ -6,7 +6,7 @@ import io.github.koalaplot.sample.MainView
 
 fun main() = singleWindowApplication(
     title = "KoalaPlot Sample",
-    state = WindowState()
+    state = WindowState(),
 ) {
     MainView()
 }

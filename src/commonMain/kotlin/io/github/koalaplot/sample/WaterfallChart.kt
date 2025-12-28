@@ -41,7 +41,7 @@ private fun barChartEntries(): List<VerticalBarPlotEntry<Int, Float>> {
                 override val x = PopulationData.years[index]
                 override val y = DefaultBarPosition(
                     min(last, population.toFloat()),
-                    max(last, population.toFloat())
+                    max(last, population.toFloat()),
                 )
             }
         }
@@ -69,10 +69,10 @@ val waterfallChartSampleView = object : SampleView {
                 title = {
                     Text(
                         "Population Changes in Manhattan Over 70 Years",
-                        style = MaterialTheme.typography.headlineMedium
+                        style = MaterialTheme.typography.headlineMedium,
                     )
                 },
-                modifier = Modifier.sizeIn(minHeight = 200.dp, maxHeight = 600.dp).weight(1f)
+                modifier = Modifier.sizeIn(minHeight = 200.dp, maxHeight = 600.dp).weight(1f),
             ) {
                 WaterfallChart(false)
             }
@@ -118,19 +118,21 @@ private fun WaterfallChart(thumbnail: Boolean) {
             bar = { index, _, _ ->
                 val color = when {
                     index == 0 -> SolidColor(Color(0xFF00498F))
+
                     index == PopulationData.data[BOROUGH]!!.lastIndex -> SolidColor(Color(0xFF00498F))
+
                     PopulationData.data[BOROUGH]!![index] > PopulationData.data[BOROUGH]!![index - 1] -> SolidColor(
-                        Color(0xFF37A78F)
+                        Color(0xFF37A78F),
                     )
 
                     PopulationData.data[BOROUGH]!![index] < PopulationData.data[BOROUGH]!![index - 1] -> SolidColor(
-                        Color(0xFFED7D31)
+                        Color(0xFFED7D31),
                     )
 
                     else -> SolidColor(Color.Black) // Shouldn't happen
                 }
                 DefaultBar(brush = color, modifier = Modifier.fillMaxWidth())
-            }
+            },
         )
     }
 }

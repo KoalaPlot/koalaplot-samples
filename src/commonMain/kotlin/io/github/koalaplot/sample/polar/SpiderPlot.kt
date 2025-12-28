@@ -59,7 +59,7 @@ private val data: List<List<PolarPoint<Float, String>>> = buildList {
                 categories.forEach { category ->
                     add(DefaultPolarPoint(Random.nextDouble(1.0, 5.0).toFloat(), category))
                 }
-            }
+            },
         )
     }
 }
@@ -67,12 +67,15 @@ private val data: List<List<PolarPoint<Float, String>>> = buildList {
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
 @Suppress("MagicNumber")
-private fun SpiderPlotSample(thumbnail: Boolean, title: String) {
+private fun SpiderPlotSample(
+    thumbnail: Boolean,
+    title: String,
+) {
     ChartLayout(
         modifier = paddingMod,
         title = { ChartTitle(title) },
         legend = { Legend(thumbnail) },
-        legendLocation = LegendLocation.BOTTOM
+        legendLocation = LegendLocation.BOTTOM,
     ) {
         val angularAxisGridLineStyle = if (thumbnail) {
             LineStyle(SolidColor(Color.LightGray), strokeWidth = 1.dp)
@@ -85,12 +88,13 @@ private fun SpiderPlotSample(thumbnail: Boolean, title: String) {
             rememberCategoryAngularAxisModel(categories),
             radialAxisLabels = { if (!thumbnail) Text(it.toString()) },
             { if (!thumbnail) Text(it) },
-            polarGraphProperties = PolarGraphDefaults.PolarGraphPropertyDefaults()
+            polarGraphProperties = PolarGraphDefaults
+                .PolarGraphPropertyDefaults()
                 .copy(
                     radialGridType = RadialGridType.LINES,
                     angularAxisGridLineStyle = angularAxisGridLineStyle,
-                    radialAxisGridLineStyle = angularAxisGridLineStyle
-                )
+                    radialAxisGridLineStyle = angularAxisGridLineStyle,
+                ),
         ) {
             data.forEachIndexed { index, seriesData ->
                 PolarPlotSeries2(
@@ -99,7 +103,7 @@ private fun SpiderPlotSample(thumbnail: Boolean, title: String) {
                     areaStyle = AreaStyle(SolidColor(palette[index]), alpha = 0.3f),
                     symbols = {
                         Symbol(shape = CircleShape, fillBrush = SolidColor(palette[index]))
-                    }
+                    },
                 )
             }
         }
@@ -119,13 +123,13 @@ private fun Legend(thumbnail: Boolean = false) {
                     Symbol(
                         shape = CircleShape,
                         modifier = Modifier.size(padding),
-                        fillBrush = SolidColor(palette[i])
+                        fillBrush = SolidColor(palette[i]),
                     )
                 },
                 label = { i ->
                     Text(seriesNames[i])
                 },
-                modifier = paddingMod
+                modifier = paddingMod,
             )
         }
     }

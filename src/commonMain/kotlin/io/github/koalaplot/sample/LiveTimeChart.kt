@@ -61,9 +61,14 @@ private const val UpdateDelay = 500L
 
 @OptIn(ExperimentalKoalaPlotApi::class, ExperimentalTime::class)
 @Composable
-fun LiveTimeChart(thumbnail: Boolean) {
+fun LiveTimeChart(
+    thumbnail: Boolean,
+    modifier: Modifier = Modifier,
+) {
     val info = remember {
-        val x = kotlin.time.Clock.System.now().toEpochMilliseconds()
+        val x = kotlin.time.Clock.System
+            .now()
+            .toEpochMilliseconds()
         val y = if (Random.nextBoolean()) {
             1f
         } else {
@@ -74,8 +79,8 @@ fun LiveTimeChart(thumbnail: Boolean) {
                 persistentListOf(Instant.fromEpochMilliseconds(x).toString()),
                 persistentListOf(y),
                 persistentListOf(DefaultPoint(Instant.fromEpochMilliseconds(x).toString(), y)),
-                -1f..1f
-            )
+                -1f..1f,
+            ),
         )
     }
 
@@ -92,25 +97,16 @@ fun LiveTimeChart(thumbnail: Boolean) {
                     yLast - 1
                 }
 
-                val x = kotlin.time.Clock.System.now().toEpochMilliseconds()
-                info.value = info.value.copy(
-                    info.value.xAxis.toPersistentList().mutate {
-                        it.add(Instant.fromEpochMilliseconds(x).toString())
-                    }.takeLast(HistorySize).toImmutableList(),
-                    info.value.yAxis.toPersistentList().mutate {
-                        it.add(yNext)
-                    }.takeLast(HistorySize).toImmutableList(),
-                    info.value.points.toPersistentList().mutate {
-                        it.add(DefaultPoint(Instant.fromEpochMilliseconds(x).toString(), yNext))
-                    }.takeLast(HistorySize).toImmutableList(),
-                    min(info.value.yRange.start, yNext)..max(info.value.yRange.endInclusive, yNext)
-                )
+                val x = kotlin.time.Clock.System
+                    .now()
+                    .toEpochMilliseconds()
+                info.value = info.value.addPoint(x, yNext)
             }
         }
     }
 
     ChartLayout(
-        modifier = paddingMod.padding(horizontal = 8.dp),
+        modifier = modifier.then(paddingMod.padding(horizontal = 8.dp)),
         title = { ChartTitle("Live Time Chart") },
         legendLocation = LegendLocation.NONE,
     ) {
@@ -137,8 +133,34 @@ fun LiveTimeChart(thumbnail: Boolean) {
             LinePlot2(
                 info.value.points,
                 symbol = { Symbol(fillBrush = SolidColor(Color.Black)) },
-                animationSpec = TweenSpec(0)
+                animationSpec = TweenSpec(0),
             )
         }
     }
 }
+
+@OptIn(ExperimentalTime::class)
+private fun GraphData<String, Float>.addPoint(
+    x: Long,
+    y: Float,
+): GraphData<String, Float> = copy(
+    xAxis = xAxis
+        .toPersistentList()
+        .mutate {
+            it.add(Instant.fromEpochMilliseconds(x).toString())
+        }.takeLast(HistorySize)
+        .toImmutableList(),
+    yAxis = yAxis
+        .toPersistentList()
+        .mutate {
+            it.add(y)
+        }.takeLast(HistorySize)
+        .toImmutableList(),
+    points = points
+        .toPersistentList()
+        .mutate {
+            it.add(DefaultPoint(Instant.fromEpochMilliseconds(x).toString(), y))
+        }.takeLast(HistorySize)
+        .toImmutableList(),
+    yRange = min(yRange.start, y)..max(yRange.endInclusive, y),
+)

@@ -58,7 +58,6 @@ private data class GestureOptionsState(
 )
 
 val xyLineChartGestureSampleView = object : SampleView {
-
     override val name: String = "Gestures"
 
     override val thumbnail = @Composable {
@@ -70,7 +69,7 @@ val xyLineChartGestureSampleView = object : SampleView {
                     allowZoomX = false,
                     allowZoomY = false,
                     allowPanX = false,
-                    allowPanY = false
+                    allowPanY = false,
                 ),
             )
         }
@@ -78,14 +77,14 @@ val xyLineChartGestureSampleView = object : SampleView {
 
     override val content: @Composable () -> Unit = @Composable {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) {
             var gestureOptions by remember { mutableStateOf(GestureOptionsState()) }
             XYSamplePlot(
                 thumbnail = false,
                 title = "Gestures",
                 gestureOptions = gestureOptions,
-                modifier = Modifier.weight(1.0f)
+                modifier = Modifier.weight(1.0f),
             )
             GestureOptionsSelector(state = gestureOptions, onUpdate = { gestureOptions = it })
         }
@@ -112,7 +111,7 @@ private fun XYSamplePlot(
     ChartLayout(
         modifier = modifier.then(paddingMod).padding(end = 16.dp),
         title = { ChartTitle(title) },
-        legendLocation = LegendLocation.BOTTOM
+        legendLocation = LegendLocation.BOTTOM,
     ) {
         val xAxis = remember(gestureOptions.allowPanX, gestureOptions.allowZoomX) {
             FloatLinearAxisModel(
@@ -140,7 +139,7 @@ private fun XYSamplePlot(
                 if (!thumbnail) {
                     Box(
                         modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         AxisTitle("Random data set (X)")
                     }
@@ -153,12 +152,13 @@ private fun XYSamplePlot(
                 if (!thumbnail) {
                     Box(
                         modifier = Modifier.fillMaxHeight(),
-                        contentAlignment = Alignment.TopStart
+                        contentAlignment = Alignment.TopStart,
                     ) {
                         AxisTitle(
                             "Random data set (Y)",
-                            modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                                .padding(bottom = padding)
+                            modifier = Modifier
+                                .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                                .padding(bottom = padding),
                         )
                     }
                 }
@@ -171,7 +171,7 @@ private fun XYSamplePlot(
                 zoomXEnabled = gestureOptions.allowZoomX,
                 zoomYEnabled = gestureOptions.allowZoomY,
                 independentZoomEnabled = gestureOptions.independentZoom,
-                panFlingAnimationEnabled = gestureOptions.enablePanFlingAnimation
+                panFlingAnimationEnabled = gestureOptions.enablePanFlingAnimation,
             ),
         ) {
             FakeData.floatData.forEachIndexed { index, points ->
@@ -196,7 +196,7 @@ private fun XYGraphScope<Float, Float>.Chart(
         data = data,
         lineStyle = LineStyle(
             brush = SolidColor(colorMap[dataSetIndex] ?: Color.Black),
-            strokeWidth = 2.dp
+            strokeWidth = 2.dp,
         ),
         symbol = { point ->
             TooltipBox(
@@ -215,62 +215,66 @@ private fun XYGraphScope<Float, Float>.Chart(
                     fillBrush = SolidColor(colorMap[dataSetIndex] ?: Color.Black),
                 )
             }
-        }
+        },
     )
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun GestureOptionsSelector(state: GestureOptionsState, onUpdate: (GestureOptionsState) -> Unit) {
+private fun GestureOptionsSelector(
+    state: GestureOptionsState,
+    onUpdate: (GestureOptionsState) -> Unit,
+) {
     ExpandableCard(
+        titleContent = { Text("Gesture options", modifier = paddingMod) },
         modifier = paddingMod,
         colors = CardDefaults.elevatedCardColors(),
         elevation = CardDefaults.elevatedCardElevation(),
-        titleContent = { Text("Gesture options", modifier = paddingMod) }
-    ) {
-        FlowRow {
-            OptionCheckbox(
-                title = "Allow pan X consumption",
-                checked = state.allowConsumePanX,
-                onCheckedChange = { onUpdate(state.copy(allowConsumePanX = it)) }
-            )
-            OptionCheckbox(
-                title = "Allow pan Y consumption",
-                checked = state.allowConsumePanY,
-                onCheckedChange = { onUpdate(state.copy(allowConsumePanY = it)) }
-            )
-            OptionCheckbox(
-                title = "Independent zoom",
-                checked = state.independentZoom,
-                onCheckedChange = { onUpdate(state.copy(independentZoom = it)) }
-            )
-            OptionCheckbox(
-                title = "Allow zoom X",
-                checked = state.allowZoomX,
-                onCheckedChange = { onUpdate(state.copy(allowZoomX = it)) }
-            )
-            OptionCheckbox(
-                title = "Allow zoom Y",
-                checked = state.allowZoomY,
-                onCheckedChange = { onUpdate(state.copy(allowZoomY = it)) }
-            )
-            OptionCheckbox(
-                title = "Allow pan X",
-                checked = state.allowPanX,
-                onCheckedChange = { onUpdate(state.copy(allowPanX = it)) }
-            )
-            OptionCheckbox(
-                title = "Allow pan Y",
-                checked = state.allowPanY,
-                onCheckedChange = { onUpdate(state.copy(allowPanY = it)) }
-            )
-            OptionCheckbox(
-                title = "Enable pan fling animation",
-                checked = state.enablePanFlingAnimation,
-                onCheckedChange = { onUpdate(state.copy(enablePanFlingAnimation = it)) }
-            )
-        }
-    }
+        content = {
+            FlowRow {
+                OptionCheckbox(
+                    title = "Allow pan X consumption",
+                    checked = state.allowConsumePanX,
+                    onCheckedChange = { onUpdate(state.copy(allowConsumePanX = it)) },
+                )
+                OptionCheckbox(
+                    title = "Allow pan Y consumption",
+                    checked = state.allowConsumePanY,
+                    onCheckedChange = { onUpdate(state.copy(allowConsumePanY = it)) },
+                )
+                OptionCheckbox(
+                    title = "Independent zoom",
+                    checked = state.independentZoom,
+                    onCheckedChange = { onUpdate(state.copy(independentZoom = it)) },
+                )
+                OptionCheckbox(
+                    title = "Allow zoom X",
+                    checked = state.allowZoomX,
+                    onCheckedChange = { onUpdate(state.copy(allowZoomX = it)) },
+                )
+                OptionCheckbox(
+                    title = "Allow zoom Y",
+                    checked = state.allowZoomY,
+                    onCheckedChange = { onUpdate(state.copy(allowZoomY = it)) },
+                )
+                OptionCheckbox(
+                    title = "Allow pan X",
+                    checked = state.allowPanX,
+                    onCheckedChange = { onUpdate(state.copy(allowPanX = it)) },
+                )
+                OptionCheckbox(
+                    title = "Allow pan Y",
+                    checked = state.allowPanY,
+                    onCheckedChange = { onUpdate(state.copy(allowPanY = it)) },
+                )
+                OptionCheckbox(
+                    title = "Enable pan fling animation",
+                    checked = state.enablePanFlingAnimation,
+                    onCheckedChange = { onUpdate(state.copy(enablePanFlingAnimation = it)) },
+                )
+            }
+        },
+    )
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -278,12 +282,12 @@ private fun GestureOptionsSelector(state: GestureOptionsState, onUpdate: (Gestur
 private fun FlowRowScope.OptionCheckbox(
     title: String,
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
         Checkbox(
             checked = checked,
-            onCheckedChange = onCheckedChange
+            onCheckedChange = onCheckedChange,
         )
         Text(title, modifier = paddingMod)
     }

@@ -52,12 +52,15 @@ private val colorMap = buildMap {
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
 @Suppress("MagicNumber")
-private fun StairStepSamplePlot(thumbnail: Boolean, title: String) {
+private fun StairStepSamplePlot(
+    thumbnail: Boolean,
+    title: String,
+) {
     ChartLayout(
         modifier = paddingMod,
         title = { ChartTitle(title) },
         legend = { Legend(thumbnail) },
-        legendLocation = LegendLocation.BOTTOM
+        legendLocation = LegendLocation.BOTTOM,
     ) {
         XYGraph(
             xAxisModel = CategoryAxisModel(RainData.months),
@@ -78,18 +81,19 @@ private fun StairStepSamplePlot(thumbnail: Boolean, title: String) {
                 if (!thumbnail) {
                     AxisTitle(
                         "Rainfall (mm)",
-                        modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                            .padding(bottom = padding)
+                        modifier = Modifier
+                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                            .padding(bottom = padding),
                     )
                 }
-            }
+            },
         ) {
             RainData.rainfall.entries.sortedBy { it.key }.forEach { (city, rain) ->
                 Chart(
                     city,
                     rain.mapIndexed { index, d ->
                         DefaultPoint(RainData.months[index], d.toFloat())
-                    }
+                    },
                 )
             }
         }
@@ -106,8 +110,8 @@ private fun XYGraphScope<String, Float>.Chart(
         data = data,
         lineStyle = LineStyle(
             brush = SolidColor(colorMap[city] ?: Color.Black),
-            strokeWidth = 2.dp
-        )
+            strokeWidth = 2.dp,
+        ),
     )
 }
 
@@ -123,13 +127,13 @@ private fun Legend(thumbnail: Boolean = false) {
                 symbol = { i ->
                     Symbol(
                         modifier = Modifier.size(padding),
-                        fillBrush = SolidColor(colorMap[cities[i]] ?: Color.Black)
+                        fillBrush = SolidColor(colorMap[cities[i]] ?: Color.Black),
                     )
                 },
                 label = { i ->
                     Text(cities[i])
                 },
-                modifier = paddingMod
+                modifier = paddingMod,
             )
         }
     }

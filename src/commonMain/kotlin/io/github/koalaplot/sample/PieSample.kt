@@ -83,7 +83,7 @@ private data class LabelOptionsState(
     val straightLine: Boolean = false,
     val showLabels: Boolean = false,
     val labelSpacing: Float = 1.1f,
-    val labelPlacement: PieLabelPlacement = PieLabelPlacement.External
+    val labelPlacement: PieLabelPlacement = PieLabelPlacement.External,
 )
 
 private data class OtherOptionsState(
@@ -91,7 +91,7 @@ private data class OtherOptionsState(
     val antiAlias: Boolean = false,
     val borders: Boolean = false,
     val sliceGap: Float = 0.0f,
-    val forcePieCentering: Boolean = false
+    val forcePieCentering: Boolean = false,
 )
 
 val pieSampleView = object : SampleView {
@@ -109,7 +109,7 @@ val pieSampleView = object : SampleView {
         var otherOptions by remember { mutableStateOf(OtherOptionsState()) }
 
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) {
             PieChartSample(
                 legendLocation,
@@ -118,124 +118,141 @@ val pieSampleView = object : SampleView {
                 modifier = Modifier.weight(1.0f),
             )
             HorizontalDivider(modifier = Modifier.fillMaxWidth())
-            LegendPositionSelector(legendLocation) {
+            LegendPositionSelector(legendLocation, {
                 legendLocation = it
-            }
+            })
             LabelOptionsSelector(connectorStyle) {
                 connectorStyle = it
             }
             OtherOptions(
                 otherOptions,
-                onUpdate = { otherOptions = it }
+                onUpdate = { otherOptions = it },
             )
         }
     }
 }
 
 @Composable
-fun LegendPositionSelector(value: LegendLocation, onSelection: (LegendLocation) -> Unit) {
+fun LegendPositionSelector(
+    value: LegendLocation,
+    onSelection: (LegendLocation) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     ExpandableCard(
-        modifier = paddingMod,
+        titleContent = { Text("Legend Location", modifier = paddingMod) },
+        modifier = modifier.then(paddingMod),
         colors = CardDefaults.elevatedCardColors(),
         elevation = CardDefaults.elevatedCardElevation(),
-        titleContent = { Text("Legend Location", modifier = paddingMod) }
-    ) {
-        Column {
-            LegendLocation.entries.forEach {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    RadioButton(it == value, onClick = { onSelection(it) })
-                    Text(it.name)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun LabelOptionsSelector(state: LabelOptionsState, update: (LabelOptionsState) -> Unit) {
-    ExpandableCard(
-        modifier = paddingMod,
-        colors = CardDefaults.elevatedCardColors(),
-        elevation = CardDefaults.elevatedCardElevation(),
-        titleContent = { Text("Label Options", modifier = paddingMod) }
-    ) {
-        Row {
-            Column(modifier = paddingMod) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(checked = state.showLabels, onCheckedChange = { update(state.copy(showLabels = it)) })
-                    Text("Show labels", modifier = paddingMod)
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Slider(
-                        state.labelSpacing,
-                        { update(state.copy(labelSpacing = it)) },
-                        valueRange = LabelSpacingSliderRange,
-                        modifier = Modifier.width(150.dp)
-                    )
-                    Text("Label spacing ${state.labelSpacing}")
-                }
-                Column {
-                    Text("Position")
-                    RadioButtonRow(
-                        state.labelPlacement is PieLabelPlacement.External,
-                        onClick = { update(state.copy(labelPlacement = PieLabelPlacement.External)) },
-                        "External"
-                    )
-                    RadioButtonRow(
-                        state.labelPlacement is PieLabelPlacement.InternalOrExternal,
-                        onClick = { update(state.copy(labelPlacement = PieLabelPlacement.InternalOrExternal())) },
-                        "Internal or External"
-                    )
-                    RadioButtonRow(
-                        state.labelPlacement is PieLabelPlacement.Internal,
-                        onClick = { update(state.copy(labelPlacement = PieLabelPlacement.Internal())) },
-                        "Internal"
-                    )
+        content = {
+            Column {
+                LegendLocation.entries.forEach {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        val r = when (state.labelPlacement) {
-                            is PieLabelPlacement.External -> 0f
-                            is PieLabelPlacement.Internal -> state.labelPlacement.radius
-                            is PieLabelPlacement.InternalOrExternal -> state.labelPlacement.radius
-                        }
-                        Slider(
-                            r,
-                            {
-                                when (state.labelPlacement) {
-                                    is PieLabelPlacement.Internal -> update(
-                                        state.copy(labelPlacement = PieLabelPlacement.Internal(it))
-                                    )
-
-                                    is PieLabelPlacement.InternalOrExternal -> update(
-                                        state.copy(labelPlacement = PieLabelPlacement.InternalOrExternal(it))
-                                    )
-
-                                    else -> {}
-                                }
-                            },
-                            valueRange = 0.1f..0.95f,
-                            modifier = Modifier.width(150.dp),
-                            enabled = state.labelPlacement !is PieLabelPlacement.External
-                        )
-                        Text("Internal label position $r")
+                        RadioButton(it == value, onClick = { onSelection(it) })
+                        Text(it.name)
                     }
                 }
             }
-            ConnectorStyleSelector(update, state)
-            Column(modifier = paddingMod) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Bezier")
-                    Switch(state.straightLine, onCheckedChange = { value ->
-                        update(state.copy(straightLine = value))
-                    })
-                    Text("Straight")
+        },
+    )
+}
+
+@Suppress("LongMethod")
+@Composable
+private fun LabelOptionsSelector(
+    state: LabelOptionsState,
+    update: (LabelOptionsState) -> Unit,
+) {
+    ExpandableCard(
+        titleContent = { Text("Label Options", modifier = paddingMod) },
+        modifier = paddingMod,
+        colors = CardDefaults.elevatedCardColors(),
+        elevation = CardDefaults.elevatedCardElevation(),
+        content = {
+            Row {
+                Column(modifier = paddingMod) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(checked = state.showLabels, onCheckedChange = { update(state.copy(showLabels = it)) })
+                        Text("Show labels", modifier = paddingMod)
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Slider(
+                            state.labelSpacing,
+                            { update(state.copy(labelSpacing = it)) },
+                            valueRange = LabelSpacingSliderRange,
+                            modifier = Modifier.width(150.dp),
+                        )
+                        Text("Label spacing ${state.labelSpacing}")
+                    }
+                    Column {
+                        Text("Position")
+                        RadioButtonRow(
+                            state.labelPlacement is PieLabelPlacement.External,
+                            onClick = { update(state.copy(labelPlacement = PieLabelPlacement.External)) },
+                            "External",
+                        )
+                        RadioButtonRow(
+                            state.labelPlacement is PieLabelPlacement.InternalOrExternal,
+                            onClick = { update(state.copy(labelPlacement = PieLabelPlacement.InternalOrExternal())) },
+                            "Internal or External",
+                        )
+                        RadioButtonRow(
+                            state.labelPlacement is PieLabelPlacement.Internal,
+                            onClick = { update(state.copy(labelPlacement = PieLabelPlacement.Internal())) },
+                            "Internal",
+                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            val r = when (state.labelPlacement) {
+                                is PieLabelPlacement.External -> 0f
+                                is PieLabelPlacement.Internal -> state.labelPlacement.radius
+                                is PieLabelPlacement.InternalOrExternal -> state.labelPlacement.radius
+                            }
+                            Slider(
+                                r,
+                                {
+                                    when (state.labelPlacement) {
+                                        is PieLabelPlacement.Internal -> {
+                                            update(
+                                                state.copy(labelPlacement = PieLabelPlacement.Internal(it)),
+                                            )
+                                        }
+
+                                        is PieLabelPlacement.InternalOrExternal -> {
+                                            update(
+                                                state.copy(labelPlacement = PieLabelPlacement.InternalOrExternal(it)),
+                                            )
+                                        }
+
+                                        else -> {}
+                                    }
+                                },
+                                valueRange = 0.1f..0.95f,
+                                modifier = Modifier.width(150.dp),
+                                enabled = state.labelPlacement !is PieLabelPlacement.External,
+                            )
+                            Text("Internal label position $r")
+                        }
+                    }
+                }
+                ConnectorStyleSelector(update, state)
+                Column(modifier = paddingMod) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("Bezier")
+                        Switch(state.straightLine, onCheckedChange = { value ->
+                            update(state.copy(straightLine = value))
+                        })
+                        Text("Straight")
+                    }
                 }
             }
-        }
-    }
+        },
+    )
 }
 
 @Composable
-private fun ConnectorStyleSelector(update: (LabelOptionsState) -> Unit, state: LabelOptionsState) {
+private fun ConnectorStyleSelector(
+    update: (LabelOptionsState) -> Unit,
+    state: LabelOptionsState,
+) {
     var expanded by remember { mutableStateOf(false) }
     Box(modifier = paddingMod) {
         Button(onClick = { expanded = true }) {
@@ -243,7 +260,7 @@ private fun ConnectorStyleSelector(update: (LabelOptionsState) -> Unit, state: L
         }
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
         ) {
             strokes.forEachIndexed { index, stroke ->
                 DropdownMenuItem(
@@ -256,15 +273,15 @@ private fun ConnectorStyleSelector(update: (LabelOptionsState) -> Unit, state: L
                                     end = Offset(size.width - 5.dp.toPx(), size.height / 2),
                                     strokeWidth = stroke.width,
                                     cap = stroke.cap,
-                                    pathEffect = stroke.pathEffect
+                                    pathEffect = stroke.pathEffect,
                                 )
-                            }
+                            },
                         ) {}
                     },
                     onClick = {
                         update(state.copy(strokeStyle = stroke))
                         expanded = false
-                    }
+                    },
                 )
             }
         }
@@ -272,7 +289,12 @@ private fun ConnectorStyleSelector(update: (LabelOptionsState) -> Unit, state: L
 }
 
 @Composable
-private fun RadioButtonRow(enabled: Boolean, onClick: () -> Unit, text: String, modifier: Modifier = Modifier) {
+private fun RadioButtonRow(
+    enabled: Boolean,
+    onClick: () -> Unit,
+    text: String,
+    modifier: Modifier = Modifier,
+) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
         RadioButton(enabled, onClick)
         Text(text)
@@ -286,57 +308,58 @@ private fun OtherOptions(
     onUpdate: (OtherOptionsState) -> Unit,
 ) {
     ExpandableCard(
+        titleContent = {
+            Text("Other Options", modifier = paddingMod)
+        },
         modifier = paddingMod,
         colors = CardDefaults.elevatedCardColors(),
         elevation = CardDefaults.elevatedCardElevation(),
-        titleContent = {
-            Text("Other Options", modifier = paddingMod)
-        }
-    ) {
-        Column(modifier = paddingMod) {
-            FlowRow {
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-                    Checkbox(
-                        checked = state.antiAlias,
-                        onCheckedChange = { onUpdate(state.copy(antiAlias = it)) }
-                    )
-                    Text("Antialias", modifier = paddingMod)
+        content = {
+            Column(modifier = paddingMod) {
+                FlowRow {
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                        Checkbox(
+                            checked = state.antiAlias,
+                            onCheckedChange = { onUpdate(state.copy(antiAlias = it)) },
+                        )
+                        Text("Antialias", modifier = paddingMod)
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                        Checkbox(
+                            checked = state.borders,
+                            onCheckedChange = { onUpdate(state.copy(borders = it)) },
+                        )
+                        Text("Show slice borders", modifier = paddingMod)
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                        Checkbox(
+                            checked = state.forcePieCentering,
+                            onCheckedChange = { onUpdate(state.copy(forcePieCentering = it)) },
+                        )
+                        Text("Center Pie", modifier = paddingMod)
+                    }
                 }
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-                    Checkbox(
-                        checked = state.borders,
-                        onCheckedChange = { onUpdate(state.copy(borders = it)) }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Slider(
+                        state.holeSize,
+                        { onUpdate(state.copy(holeSize = it)) },
+                        valueRange = HoleSizeRange,
+                        modifier = Modifier.width(150.dp),
                     )
-                    Text("Show slice borders", modifier = paddingMod)
+                    Text("Hole size ${state.holeSize}")
                 }
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-                    Checkbox(
-                        checked = state.forcePieCentering,
-                        onCheckedChange = { onUpdate(state.copy(forcePieCentering = it)) }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Slider(
+                        state.sliceGap,
+                        { onUpdate(state.copy(sliceGap = it)) },
+                        valueRange = SliceGapRange,
+                        modifier = Modifier.width(150.dp),
                     )
-                    Text("Center Pie", modifier = paddingMod)
+                    Text("Slice gap ${state.sliceGap}")
                 }
             }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Slider(
-                    state.holeSize,
-                    { onUpdate(state.copy(holeSize = it)) },
-                    valueRange = HoleSizeRange,
-                    modifier = Modifier.width(150.dp)
-                )
-                Text("Hole size ${state.holeSize}")
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Slider(
-                    state.sliceGap,
-                    { onUpdate(state.copy(sliceGap = it)) },
-                    valueRange = SliceGapRange,
-                    modifier = Modifier.width(150.dp)
-                )
-                Text("Slice gap ${state.sliceGap}")
-            }
-        }
-    }
+        },
+    )
 }
 
 private fun Float.toPercent(precision: Int): String {
@@ -351,7 +374,7 @@ private val vLegend = @Composable {
         symbol = { i ->
             Symbol(
                 modifier = Modifier.size(padding),
-                fillBrush = SolidColor(colors[i])
+                fillBrush = SolidColor(colors[i]),
             )
         },
         label = { i ->
@@ -360,10 +383,10 @@ private val vLegend = @Composable {
         value = { i ->
             Text(
                 (fibonacci[i] / fibonacciSum).toPercent(1),
-                modifier = Modifier.align(Alignment.End)
+                modifier = Modifier.align(Alignment.End),
             )
         },
-        modifier = Modifier.border(1.dp, Color.Black).padding(padding)
+        modifier = Modifier.border(1.dp, Color.Black).padding(padding),
     )
 }
 
@@ -377,7 +400,7 @@ private val hLegend = @Composable {
         label = { i ->
             Text("Category $i")
         },
-        modifier = Modifier.padding(padding).border(1.dp, Color.Black).padding(padding)
+        modifier = Modifier.padding(padding).border(1.dp, Color.Black).padding(padding),
     )
 }
 
@@ -406,7 +429,7 @@ private fun PieChartSample(
                     "Fibonacci Sequence",
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
             }
         },
@@ -419,14 +442,14 @@ private fun PieChartSample(
                 labelSpacing = if (labelOptions.showLabels) labelOptions.labelSpacing else 1.0f,
                 labelPlacement = labelOptions.labelPlacement,
             ),
-            modifier = modifier.padding(start = padding).border(1.dp, Color.Black).padding(padding),
+            modifier = Modifier.padding(start = padding).border(1.dp, Color.Black).padding(padding),
             slice = { i: Int ->
                 DefaultSlice(
                     color = colors[i],
                     border = if (otherOptionsState.borders) {
                         BorderStroke(
                             6.dp,
-                            lerp(colors[i], Color.White, 0.2f)
+                            lerp(colors[i], Color.White, 0.2f),
                         )
                     } else {
                         null
@@ -434,7 +457,7 @@ private fun PieChartSample(
                     hoverExpandFactor = 1.05f,
                     hoverElement = { HoverSurface { Text(fibonacci[i].toString()) } },
                     antiAlias = otherOptionsState.antiAlias,
-                    gap = otherOptionsState.sliceGap
+                    gap = otherOptionsState.sliceGap,
                 )
             },
             label = { i ->
@@ -447,12 +470,12 @@ private fun PieChartSample(
                     if (labelOptions.straightLine) {
                         StraightLineConnector(
                             connectorColor = colors[i],
-                            connectorStroke = labelOptions.strokeStyle
+                            connectorStroke = labelOptions.strokeStyle,
                         )
                     } else {
                         BezierLabelConnector(
                             connectorColor = colors[i],
-                            connectorStroke = labelOptions.strokeStyle
+                            connectorStroke = labelOptions.strokeStyle,
                         )
                     }
                 }
@@ -462,7 +485,7 @@ private fun PieChartSample(
                 HoleTotalLabel(Modifier.fillMaxSize().padding(it))
             },
             maxPieDiameter = Dp.Infinity,
-            forceCenteredPie = otherOptionsState.forcePieCentering
+            forceCenteredPie = otherOptionsState.forcePieCentering,
         )
     }
 }
@@ -470,9 +493,7 @@ private fun PieChartSample(
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Suppress("MagicNumber")
 @Composable
-private fun PieChartThumbnail(
-    modifier: Modifier = Modifier,
-) {
+private fun PieChartThumbnail(modifier: Modifier = Modifier) {
     ChartLayout(
         modifier = modifier.padding(padding),
         title = {
@@ -481,10 +502,10 @@ private fun PieChartThumbnail(
                     "Pie Chart",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
             }
-        }
+        },
     ) {
         PieChart(fibonacci, labelConnector = {})
     }
@@ -495,12 +516,12 @@ private fun PieChartThumbnail(
 private fun HoleTotalLabel(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         ResponsiveText(
             "Total",
             modifier = Modifier.weight(0.20f).fillMaxSize(),
-            style = LocalTextStyle.current.copy(fontFamily = FontFamily.SansSerif, color = Color.Black)
+            style = LocalTextStyle.current.copy(fontFamily = FontFamily.SansSerif, color = Color.Black),
         )
         ResponsiveText(
             "${fibonacciSum.toInt()}",
@@ -508,8 +529,8 @@ private fun HoleTotalLabel(modifier: Modifier = Modifier) {
             style = LocalTextStyle.current.copy(
                 fontFamily = FontFamily.SansSerif,
                 color = Color.Black,
-                textAlign = TextAlign.Center
-            )
+                textAlign = TextAlign.Center,
+            ),
         )
     }
 }

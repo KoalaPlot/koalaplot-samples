@@ -34,18 +34,18 @@ private const val DegreesHalfCircle: Float = 180.0f
 
 @Composable
 fun ExpandableCard(
+    titleContent: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.medium,
     colors: CardColors = CardDefaults.cardColors(),
     border: BorderStroke? = null,
     elevation: CardElevation = CardDefaults.cardElevation(),
     initExpandedState: Boolean = false,
-    titleContent: @Composable () -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     var expandedState by remember { mutableStateOf(initExpandedState) }
     val rotationState by animateFloatAsState(
-        targetValue = if (expandedState) DegreesHalfCircle else 0f
+        targetValue = if (expandedState) DegreesHalfCircle else 0f,
     )
 
     Card(
@@ -57,7 +57,7 @@ fun ExpandableCard(
     ) {
         Column {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 titleContent.invoke()
                 Spacer(modifier = Modifier.weight(1f))
@@ -65,12 +65,12 @@ fun ExpandableCard(
                     modifier = Modifier.rotate(rotationState),
                     onClick = {
                         expandedState = !expandedState
-                    }
+                    },
                 ) {
                     CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant) {
                         Icon(
                             imageVector = Icons.Default.ArrowDropDown,
-                            contentDescription = "Drop-Down Arrow"
+                            contentDescription = "Drop-Down Arrow",
                         )
                     }
                 }
@@ -80,9 +80,9 @@ fun ExpandableCard(
                 modifier = Modifier.animateContentSize(
                     animationSpec = tween(
                         durationMillis = 300,
-                        easing = LinearOutSlowInEasing
-                    )
-                )
+                        easing = LinearOutSlowInEasing,
+                    ),
+                ),
             ) {
                 if (expandedState) {
                     content()

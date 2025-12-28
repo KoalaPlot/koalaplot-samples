@@ -38,11 +38,9 @@ import io.github.koalaplot.core.xygraph.rememberAxisStyle
 private val colors = generateHueColorPalette(fibonacci.size)
 private const val BarWidth = 0.8f
 
-private fun barChartEntries(): List<VerticalBarPlotEntry<Float, Float>> {
-    return buildList {
-        fibonacci.forEachIndexed { index, fl ->
-            add(DefaultVerticalBarPlotEntry((index + 1).toFloat(), DefaultBarPosition(0f, fl)))
-        }
+private fun barChartEntries(): List<VerticalBarPlotEntry<Float, Float>> = buildList {
+    fibonacci.forEachIndexed { index, fl ->
+        add(DefaultVerticalBarPlotEntry((index + 1).toFloat(), DefaultBarPosition(0f, fl)))
     }
 }
 
@@ -52,7 +50,7 @@ val verticalBarSampleView = object : SampleView {
 
     override val thumbnail = @Composable {
         ThumbnailTheme {
-            BarSamplePlot(true, TickPositionState(TickPosition.None, TickPosition.None), name)
+            BarSamplePlot(TickPositionState(TickPosition.None, TickPosition.None), name, Modifier, true)
         }
     }
 
@@ -61,21 +59,21 @@ val verticalBarSampleView = object : SampleView {
             mutableStateOf(
                 TickPositionState(
                     TickPosition.Outside,
-                    TickPosition.Outside
-                )
+                    TickPosition.Outside,
+                ),
             )
         }
 
         Column {
             ChartLayout(
-                modifier = Modifier.sizeIn(minHeight = 200.dp, maxHeight = 600.dp).weight(1f)
+                modifier = Modifier.sizeIn(minHeight = 200.dp, maxHeight = 600.dp).weight(1f),
             ) {
-                BarSamplePlot(false, tickPositionState, "Fibonacci Sequence")
+                BarSamplePlot(tickPositionState, "Fibonacci Sequence", modifier = Modifier)
             }
             HorizontalDivider(modifier = Modifier.fillMaxWidth())
-            TickPositionSelector(tickPositionState) {
+            TickPositionSelector(tickPositionState, {
                 tickPositionState = it
-            }
+            }, Modifier)
         }
     }
 }
@@ -86,15 +84,16 @@ private val XAxisRange = 0.5f..8.5f
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
 private fun BarSamplePlot(
-    thumbnail: Boolean = false,
     tickPositionState: TickPositionState,
-    title: String
+    title: String,
+    modifier: Modifier = Modifier,
+    thumbnail: Boolean = false,
 ) {
     val barChartEntries = remember(thumbnail) { barChartEntries() }
 
     ChartLayout(
-        modifier = paddingMod,
-        title = { ChartTitle(title) }
+        modifier = modifier.then(paddingMod),
+        title = { ChartTitle(title) },
     ) {
         XYGraph(
             xAxisModel = FloatLinearAxisModel(
@@ -102,16 +101,16 @@ private fun BarSamplePlot(
                 minimumMajorTickIncrement = 1f,
                 minimumMajorTickSpacing = 10.dp,
                 minViewExtent = 3f,
-                minorTickCount = 0
+                minorTickCount = 0,
             ),
             yAxisModel = FloatLinearAxisModel(
                 YAxisRange,
                 minimumMajorTickIncrement = 1f,
-                minorTickCount = 0
+                minorTickCount = 0,
             ),
             xAxisStyle = rememberAxisStyle(
                 tickPosition = tickPositionState.horizontalAxis,
-                color = Color.LightGray
+                color = Color.LightGray,
             ),
             xAxisLabels = {
                 if (!thumbnail) {
@@ -127,12 +126,13 @@ private fun BarSamplePlot(
                 if (!thumbnail) {
                     AxisTitle(
                         "Value",
-                        modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                            .padding(bottom = padding)
+                        modifier = Modifier
+                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                            .padding(bottom = padding),
                     )
                 }
             },
-            verticalMajorGridLineStyle = null
+            verticalMajorGridLineStyle = null,
         ) {
             VerticalBarPlot(
                 barChartEntries,
@@ -146,7 +146,7 @@ private fun BarSamplePlot(
                         }
                     }
                 },
-                barWidth = BarWidth
+                barWidth = BarWidth,
             )
         }
     }
@@ -154,43 +154,45 @@ private fun BarSamplePlot(
 
 data class TickPositionState(
     val verticalAxis: TickPosition,
-    val horizontalAxis: TickPosition
+    val horizontalAxis: TickPosition,
 )
 
 @Composable
 fun TickPositionSelector(
     state: TickPositionState,
-    update: (TickPositionState) -> Unit
+    update: (TickPositionState) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     ExpandableCard(
-        modifier = paddingMod,
-        titleContent = { Text("Axis options", modifier = paddingMod) }
-    ) {
-        Row {
-            Column {
-                Text("Vertical")
-                TickPosition.entries.forEach {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        RadioButton(
-                            it == state.verticalAxis,
-                            onClick = { update(state.copy(verticalAxis = it)) }
-                        )
-                        Text(it.name)
+        titleContent = { Text("Axis options", modifier = paddingMod) },
+        modifier = modifier.then(paddingMod),
+        content = {
+            Row {
+                Column {
+                    Text("Vertical")
+                    TickPosition.entries.forEach {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            RadioButton(
+                                it == state.verticalAxis,
+                                onClick = { update(state.copy(verticalAxis = it)) },
+                            )
+                            Text(it.name)
+                        }
+                    }
+                }
+                Column {
+                    Text("Horizontal")
+                    TickPosition.entries.forEach {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            RadioButton(
+                                it == state.horizontalAxis,
+                                onClick = { update(state.copy(horizontalAxis = it)) },
+                            )
+                            Text(it.name)
+                        }
                     }
                 }
             }
-            Column {
-                Text("Horizontal")
-                TickPosition.entries.forEach {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        RadioButton(
-                            it == state.horizontalAxis,
-                            onClick = { update(state.copy(horizontalAxis = it)) }
-                        )
-                        Text(it.name)
-                    }
-                }
-            }
-        }
-    }
+        },
+    )
 }

@@ -72,9 +72,9 @@ val heatMapSampleView =
                     HeapMapSamplePlot(state = sampleState)
                 }
                 HorizontalDivider(modifier = Modifier.fillMaxWidth())
-                HeatMapSampleConfigurator(sampleState) {
+                HeatMapSampleConfigurator(sampleState, {
                     sampleState = it
-                }
+                })
             }
         }
     }
@@ -105,18 +105,17 @@ private fun generateGaussianCluster(
     random: Random,
     numPoints: Int,
     config: ClusterConfig,
-): List<Point2D> =
-    List(numPoints) {
-        val angle = random.nextDouble() * 2 * PI
-        // Box-Muller transform for Gaussian distribution
-        val u1 = random.nextDouble()
-        val u2 = random.nextDouble()
-        val radius = abs(sqrt(-2.0 * ln(u1)) * cos(2.0 * PI * u2) * config.standardDeviation)
-        Point2D(
-            config.centerX + radius * cos(angle),
-            config.centerY + radius * sin(angle),
-        )
-    }
+): List<Point2D> = List(numPoints) {
+    val angle = random.nextDouble() * 2 * PI
+    // Box-Muller transform for Gaussian distribution
+    val u1 = random.nextDouble()
+    val u2 = random.nextDouble()
+    val radius = abs(sqrt(-2.0 * ln(u1)) * cos(2.0 * PI * u2) * config.standardDeviation)
+    Point2D(
+        config.centerX + radius * cos(angle),
+        config.centerY + radius * sin(angle),
+    )
+}
 
 /**
  * Generate 2D points with multiple distinct clusters for histogram demonstration
@@ -142,12 +141,11 @@ public fun generateHistogramPoints(
 /**
  * Default cluster configurations that create overlapping patterns
  */
-public fun defaultClusterConfigs(): List<ClusterConfig> =
-    listOf(
-        ClusterConfig(centerX = 25.0, centerY = 25.0, standardDeviation = 4500.0, weight = 0.4),
-        ClusterConfig(centerX = 75.0, centerY = 75.0, standardDeviation = 4200.0, weight = 0.3),
-        ClusterConfig(centerX = 10.0, centerY = 80.0, standardDeviation = 4000.0, weight = 0.2),
-    )
+public fun defaultClusterConfigs(): List<ClusterConfig> = listOf(
+    ClusterConfig(centerX = 25.0, centerY = 25.0, standardDeviation = 4500.0, weight = 0.4),
+    ClusterConfig(centerX = 75.0, centerY = 75.0, standardDeviation = 4200.0, weight = 0.3),
+    ClusterConfig(centerX = 10.0, centerY = 80.0, standardDeviation = 4000.0, weight = 0.2),
+)
 
 /**
  * Extension function to find maximum value in a HeatMapGrid
@@ -212,6 +210,7 @@ public fun generateHeatMapData(
 @Composable
 fun HeapMapSamplePlot(
     state: HeapMapSampleState,
+    modifier: Modifier = Modifier,
     thumbnail: Boolean = false,
 ) {
     val gridSize = 100
@@ -229,7 +228,7 @@ fun HeapMapSamplePlot(
 
     Column(
         modifier =
-            Modifier
+            modifier
                 .fillMaxSize()
                 .padding(16.dp),
     ) {
@@ -362,10 +361,11 @@ fun LabeledRadioButton(
     selected: Boolean,
     onClick: () -> Unit,
     label: String,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier =
-            Modifier
+            modifier
                 .selectable(
                     selected = selected,
                     onClick = onClick,
@@ -388,32 +388,34 @@ fun LabeledRadioButton(
 fun HeatMapSampleConfigurator(
     state: HeapMapSampleState,
     update: (HeapMapSampleState) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     ExpandableCard(
-        modifier = paddingMod,
         titleContent = { Text("Heat Map Options", modifier = paddingMod) },
-    ) {
-        Column {
-            Text("Scale for 2D histogram data")
-            Row {
-                ScaleConfig.entries.forEach {
-                    LabeledRadioButton(
-                        label = it.name,
-                        selected = it == state.histogramScale,
-                        onClick = { update(state.copy(histogramScale = it)) },
-                    )
+        modifier = modifier.then(paddingMod),
+        content = {
+            Column {
+                Text("Scale for 2D histogram data")
+                Row {
+                    ScaleConfig.entries.forEach {
+                        LabeledRadioButton(
+                            label = it.name,
+                            selected = it == state.histogramScale,
+                            onClick = { update(state.copy(histogramScale = it)) },
+                        )
+                    }
+                }
+                Text("Scale for sampled function data")
+                Row {
+                    ScaleConfig.entries.forEach {
+                        LabeledRadioButton(
+                            label = it.name,
+                            selected = it == state.heatMapScale,
+                            onClick = { update(state.copy(heatMapScale = it)) },
+                        )
+                    }
                 }
             }
-            Text("Scale for sampled function data")
-            Row {
-                ScaleConfig.entries.forEach {
-                    LabeledRadioButton(
-                        label = it.name,
-                        selected = it == state.heatMapScale,
-                        onClick = { update(state.copy(heatMapScale = it)) },
-                    )
-                }
-            }
-        }
-    }
+        },
+    )
 }

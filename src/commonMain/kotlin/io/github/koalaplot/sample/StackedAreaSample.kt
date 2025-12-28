@@ -84,9 +84,9 @@ private fun StackedAreaChartSampleView(
             BezierOptions(
                 bezier,
                 tau,
-                Modifier.padding(KoalaPlotTheme.sizes.gap),
                 { bezier = it },
                 { tau = it },
+                Modifier.padding(KoalaPlotTheme.sizes.gap),
             )
             HorizontalDivider()
         }
@@ -172,6 +172,7 @@ private fun XYGraphScope<Int, Float>.StackedAreaLinePlot(thumbnail: Boolean) {
     annotations(thumbnail)
 }
 
+@Suppress("MagicNumber")
 @Composable
 private fun XYGraphScope<Int, Float>.StackedAreaBezierPlot(
     thumbnail: Boolean,

@@ -35,45 +35,52 @@ import io.github.koalaplot.sample.polar.radialLinePlotSample
 import io.github.koalaplot.sample.polar.spiderPlotSample
 
 // https://developer.android.com/guide/topics/large-screens/support-different-screen-sizes#window_size_classes
-enum class WindowWidthSizeClass(private val threshold: Dp) {
-    Compact(0.dp), Medium(600.dp), Expanded(840.dp);
+enum class WindowWidthSizeClass(
+    private val threshold: Dp,
+) {
+    Compact(0.dp),
+    Medium(600.dp),
+    Expanded(840.dp),
+    ;
 
     companion object {
-        fun fromWidth(width: Dp): WindowWidthSizeClass {
-            return when {
-                width >= Expanded.threshold -> Expanded
-                width >= Medium.threshold -> Medium
-                else -> Compact
-            }
+        fun fromWidth(width: Dp): WindowWidthSizeClass = when {
+            width >= Expanded.threshold -> Expanded
+            width >= Medium.threshold -> Medium
+            else -> Compact
         }
     }
 }
 
-enum class WindowHeightSizeClass(private val threshold: Dp) {
-    Compact(0.dp), Medium(480.dp), Expanded(900.dp);
+enum class WindowHeightSizeClass(
+    private val threshold: Dp,
+) {
+    Compact(0.dp),
+    Medium(480.dp),
+    Expanded(900.dp),
+    ;
 
     companion object {
-        fun fromHeight(height: Dp): WindowHeightSizeClass {
-            return when {
-                height >= Expanded.threshold -> Expanded
-                height >= Medium.threshold -> Medium
-                else -> Compact
-            }
+        fun fromHeight(height: Dp): WindowHeightSizeClass = when {
+            height >= Expanded.threshold -> Expanded
+            height >= Medium.threshold -> Medium
+            else -> Compact
         }
     }
 }
 
 class WindowSizeClass(
     val widthSizeClass: WindowWidthSizeClass,
-    val heightSizeClass: WindowHeightSizeClass
+    val heightSizeClass: WindowHeightSizeClass,
 ) {
     companion object {
-        fun fromSize(width: Dp, height: Dp): WindowSizeClass {
-            return WindowSizeClass(
-                WindowWidthSizeClass.fromWidth(width),
-                WindowHeightSizeClass.fromHeight(height)
-            )
-        }
+        fun fromSize(
+            width: Dp,
+            height: Dp,
+        ): WindowSizeClass = WindowSizeClass(
+            WindowWidthSizeClass.fromWidth(width),
+            WindowHeightSizeClass.fromHeight(height),
+        )
     }
 }
 
@@ -104,15 +111,15 @@ private val samples = buildList {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainView() {
+fun MainView(modifier: Modifier = Modifier) {
     MaterialTheme {
         KoalaPlotTheme {
             var selectedTabIndex by remember { mutableStateOf(-1) }
 
-            Scaffold(topBar = {
+            Scaffold(modifier = modifier, topBar = {
                 if (selectedTabIndex == -1) {
                     TopAppBar(
-                        title = { Text("Select Sample") }
+                        title = { Text("Select Sample") },
                     )
                 } else {
                     TopAppBar(
@@ -121,7 +128,7 @@ fun MainView() {
                             IconButton({ selectedTabIndex = -1 }) {
                                 Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
                             }
-                        }
+                        },
                     )
                 }
             }) { innerPadding ->
@@ -129,11 +136,11 @@ fun MainView() {
                     Modifier
                         .consumeWindowInsets(innerPadding)
                         .padding(innerPadding)
-                        .fillMaxSize()
+                        .fillMaxSize(),
                 ) {
                     if (selectedTabIndex == -1) {
                         ThumbnailsView(
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
                         ) {
                             selectedTabIndex = it
                         }
@@ -152,7 +159,7 @@ fun MainView() {
 @Composable
 private fun ThumbnailsView(
     modifier: Modifier = Modifier,
-    select: (Int) -> Unit
+    select: (Int) -> Unit,
 ) {
     BoxWithConstraints(modifier) {
         val sizeClass = WindowSizeClass.fromSize(maxWidth, maxHeight)
@@ -165,7 +172,7 @@ private fun ThumbnailsView(
         }
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(columns)
+            columns = GridCells.Fixed(columns),
         ) {
             itemsIndexed(samples) { index, item ->
                 Thumbnail({ select(index) }, item.thumbnail)
@@ -175,11 +182,14 @@ private fun ThumbnailsView(
 }
 
 @Composable
-private fun Thumbnail(onClick: () -> Unit, content: @Composable () -> Unit) {
+private fun Thumbnail(
+    onClick: () -> Unit,
+    content: @Composable () -> Unit,
+) {
     Surface(
         shadowElevation = 2.dp,
         modifier = Modifier.padding(padding).clickable(onClick = onClick).aspectRatio(1f),
-        content = content
+        content = content,
     )
 }
 

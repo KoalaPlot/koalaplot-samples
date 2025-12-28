@@ -56,12 +56,15 @@ val radialLinePlotSample = object : SampleView {
 @OptIn(ExperimentalKoalaPlotApi::class, ExperimentalMaterial3Api::class)
 @Composable
 @Suppress("MagicNumber")
-private fun RadialLinePlotSample(thumbnail: Boolean, title: String) {
+private fun RadialLinePlotSample(
+    thumbnail: Boolean,
+    title: String,
+) {
     ChartLayout(
         modifier = paddingMod,
         title = { ChartTitle(title) },
         legend = { Legend(thumbnail) },
-        legendLocation = LegendLocation.BOTTOM
+        legendLocation = LegendLocation.BOTTOM,
     ) {
         val ram = rememberFloatRadialAxisModel(listOf(0f, 0.5f, 1f, 1.5f, 2f, 2.5f, 3f)) // population in millions
         val aam = rememberCategoryAngularAxisModel(PopulationData.years)
@@ -77,11 +80,12 @@ private fun RadialLinePlotSample(thumbnail: Boolean, title: String) {
             aam,
             radialAxisLabels = { if (!thumbnail) Text(it.toString(1)) },
             { if (!thumbnail) Text(it.toString()) },
-            polarGraphProperties = PolarGraphDefaults.PolarGraphPropertyDefaults()
+            polarGraphProperties = PolarGraphDefaults
+                .PolarGraphPropertyDefaults()
                 .copy(
                     angularAxisGridLineStyle = angularAxisGridLineStyle,
-                    radialAxisGridLineStyle = angularAxisGridLineStyle
-                )
+                    radialAxisGridLineStyle = angularAxisGridLineStyle,
+                ),
         ) {
             PopulationData.data.forEach { (category, data) ->
                 PolarPlotSeries2(
@@ -89,22 +93,21 @@ private fun RadialLinePlotSample(thumbnail: Boolean, title: String) {
                         override val size: Int
                             get() = PopulationData.years.size
 
-                        override fun get(index: Int): PolarPoint<Float, Int> {
-                            return DefaultPolarPoint(data[index] / 1E6f, PopulationData.years[index])
-                        }
+                        override fun get(index: Int): PolarPoint<Float, Int> =
+                            DefaultPolarPoint(data[index] / 1E6f, PopulationData.years[index])
                     },
                     lineStyle = LineStyle(SolidColor(colorMap[category]!!), strokeWidth = 1.dp),
                     symbols = {
                         TooltipBox(
                             positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
-                                TooltipAnchorPosition.Above
+                                TooltipAnchorPosition.Above,
                             ),
                             tooltip = {
                                 if (!thumbnail) {
                                     PlainTooltip {
                                         Text(
                                             "${(it.r * 1E6).toInt()}",
-                                            style = MaterialTheme.typography.bodySmall
+                                            style = MaterialTheme.typography.bodySmall,
                                         )
                                     }
                                 }
@@ -113,10 +116,10 @@ private fun RadialLinePlotSample(thumbnail: Boolean, title: String) {
                         ) {
                             Symbol(
                                 shape = CircleShape,
-                                fillBrush = SolidColor(colorMap[category]!!)
+                                fillBrush = SolidColor(colorMap[category]!!),
                             )
                         }
-                    }
+                    },
                 )
             }
         }
@@ -144,13 +147,13 @@ private fun Legend(thumbnail: Boolean = false) {
                     Symbol(
                         shape = CircleShape,
                         modifier = Modifier.size(padding),
-                        fillBrush = SolidColor(colorMap[cities[i]] ?: Color.Black)
+                        fillBrush = SolidColor(colorMap[cities[i]] ?: Color.Black),
                     )
                 },
                 label = { i ->
                     Text(cities[i].display)
                 },
-                modifier = paddingMod
+                modifier = paddingMod,
             )
         }
     }

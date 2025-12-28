@@ -93,9 +93,9 @@ private fun LineChartSample(
             BezierOptions(
                 bezier,
                 tau,
-                Modifier.padding(KoalaPlotTheme.sizes.gap),
                 { bezier = it },
                 { tau = it },
+                Modifier.padding(KoalaPlotTheme.sizes.gap),
             )
             HorizontalDivider()
         }
@@ -107,9 +107,9 @@ private fun LineChartSample(
 internal fun BezierOptions(
     bezierOn: Boolean,
     tau: Float,
-    modifier: Modifier = Modifier,
     updateBezier: (Boolean) -> Unit,
     updateTau: (Float) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         Row(
@@ -187,10 +187,9 @@ private fun XYSamplePlot(
                             ) {
                                 AxisTitle(
                                     "Rainfall (mm)",
-                                    modifier =
-                                        Modifier
-                                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                                            .padding(bottom = padding),
+                                    modifier = Modifier
+                                        .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                                        .padding(bottom = padding),
                                 )
                             }
                         }

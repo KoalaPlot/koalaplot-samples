@@ -53,14 +53,17 @@ val trigSampleView = object : SampleView {
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
 @Suppress("MagicNumber")
-private fun CosineSamplePlot(thumbnail: Boolean, title: String) {
+private fun CosineSamplePlot(
+    thumbnail: Boolean,
+    title: String,
+) {
     val x: MutableState<Float?> = remember { mutableStateOf(null as Float?) }
     val y: MutableState<Float?> = remember { mutableStateOf(null as Float?) }
 
     ChartLayout(
         modifier = paddingMod.padding(end = 16.dp),
         title = { ChartTitle(title) },
-        legendLocation = LegendLocation.BOTTOM
+        legendLocation = LegendLocation.BOTTOM,
     ) {
         XYGraph(
             xAxisModel = FloatLinearAxisModel(0f..4.0.toFloat()), // units of PI
@@ -78,15 +81,16 @@ private fun CosineSamplePlot(thumbnail: Boolean, title: String) {
                 if (!thumbnail) {
                     AxisTitle(
                         "cosine",
-                        modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                            .padding(bottom = padding)
+                        modifier = Modifier
+                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                            .padding(bottom = padding),
                     )
                 }
             },
             onPointerMove = { xp: Float, yp: Float ->
                 x.value = xp
                 y.value = interpolate(xp)
-            }
+            },
         ) {
             AreaPlot2(
                 data = cosineData,
@@ -95,7 +99,7 @@ private fun CosineSamplePlot(thumbnail: Boolean, title: String) {
                     brush = SolidColor(Color.Blue),
                     alpha = 0.5f,
                 ),
-                areaBaseline = AreaBaseline.ConstantLine(0f)
+                areaBaseline = AreaBaseline.ConstantLine(0f),
             )
             val lx = x.value
             val ly = y.value
@@ -103,7 +107,7 @@ private fun CosineSamplePlot(thumbnail: Boolean, title: String) {
                 VerticalLineAnnotation(it, lineStyle = LineStyle(brush = SolidColor(Color.Blue), strokeWidth = 1.dp))
                 XYAnnotation(
                     Point(it, -1.1f),
-                    AnchorPoint.BottomCenter
+                    AnchorPoint.BottomCenter,
                 ) {
                     Text((it * PI).toString())
                 }
@@ -113,7 +117,7 @@ private fun CosineSamplePlot(thumbnail: Boolean, title: String) {
                 HorizontalLineAnnotation(it, LineStyle(brush = SolidColor(Color.Blue), strokeWidth = 1.dp))
                 XYAnnotation(
                     Point(0f, it),
-                    AnchorPoint.BottomLeft
+                    AnchorPoint.BottomLeft,
                 ) {
                     Text(it.toString())
                 }
@@ -121,7 +125,7 @@ private fun CosineSamplePlot(thumbnail: Boolean, title: String) {
             if (lx != null && ly != null) {
                 XYAnnotation(
                     Point(lx, ly),
-                    AnchorPoint.Center
+                    AnchorPoint.Center,
                 ) {
                     Box(modifier = Modifier.clip(CircleShape).size(8.dp).background(Color.Cyan)) {
                     }
@@ -143,8 +147,14 @@ private fun interpolate(xp: Float): Float {
         val m = -i - 1
 
         when (m) {
-            0 -> cosineData[m].y
-            cosineData.lastIndex -> cosineData[m].y
+            0 -> {
+                cosineData[m].y
+            }
+
+            cosineData.lastIndex -> {
+                cosineData[m].y
+            }
+
             else -> {
                 // interpolation between points
                 val l = m - 1

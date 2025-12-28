@@ -35,11 +35,9 @@ import io.github.koalaplot.core.xygraph.rememberAxisStyle
 private val colors = generateHueColorPalette(fibonacci.size)
 private const val BarWidth = 0.8f
 
-private fun barChartEntries(): List<HorizontalBarPlotEntry<Float, Float>> {
-    return buildList {
-        fibonacci.forEachIndexed { index, fl ->
-            add(DefaultHorizontalBarPlotEntry((index + 1).toFloat(), DefaultBarPosition(0f, fl)))
-        }
+private fun barChartEntries(): List<HorizontalBarPlotEntry<Float, Float>> = buildList {
+    fibonacci.forEachIndexed { index, fl ->
+        add(DefaultHorizontalBarPlotEntry((index + 1).toFloat(), DefaultBarPosition(0f, fl)))
     }
 }
 
@@ -49,7 +47,7 @@ val horizontalBarSampleView = object : SampleView {
 
     override val thumbnail = @Composable {
         ThumbnailTheme {
-            BarSamplePlot(true, TickPositionState(TickPosition.None, TickPosition.None), name)
+            BarSamplePlot(TickPositionState(TickPosition.None, TickPosition.None), name, thumbnail = true)
         }
     }
 
@@ -58,21 +56,21 @@ val horizontalBarSampleView = object : SampleView {
             mutableStateOf(
                 TickPositionState(
                     TickPosition.Outside,
-                    TickPosition.Outside
-                )
+                    TickPosition.Outside,
+                ),
             )
         }
 
         Column {
             ChartLayout(
-                modifier = Modifier.sizeIn(minHeight = 200.dp, maxHeight = 600.dp).weight(1f)
+                modifier = Modifier.sizeIn(minHeight = 200.dp, maxHeight = 600.dp).weight(1f),
             ) {
-                BarSamplePlot(false, tickPositionState, "Fibonacci Sequence")
+                BarSamplePlot(tickPositionState, "Fibonacci Sequence")
             }
             HorizontalDivider(modifier = Modifier.fillMaxWidth())
-            TickPositionSelector(tickPositionState) {
+            TickPositionSelector(tickPositionState, {
                 tickPositionState = it
-            }
+            }, Modifier)
         }
     }
 }
@@ -83,15 +81,16 @@ private val YAxisRange = 0.5f..8.5f
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
 private fun BarSamplePlot(
-    thumbnail: Boolean = false,
     tickPositionState: TickPositionState,
-    title: String
+    title: String,
+    modifier: Modifier = Modifier,
+    thumbnail: Boolean = false,
 ) {
     val barChartEntries = remember(thumbnail) { barChartEntries() }
 
     ChartLayout(
-        modifier = paddingMod,
-        title = { ChartTitle(title) }
+        modifier = modifier.then(paddingMod),
+        title = { ChartTitle(title) },
     ) {
         XYGraph(
             yAxisModel = FloatLinearAxisModel(
@@ -99,16 +98,16 @@ private fun BarSamplePlot(
                 minimumMajorTickIncrement = 1f,
                 minimumMajorTickSpacing = 10.dp,
                 minViewExtent = 3f,
-                minorTickCount = 0
+                minorTickCount = 0,
             ),
             xAxisModel = FloatLinearAxisModel(
                 XAxisRange,
                 minimumMajorTickIncrement = 1f,
-                minorTickCount = 0
+                minorTickCount = 0,
             ),
             yAxisStyle = rememberAxisStyle(
                 tickPosition = tickPositionState.verticalAxis,
-                color = Color.LightGray
+                color = Color.LightGray,
             ),
             yAxisLabels = {
                 if (!thumbnail) {
@@ -119,9 +118,10 @@ private fun BarSamplePlot(
                 if (!thumbnail) {
                     AxisTitle(
                         "Position in Sequence",
-                        modifier = Modifier.rotateVertically(
-                            VerticalRotation.COUNTER_CLOCKWISE
-                        ).padding(bottom = padding)
+                        modifier = Modifier
+                            .rotateVertically(
+                                VerticalRotation.COUNTER_CLOCKWISE,
+                            ).padding(bottom = padding),
                     )
                 }
             },
@@ -134,7 +134,7 @@ private fun BarSamplePlot(
                     AxisTitle("Value")
                 }
             },
-            horizontalMajorGridLineStyle = null
+            horizontalMajorGridLineStyle = null,
         ) {
             HorizontalBarPlot(
                 barChartEntries,
@@ -148,7 +148,7 @@ private fun BarSamplePlot(
                         }
                     }
                 },
-                barWidth = BarWidth
+                barWidth = BarWidth,
             )
         }
     }

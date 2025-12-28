@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.ktlint.gradle)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeHotReload)
 }
@@ -13,10 +14,6 @@ repositories {
     google()
     mavenCentral()
     mavenLocal()
-}
-
-dependencies {
-    detektPlugins(libs.detekt.formatting)
 }
 
 group = "io.github.koalaplot"
@@ -45,7 +42,7 @@ kotlin {
     listOf(
         iosX64(),
         iosArm64(),
-        iosSimulatorArm64()
+        iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "koalaplot_samples"
@@ -89,7 +86,7 @@ compose.desktop {
             targetFormats(
                 org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg,
                 org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi,
-                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb
+                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb,
             )
             packageName = "KoalaPlot"
             packageVersion = "1.0.0"
@@ -100,7 +97,8 @@ compose.desktop {
                 upgradeUuid = "251c985b-942c-4f30-ba24-96aa7f9309d1"
             }
 
-            macOS { // Use -Pcompose.desktop.mac.sign=true to sign and notarize.
+            macOS {
+                // Use -Pcompose.desktop.mac.sign=true to sign and notarize.
                 bundleID = "io.github.koalaplot.sample.desktop.MainKt"
             }
         }
@@ -137,4 +135,12 @@ detekt {
     parallel = true
     config.setFrom("$rootDir/detekt.yml")
     buildUponDefaultConfig = true
+}
+
+ktlint {
+    version.set("1.8.0")
+}
+
+dependencies {
+    ktlintRuleset(libs.ktlint.compose)
 }

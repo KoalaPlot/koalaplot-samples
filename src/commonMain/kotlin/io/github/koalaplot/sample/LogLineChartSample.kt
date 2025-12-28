@@ -50,16 +50,19 @@ private val XAxisRange = -0.5f..15.5f
 
 @OptIn(ExperimentalKoalaPlotApi::class, ExperimentalMaterial3Api::class)
 @Composable
-private fun XYSamplePlot(thumbnail: Boolean, title: String) {
+private fun XYSamplePlot(
+    thumbnail: Boolean,
+    title: String,
+) {
     ChartLayout(
         modifier = paddingMod,
-        title = { ChartTitle(title) }
+        title = { ChartTitle(title) },
     ) {
         XYGraph(
             xAxisModel = FloatLinearAxisModel(
                 XAxisRange,
                 minimumMajorTickIncrement = 1f,
-                minorTickCount = 0
+                minorTickCount = 0,
             ),
             yAxisModel = LogAxisModel(YAxisRange),
             xAxisLabels = {
@@ -75,8 +78,9 @@ private fun XYSamplePlot(thumbnail: Boolean, title: String) {
                 if (!thumbnail) {
                     AxisTitle(
                         "Value",
-                        modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                            .padding(bottom = padding)
+                        modifier = Modifier
+                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                            .padding(bottom = padding),
                     )
                 }
             },
@@ -101,10 +105,10 @@ private fun XYSamplePlot(thumbnail: Boolean, title: String) {
                         Symbol(
                             shape = CircleShape,
                             fillBrush = SolidColor(Color.Black),
-                            modifier = Modifier.size(8.dp)
+                            modifier = Modifier.size(8.dp),
                         )
                     }
-                }
+                },
             )
         }
     }

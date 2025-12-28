@@ -12,7 +12,9 @@ complexity:
         threshold: 80
 
 style:
+    MaxLineLength:
+      active: false  # checked by ktlint
     MagicNumber:
-        ignorePropertyDeclaration: true
+      ignorePropertyDeclaration: true
     UnusedPrivateMember:
-        ignoreAnnotated: ['Preview']
+      ignoreAnnotated: ['Preview']

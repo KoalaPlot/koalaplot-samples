@@ -33,22 +33,18 @@ import kotlin.math.ceil
 
 private val colors = generateHueColorPalette(PopulationData.Categories.entries.size)
 
-private fun barChartEntries(): List<BarPlotGroupedPointEntry<Int, Float>> {
-    return PopulationData.years.mapIndexed { yearIndex, year ->
-        object : BarPlotGroupedPointEntry<Int, Float> {
-            override val i: Int = year
+private fun barChartEntries(): List<BarPlotGroupedPointEntry<Int, Float>> = PopulationData.years.mapIndexed { yearIndex, year ->
+    object : BarPlotGroupedPointEntry<Int, Float> {
+        override val i: Int = year
 
-            override val d: List<BarPosition<Float>> = object : AbstractList<BarPosition<Float>>() {
-                override val size: Int
-                    get() = PopulationData.Categories.entries.size
+        override val d: List<BarPosition<Float>> = object : AbstractList<BarPosition<Float>>() {
+            override val size: Int
+                get() = PopulationData.Categories.entries.size
 
-                override fun get(index: Int): BarPosition<Float> {
-                    return DefaultBarPosition(
-                        0f,
-                        PopulationData.data[PopulationData.Categories.entries[index]]!![yearIndex].toFloat()
-                    )
-                }
-            }
+            override fun get(index: Int): BarPosition<Float> = DefaultBarPosition(
+                0f,
+                PopulationData.data[PopulationData.Categories.entries[index]]!![yearIndex].toFloat(),
+            )
         }
     }
 }
@@ -82,7 +78,7 @@ val groupedVerticalBarSampleView = object : SampleView {
     override val content: @Composable () -> Unit = @Composable {
         Column {
             ChartLayout(
-                modifier = Modifier.sizeIn(minHeight = 200.dp, maxHeight = 600.dp).weight(1f)
+                modifier = Modifier.sizeIn(minHeight = 200.dp, maxHeight = 600.dp).weight(1f),
             ) {
                 BarSample2Plot(false, "New York City Population")
             }
@@ -94,20 +90,23 @@ private const val PopulationScale = 1E6f
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
-private fun BarSample2Plot(thumbnail: Boolean, title: String) {
+private fun BarSample2Plot(
+    thumbnail: Boolean,
+    title: String,
+) {
     val barChartEntries: List<BarPlotGroupedPointEntry<Int, Float>> = remember(thumbnail) { barChartEntries() }
 
     ChartLayout(
         modifier = paddingMod,
         title = { ChartTitle(title) },
         legend = { Legend(thumbnail) },
-        legendLocation = LegendLocation.BOTTOM
+        legendLocation = LegendLocation.BOTTOM,
     ) {
         XYGraph(
             xAxisModel = CategoryAxisModel(PopulationData.years),
             yAxisModel = FloatLinearAxisModel(
                 0f..(ceil(PopulationData.maxPopulation / PopulationScale) * PopulationScale),
-                minorTickCount = 0
+                minorTickCount = 0,
             ),
             content = {
                 GroupedVerticalBarPlot(
@@ -123,7 +122,7 @@ private fun BarSample2Plot(thumbnail: Boolean, title: String) {
                                 HoverSurface { Text("$borough: $pop") }
                             }
                         }
-                    }
+                    },
                 )
             },
             xAxisLabels = {
@@ -136,7 +135,7 @@ private fun BarSample2Plot(thumbnail: Boolean, title: String) {
                 if (!thumbnail) {
                     AxisLabel(
                         (it / PopulationScale).toString(2),
-                        Modifier.absolutePadding(right = 2.dp)
+                        Modifier.absolutePadding(right = 2.dp),
                     )
                 }
             },
@@ -146,12 +145,13 @@ private fun BarSample2Plot(thumbnail: Boolean, title: String) {
                         "Population (Millions)",
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                        modifier = Modifier
+                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
                             .padding(bottom = padding),
                     )
                 }
             },
-            verticalMajorGridLineStyle = null
+            verticalMajorGridLineStyle = null,
         )
     }
 }

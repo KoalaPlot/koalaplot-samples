@@ -46,21 +46,17 @@ private const val BarWidth = 0.8f
 
 private val rotationOptions = listOf(0, 30, 45, 60, 90)
 
-private fun barChartEntries(): List<VerticalBarPlotStackedPointEntry<Int, Long>> {
-    return PopulationData.years.mapIndexed { yearIndex, year ->
-        object : VerticalBarPlotStackedPointEntry<Int, Long> {
-            override val x: Int = year
-            override val yOrigin: Long = 0L
+private fun barChartEntries(): List<VerticalBarPlotStackedPointEntry<Int, Long>> = PopulationData.years.mapIndexed { yearIndex, year ->
+    object : VerticalBarPlotStackedPointEntry<Int, Long> {
+        override val x: Int = year
+        override val yOrigin: Long = 0L
 
-            override val y: List<Long> = object : AbstractList<Long>() {
-                override val size: Int
-                    get() = PopulationData.Categories.entries.size
+        override val y: List<Long> = object : AbstractList<Long>() {
+            override val size: Int
+                get() = PopulationData.Categories.entries.size
 
-                override fun get(index: Int): Long {
-                    return PopulationData.Categories.entries.subList(0, index + 1).fold(0L) { acc, cat ->
-                        acc + PopulationData.data[cat]!![yearIndex]
-                    }
-                }
+            override fun get(index: Int): Long = PopulationData.Categories.entries.subList(0, index + 1).fold(0L) { acc, cat ->
+                acc + PopulationData.data[cat]!![yearIndex]
             }
         }
     }
@@ -79,7 +75,7 @@ private fun Legend(thumbnail: Boolean = false) {
                 label = { i ->
                     Text(PopulationData.Categories.entries[i].toString())
                 },
-                modifier = paddingMod
+                modifier = paddingMod,
             )
         }
     }
@@ -90,7 +86,7 @@ val stackedVerticalBarSampleView = object : SampleView {
 
     override val thumbnail = @Composable {
         ThumbnailTheme {
-            StackedBarSamplePlot(true, name)
+            StackedBarSamplePlot(name, thumbnail = true)
         }
     }
 
@@ -99,30 +95,31 @@ val stackedVerticalBarSampleView = object : SampleView {
         KoalaPlotTheme(axis = KoalaPlotTheme.axis.copy(minorGridlineStyle = minorGridLineStyle)) {
             Column {
                 StackedBarSamplePlot(
-                    false,
                     "New York City Population",
                     Modifier.weight(1f),
-                    selectedOption
+                    xAxisLabelRotation = selectedOption,
                 )
                 ExpandableCard(
-                    colors = CardDefaults.elevatedCardColors(),
-                    elevation = CardDefaults.elevatedCardElevation(),
                     titleContent = {
                         Text("X-Axis Label Angle", modifier = paddingMod)
-                    }
-                ) {
-                    Column {
-                        rotationOptions.forEach {
-                            Row(
-                                Modifier.fillMaxWidth()
-                                    .selectable(selected = (it == selectedOption), onClick = { selectedOption = it })
-                            ) {
-                                RadioButton(selected = (it == selectedOption), onClick = { selectedOption = it })
-                                Text(text = it.toString())
+                    },
+                    colors = CardDefaults.elevatedCardColors(),
+                    elevation = CardDefaults.elevatedCardElevation(),
+                    content = {
+                        Column {
+                            rotationOptions.forEach {
+                                Row(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .selectable(selected = (it == selectedOption), onClick = { selectedOption = it }),
+                                ) {
+                                    RadioButton(selected = (it == selectedOption), onClick = { selectedOption = it })
+                                    Text(text = it.toString())
+                                }
                             }
                         }
-                    }
-                }
+                    },
+                )
             }
         }
     }
@@ -133,10 +130,10 @@ private const val PopulationScale = 1E6
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
 private fun StackedBarSamplePlot(
-    thumbnail: Boolean = false,
     title: String,
     modifier: Modifier = Modifier,
-    xAxisLabelRotation: Int = 0
+    thumbnail: Boolean = false,
+    xAxisLabelRotation: Int = 0,
 ) {
     val barChartEntries = remember { barChartEntries() }
 
@@ -144,7 +141,7 @@ private fun StackedBarSamplePlot(
         modifier = modifier.then(paddingMod),
         title = { ChartTitle(title) },
         legend = { Legend(thumbnail) },
-        legendLocation = LegendLocation.BOTTOM
+        legendLocation = LegendLocation.BOTTOM,
     ) {
         @Suppress("MagicNumber")
         XYGraph(
@@ -162,7 +159,7 @@ private fun StackedBarSamplePlot(
                 if (!thumbnail) {
                     AxisLabel(
                         (it / PopulationScale).toString(2),
-                        Modifier.absolutePadding(right = 2.dp)
+                        Modifier.absolutePadding(right = 2.dp),
                     )
                 }
             },
@@ -170,12 +167,13 @@ private fun StackedBarSamplePlot(
                 if (!thumbnail) {
                     AxisTitle(
                         "Population (Millions)",
-                        modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                            .padding(bottom = padding)
+                        modifier = Modifier
+                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                            .padding(bottom = padding),
                     )
                 }
             },
-            verticalMajorGridLineStyle = null
+            verticalMajorGridLineStyle = null,
         ) {
             StackedVerticalBarPlot(
                 barChartEntries,
@@ -183,7 +181,7 @@ private fun StackedBarSamplePlot(
                 bar = { xIndex, barIndex, _ ->
                     DefaultBar(
                         brush = SolidColor(colors[barIndex]),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         if (!thumbnail) {
                             HoverSurface {
@@ -193,7 +191,7 @@ private fun StackedBarSamplePlot(
                             }
                         }
                     }
-                }
+                },
             )
         }
     }
@@ -201,5 +199,5 @@ private fun StackedBarSamplePlot(
 
 private val minorGridLineStyle = LineStyle(
     brush = SolidColor(Color.LightGray),
-    pathEffect = PathEffect.dashPathEffect(floatArrayOf(2f, 2f))
+    pathEffect = PathEffect.dashPathEffect(floatArrayOf(2f, 2f)),
 )

@@ -46,7 +46,7 @@ val bulletGraphSampleView = object : SampleView {
     override val content: @Composable () -> Unit = @Composable {
         Column {
             ChartLayout(
-                modifier = Modifier.sizeIn(minHeight = 200.dp, maxHeight = 600.dp).weight(1f)
+                modifier = Modifier.sizeIn(minHeight = 200.dp, maxHeight = 600.dp).weight(1f),
             ) {
                 BulletGraphSample()
             }
@@ -82,7 +82,7 @@ private fun BulletGraphScope.bulletGraphSample1() {
         label {
             Column(
                 horizontalAlignment = Alignment.End,
-                modifier = Modifier.padding(end = KoalaPlotTheme.sizes.gap)
+                modifier = Modifier.padding(end = KoalaPlotTheme.sizes.gap),
             ) {
                 Text("Revenue 2005 YTD", style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.End)
                 Text("(US $ in thousands)", style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.End)
@@ -103,7 +103,7 @@ private fun BulletGraphScope.bulletGraphSample2() {
         label {
             Column(
                 horizontalAlignment = Alignment.End,
-                modifier = Modifier.padding(end = KoalaPlotTheme.sizes.gap)
+                modifier = Modifier.padding(end = KoalaPlotTheme.sizes.gap),
             ) {
                 Text("Profit", style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.End)
                 Text("%", style = MaterialTheme.typography.bodySmall)
@@ -125,7 +125,7 @@ private fun BulletGraphScope.bulletGraphSample3() {
         label {
             Column(
                 horizontalAlignment = Alignment.End,
-                modifier = Modifier.padding(end = KoalaPlotTheme.sizes.gap)
+                modifier = Modifier.padding(end = KoalaPlotTheme.sizes.gap),
             ) {
                 Text("Avg Order Size", style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.End)
                 Text("U.S. $", style = MaterialTheme.typography.bodySmall)
@@ -145,7 +145,7 @@ private fun BulletGraphScope.bulletGraphSample4() {
         label {
             Column(
                 horizontalAlignment = Alignment.End,
-                modifier = Modifier.padding(end = KoalaPlotTheme.sizes.gap)
+                modifier = Modifier.padding(end = KoalaPlotTheme.sizes.gap),
             ) {
                 Text("New Customers", style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.End)
                 Text("Count", style = MaterialTheme.typography.bodySmall)
@@ -166,12 +166,12 @@ private fun BulletGraphScope.bulletGraphSample5() {
             0f..5f,
             minimumMajorTickIncrement = 1f,
             minorTickCount = 0,
-        )
+        ),
     ) {
         label {
             Column(
                 horizontalAlignment = Alignment.End,
-                modifier = Modifier.padding(end = KoalaPlotTheme.sizes.gap)
+                modifier = Modifier.padding(end = KoalaPlotTheme.sizes.gap),
             ) {
                 Text("Cust Satisfaction", style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.End)
                 Text("Top Rating of 5", style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.End)
@@ -198,7 +198,7 @@ private fun BulletGraphScope.bulletGraphSample6() {
         label {
             Column(
                 horizontalAlignment = Alignment.End,
-                modifier = Modifier.padding(end = KoalaPlotTheme.sizes.gap)
+                modifier = Modifier.padding(end = KoalaPlotTheme.sizes.gap),
             ) {
                 Text("Revenue 2005 YTD", style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.End)
                 Text("(US $ in thousands)", style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.End)
@@ -222,7 +222,7 @@ private fun BulletGraphScope.bulletGraphSample7() {
         label {
             Column(
                 horizontalAlignment = Alignment.End,
-                modifier = Modifier.padding(end = KoalaPlotTheme.sizes.gap)
+                modifier = Modifier.padding(end = KoalaPlotTheme.sizes.gap),
             ) {
                 Text("Profit", style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.End)
                 Text("(1,000s)", style = MaterialTheme.typography.bodySmall)
@@ -250,13 +250,13 @@ private fun BulletGraphScope.bulletGraphSample8() {
     bullet(
         IntLinearAxisModel(
             -120..0,
-            minimumMajorTickIncrement = 10
-        )
+            minimumMajorTickIncrement = 10,
+        ),
     ) {
         label {
             Column(
                 horizontalAlignment = Alignment.End,
-                modifier = Modifier.padding(end = KoalaPlotTheme.sizes.gap)
+                modifier = Modifier.padding(end = KoalaPlotTheme.sizes.gap),
             ) {
                 Text("Expenses (1,000s)", style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.End)
             }

@@ -53,11 +53,14 @@ val areaPlotSample1View = object : SampleView {
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
 @Suppress("MagicNumber")
-private fun AreaPlotSample1Plot(thumbnail: Boolean, title: String) {
+private fun AreaPlotSample1Plot(
+    thumbnail: Boolean,
+    title: String,
+) {
     ChartLayout(
         modifier = paddingMod.padding(end = 16.dp),
         title = { ChartTitle(title) },
-        legendLocation = LegendLocation.BOTTOM
+        legendLocation = LegendLocation.BOTTOM,
     ) {
         XYGraph(
             xAxisModel = FloatLinearAxisModel(-5f..5.0f),
@@ -78,7 +81,7 @@ private fun AreaPlotSample1Plot(thumbnail: Boolean, title: String) {
                 if (!thumbnail) AxisLabel(it.toString(1), Modifier.absolutePadding(right = 2.dp))
             },
             horizontalMinorGridLineStyle = null,
-            verticalMinorGridLineStyle = null
+            verticalMinorGridLineStyle = null,
         ) {
             AreaPlot2(
                 data = distribution1,
@@ -97,7 +100,7 @@ private fun AreaPlotSample1Plot(thumbnail: Boolean, title: String) {
                     brush = SolidColor(Color(0xFF37A78F)),
                     alpha = 0.5f,
                 ),
-                areaBaseline = AreaBaseline.ConstantLine(0f)
+                areaBaseline = AreaBaseline.ConstantLine(0f),
             )
 
             if (!thumbnail) {
@@ -113,7 +116,7 @@ private fun XYGraphScope<Float, Float>.Annotations() {
     val markerLineStyle = LineStyle(
         brush = SolidColor(Color.DarkGray),
         strokeWidth = 2.dp,
-        PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
+        PathEffect.dashPathEffect(floatArrayOf(10f, 10f)),
     )
 
     VerticalLineAnnotation(Distribution1Mean, markerLineStyle)
@@ -126,7 +129,7 @@ private fun XYGraphScope<Float, Float>.Annotations() {
             "y=${distribution1Max.toString(2)}",
             fontFamily = FontFamily.Monospace,
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(horizontal = KoalaPlotTheme.sizes.gap)
+            modifier = Modifier.padding(horizontal = KoalaPlotTheme.sizes.gap),
         )
     }
     XYAnnotation(Point(-5f, distribution2Max), AnchorPoint.BottomLeft) {
@@ -134,7 +137,7 @@ private fun XYGraphScope<Float, Float>.Annotations() {
             "y=${distribution2Max.toString(2)}",
             fontFamily = FontFamily.Monospace,
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(horizontal = KoalaPlotTheme.sizes.gap)
+            modifier = Modifier.padding(horizontal = KoalaPlotTheme.sizes.gap),
         )
     }
 
@@ -143,7 +146,7 @@ private fun XYGraphScope<Float, Float>.Annotations() {
             "x=${Distribution1Mean.toString(2)}",
             fontFamily = FontFamily.Monospace,
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(horizontal = KoalaPlotTheme.sizes.gap)
+            modifier = Modifier.padding(horizontal = KoalaPlotTheme.sizes.gap),
         )
     }
 
@@ -152,7 +155,7 @@ private fun XYGraphScope<Float, Float>.Annotations() {
             "x=${Distribution2Mean.toString(2)}",
             fontFamily = FontFamily.Monospace,
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(horizontal = KoalaPlotTheme.sizes.gap)
+            modifier = Modifier.padding(horizontal = KoalaPlotTheme.sizes.gap),
         )
     }
 }
@@ -168,15 +171,22 @@ private val xAxisValues: List<Float> = buildList {
     }
 }
 
-private fun normalDistribution(x: List<Float>, sigma: Float, mu: Float): List<Point<Float, Float>> = buildList {
+private fun normalDistribution(
+    x: List<Float>,
+    sigma: Float,
+    mu: Float,
+): List<Point<Float, Float>> = buildList {
     x.forEach {
         add(Point(it, normalDistribution(it, sigma, mu)))
     }
 }
 
 @Suppress("MagicNumber")
-private fun normalDistribution(x: Float, sigma: Float, mu: Float): Float =
-    (1.0 / (sigma * sqrt(2.0 * PI)) * exp(-0.5 * ((x - mu) / sigma).pow(2))).toFloat()
+private fun normalDistribution(
+    x: Float,
+    sigma: Float,
+    mu: Float,
+): Float = (1.0 / (sigma * sqrt(2.0 * PI)) * exp(-0.5 * ((x - mu) / sigma).pow(2))).toFloat()
 
 private const val Distribution1Mean = 1.2f
 private val distribution1 = normalDistribution(xAxisValues, 1.0f, Distribution1Mean)

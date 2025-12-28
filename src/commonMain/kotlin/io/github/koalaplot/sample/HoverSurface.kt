@@ -10,12 +10,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun HoverSurface(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+fun HoverSurface(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
     Surface(
         shadowElevation = 2.dp,
         shape = MaterialTheme.shapes.medium,
         color = Color.LightGray,
-        modifier = modifier.padding(padding)
+        modifier = modifier.padding(padding),
     ) {
         Box(modifier = Modifier.padding(padding)) {
             content()
