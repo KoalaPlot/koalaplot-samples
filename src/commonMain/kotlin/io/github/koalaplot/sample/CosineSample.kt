@@ -15,10 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.legend.LegendLocation
-import io.github.koalaplot.core.line.AreaBaseline
+import io.github.koalaplot.core.line.AreaBaseline.HorizontalLine
 import io.github.koalaplot.core.line.AreaPlot2
 import io.github.koalaplot.core.style.AreaStyle
 import io.github.koalaplot.core.style.LineStyle
@@ -26,6 +27,8 @@ import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.xygraph.AnchorPoint
+import io.github.koalaplot.core.xygraph.AxisContent
+import io.github.koalaplot.core.xygraph.AxisStyle
 import io.github.koalaplot.core.xygraph.DefaultPoint
 import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
 import io.github.koalaplot.core.xygraph.HorizontalLineAnnotation
@@ -68,28 +71,21 @@ private fun CosineSamplePlot(
         XYGraph(
             xAxisModel = FloatLinearAxisModel(0f..4.0.toFloat()), // units of PI
             yAxisModel = FloatLinearAxisModel(-1.1f..1.1f, minimumMajorTickSpacing = 50.dp),
-            xAxisLabels = {
-                if (!thumbnail) {
-                    AxisLabel("$it \u03C0", Modifier.padding(top = 2.dp))
+            xAxisContent = createXAxisContent(thumbnail),
+            yAxisContent = createYAxisContent(thumbnail),
+            onPointerEvent = {
+                when (it.type) {
+                    PointerEventType.Exit -> {
+                        x.value = null
+                        y.value = null
+                    }
+
+                    PointerEventType.Move -> {
+                        val p = scale(it.changes.last().position)
+                        x.value = p.x
+                        y.value = interpolate(p.x)
+                    }
                 }
-            },
-            xAxisTitle = { if (!thumbnail) AxisTitle("Angle (radians)") },
-            yAxisLabels = {
-                if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
-            },
-            yAxisTitle = {
-                if (!thumbnail) {
-                    AxisTitle(
-                        "cosine",
-                        modifier = Modifier
-                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                            .padding(bottom = padding),
-                    )
-                }
-            },
-            onPointerMove = { xp: Float, yp: Float ->
-                x.value = xp
-                y.value = interpolate(xp)
             },
         ) {
             AreaPlot2(
@@ -99,7 +95,7 @@ private fun CosineSamplePlot(
                     brush = SolidColor(Color.Blue),
                     alpha = 0.5f,
                 ),
-                areaBaseline = AreaBaseline.ConstantLine(0f),
+                areaBaseline = HorizontalLine(0f),
             )
             val lx = x.value
             val ly = y.value
@@ -134,6 +130,33 @@ private fun CosineSamplePlot(
         }
     }
 }
+
+private fun createYAxisContent(thumbnail: Boolean): AxisContent<Float> = AxisContent(
+    labels = {
+        if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
+    },
+    title = {
+        if (!thumbnail) {
+            AxisTitle(
+                "cosine",
+                modifier = Modifier
+                    .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                    .padding(bottom = padding),
+            )
+        }
+    },
+    style = AxisStyle(),
+)
+
+private fun createXAxisContent(thumbnail: Boolean): AxisContent<Float> = AxisContent(
+    labels = {
+        if (!thumbnail) {
+            AxisLabel("$it \u03C0", Modifier.padding(top = 2.dp))
+        }
+    },
+    title = { if (!thumbnail) AxisTitle("Angle (radians)") },
+    style = AxisStyle(),
+)
 
 /**
  * Finds the y-value from [cosineData] for the given x-axis value. Interpolates between the two closest
