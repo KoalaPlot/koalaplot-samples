@@ -1,9 +1,10 @@
+rootProject.name = "koalaplot-samples"
+
 pluginManagement {
     repositories {
-        gradlePluginPortal()
         google()
         mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        gradlePluginPortal()
     }
 }
 
@@ -12,4 +13,15 @@ plugins {
     id("de.fayard.refreshVersions") version "0.60.6"
 }
 
-rootProject.name = "koalaplot-samples"
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        mavenLocal()
+    }
+}
+
+include(":androidApp")
+include(":shared")
+include(":desktopApp")
+include(":webApp")

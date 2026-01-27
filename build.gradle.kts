@@ -1,13 +1,13 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidApplication) apply false
+    alias(libs.plugins.androidMultiplatformLibrary) apply false
+    alias(libs.plugins.composeMultiplatform) apply false
+    alias(libs.plugins.composeCompiler) apply false
+    alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.detekt)
     alias(libs.plugins.ktlint.gradle)
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.composeHotReload)
 }
 
 repositories {
@@ -17,118 +17,7 @@ repositories {
 }
 
 group = "io.github.koalaplot"
-version = "0.11.0-dev2"
-
-kotlin {
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    compilerOptions {
-        optIn.add("kotlin.RequiresOptIn")
-    }
-
-    jvmToolchain(17)
-    jvm()
-    js(IR) {
-        browser()
-        binaries.executable()
-    }
-    androidTarget()
-
-    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
-    wasmJs {
-        browser()
-        binaries.executable()
-    }
-
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64(),
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "koalaplot_samples"
-            isStatic = true
-        }
-    }
-
-    sourceSets {
-        commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material)
-            implementation(compose.material3)
-            implementation(compose.materialIconsExtended)
-            implementation(compose.ui)
-            implementation(compose.animation)
-            implementation(libs.koalaplot.core)
-            implementation(libs.kotlinx.datetime)
-            implementation(libs.kotlinx.collections.immutable)
-            implementation(libs.kotlinx.coroutines)
-        }
-
-        jvmMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutines.swing)
-        }
-
-        androidMain.dependencies {
-            implementation(libs.androidx.activity)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.kotlinx.coroutines.android)
-        }
-    }
-}
-
-compose.desktop {
-    application {
-        mainClass = "io.github.koalaplot.sample.desktop.MainKt"
-
-        nativeDistributions {
-            targetFormats(
-                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg,
-                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi,
-                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb,
-            )
-            packageName = "KoalaPlot"
-            packageVersion = "1.0.0"
-
-            windows {
-                menu =
-                    true // see https://wixtoolset.org/documentation/manual/v3/howtos/general/generate_guids.html
-                upgradeUuid = "251c985b-942c-4f30-ba24-96aa7f9309d1"
-            }
-
-            macOS {
-                // Use -Pcompose.desktop.mac.sign=true to sign and notarize.
-                bundleID = "io.github.koalaplot.sample.desktop.MainKt"
-            }
-        }
-    }
-}
-
-android {
-    namespace = "io.github.koalaplot.sample.android"
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    compileSdk = 36
-
-    defaultConfig {
-        applicationId = "io.github.koalaplot.sample.android"
-        minSdk = 24
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-        }
-    }
-}
+version = "0.11.0-dev3"
 
 detekt {
     source.setFrom("src")
@@ -143,4 +32,14 @@ ktlint {
 
 dependencies {
     ktlintRuleset(libs.ktlint.compose)
+}
+
+val libs2 = libs
+
+subprojects {
+    apply(
+        plugin = libs2.plugins.ktlint.gradle
+            .get()
+            .pluginId,
+    )
 }

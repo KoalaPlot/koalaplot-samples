@@ -33,8 +33,12 @@ cd koalaplot-samples
    ```
     2. For web:
    ```shell
-    ./gradlew jsBrowserRun
+    ./gradlew jsBrowserDevelopmentRun
     ```
+   or
+    ```shell
+   ./gradlew wasmJsBrowserDevelopmentRun
+    ```    
     3. For Android, to run in an emulator on your machine:
         1. Download [Android Studio](https://developer.android.com/studio/)
         2. Open the koalaplot-samples folder as a project in Android Studio
