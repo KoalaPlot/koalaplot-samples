@@ -36,7 +36,7 @@ jobs:
                 uses: crazy-max/ghaction-github-pages@v4
                 with:
                     target_branch: gh-pages
-                    build_dir: koalaplot-samples/build/dist/composeWebCompatibility
+                    build_dir: koalaplot-samples/webApp/build/dist/composeWebCompatibility
                     keep_history: false
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
