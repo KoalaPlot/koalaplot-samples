@@ -81,7 +81,7 @@ private fun RadialLinePlotSample(
             radialAxisLabels = { if (!thumbnail) Text(it.toString(1)) },
             { if (!thumbnail) Text(it.toString()) },
             polarGraphProperties = PolarGraphDefaults
-                .PolarGraphPropertyDefaults()
+                .polarGraphPropertyDefaults()
                 .copy(
                     angularAxisGridLineStyle = angularAxisGridLineStyle,
                     radialAxisGridLineStyle = angularAxisGridLineStyle,

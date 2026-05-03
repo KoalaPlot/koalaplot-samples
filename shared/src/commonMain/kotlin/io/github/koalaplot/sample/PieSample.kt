@@ -455,7 +455,6 @@ private fun PieChartSample(
                         null
                     },
                     hoverExpandFactor = 1.05f,
-                    hoverElement = { HoverSurface { Text(fibonacci[i].toString()) } },
                     antiAlias = otherOptionsState.antiAlias,
                     gap = otherOptionsState.sliceGap,
                 )

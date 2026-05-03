@@ -19,6 +19,7 @@ import io.github.koalaplot.core.xygraph.CategoryAxisModel
 import io.github.koalaplot.core.xygraph.DefaultPoint
 import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
 import io.github.koalaplot.core.xygraph.XYGraph
+import io.github.koalaplot.core.xygraph.rememberAxisContent
 import io.github.koalaplot.core.xygraph.rememberAxisStyle
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.mutate
@@ -116,19 +117,21 @@ fun LiveTimeChart(
                 range = info.value.yRange,
                 minimumMajorTickSpacing = 50.dp,
             ),
-            yAxisLabels = {
-                if (!thumbnail) {
-                    AxisLabel(it.toString())
-                }
-            },
-            xAxisLabels = {
-                if (!thumbnail) {
-                    AxisLabel(it, Modifier.padding(top = 2.dp))
-                }
-            },
-            yAxisTitle = { },
-            xAxisTitle = { },
-            xAxisStyle = rememberAxisStyle(labelRotation = 45),
+            xAxisContent = rememberAxisContent(
+                labels = {
+                    if (!thumbnail) {
+                        AxisLabel(it, Modifier.padding(top = 2.dp))
+                    }
+                },
+                style = rememberAxisStyle(labelRotation = 45),
+            ),
+            yAxisContent = rememberAxisContent(
+                labels = {
+                    if (!thumbnail) {
+                        AxisLabel(it.toString())
+                    }
+                },
+            ),
         ) {
             LinePlot2(
                 info.value.points,

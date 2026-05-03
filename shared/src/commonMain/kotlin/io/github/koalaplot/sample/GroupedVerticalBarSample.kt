@@ -29,6 +29,8 @@ import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.core.xygraph.CategoryAxisModel
 import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
 import io.github.koalaplot.core.xygraph.XYGraph
+import io.github.koalaplot.core.xygraph.rememberAxisContent
+import io.github.koalaplot.core.xygraph.rememberGridStyle
 import kotlin.math.ceil
 
 private val colors = generateHueColorPalette(PopulationData.Categories.entries.size)
@@ -108,6 +110,37 @@ private fun BarSample2Plot(
                 0f..(ceil(PopulationData.maxPopulation / PopulationScale) * PopulationScale),
                 minorTickCount = 0,
             ),
+            xAxisContent = rememberAxisContent(
+                labels = {
+                    if (!thumbnail) AxisLabel("$it", Modifier.padding(top = 2.dp))
+                },
+                title = {
+                    if (!thumbnail) AxisTitle("Year")
+                },
+            ),
+            yAxisContent = rememberAxisContent(
+                labels = {
+                    if (!thumbnail) {
+                        AxisLabel(
+                            (it / PopulationScale).toString(2),
+                            Modifier.absolutePadding(right = 2.dp),
+                        )
+                    }
+                },
+                title = {
+                    if (!thumbnail) {
+                        Text(
+                            "Population (Millions)",
+                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier
+                                .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                                .padding(bottom = padding),
+                        )
+                    }
+                },
+            ),
+            gridStyle = rememberGridStyle(verticalMajorStyle = null),
             content = {
                 GroupedVerticalBarPlot(
                     data = barChartEntries,
@@ -115,43 +148,10 @@ private fun BarSample2Plot(
                         DefaultBar(
                             brush = SolidColor(colors[groupIndex]),
                             modifier = Modifier.sizeIn(minWidth = 5.dp, maxWidth = 20.dp),
-                        ) {
-                            if (!thumbnail) {
-                                val borough = PopulationData.Categories.entries[groupIndex]
-                                val pop = PopulationData.data[borough]!![dataIndex]
-                                HoverSurface { Text("$borough: $pop") }
-                            }
-                        }
+                        )
                     },
                 )
             },
-            xAxisLabels = {
-                if (!thumbnail) AxisLabel("$it", Modifier.padding(top = 2.dp))
-            },
-            xAxisTitle = {
-                if (!thumbnail) AxisTitle("Year")
-            },
-            yAxisLabels = {
-                if (!thumbnail) {
-                    AxisLabel(
-                        (it / PopulationScale).toString(2),
-                        Modifier.absolutePadding(right = 2.dp),
-                    )
-                }
-            },
-            yAxisTitle = {
-                if (!thumbnail) {
-                    Text(
-                        "Population (Millions)",
-                        color = MaterialTheme.colorScheme.onBackground,
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier
-                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                            .padding(bottom = padding),
-                    )
-                }
-            },
-            verticalMajorGridLineStyle = null,
         )
     }
 }

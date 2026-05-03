@@ -89,7 +89,7 @@ private fun PolarScatterPlot(
             radialAxisLabels = { if (!thumbnail) Text(it.toString()) },
             { if (!thumbnail) Text("${it.toDegrees().value}\u00B0") },
             polarGraphProperties = PolarGraphDefaults
-                .PolarGraphPropertyDefaults()
+                .polarGraphPropertyDefaults()
                 .copy(
                     angularAxisGridLineStyle = angularAxisGridLineStyle,
                     radialAxisGridLineStyle = angularAxisGridLineStyle,

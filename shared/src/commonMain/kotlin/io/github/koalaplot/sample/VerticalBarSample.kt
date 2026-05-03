@@ -30,7 +30,9 @@ import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
+import io.github.koalaplot.core.xygraph.AxisContent
 import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
+import io.github.koalaplot.core.xygraph.GridStyle
 import io.github.koalaplot.core.xygraph.TickPosition
 import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.rememberAxisStyle
@@ -108,43 +110,43 @@ private fun BarSamplePlot(
                 minimumMajorTickIncrement = 1f,
                 minorTickCount = 0,
             ),
-            xAxisStyle = rememberAxisStyle(
-                tickPosition = tickPositionState.horizontalAxis,
-                color = Color.LightGray,
+            xAxisContent = AxisContent(
+                labels = {
+                    if (!thumbnail) {
+                        AxisLabel(it.toString(0), Modifier.padding(top = 2.dp))
+                    }
+                },
+                title = { if (!thumbnail) AxisTitle("Position in Sequence") },
+                style = rememberAxisStyle(
+                    tickPosition = tickPositionState.horizontalAxis,
+                    color = Color.LightGray,
+                ),
             ),
-            xAxisLabels = {
-                if (!thumbnail) {
-                    AxisLabel(it.toString(0), Modifier.padding(top = 2.dp))
-                }
-            },
-            xAxisTitle = { if (!thumbnail) AxisTitle("Position in Sequence") },
-            yAxisStyle = rememberAxisStyle(tickPosition = tickPositionState.verticalAxis),
-            yAxisLabels = {
-                if (!thumbnail) AxisLabel(it.toString(1), Modifier.absolutePadding(right = 2.dp))
-            },
-            yAxisTitle = {
-                if (!thumbnail) {
-                    AxisTitle(
-                        "Value",
-                        modifier = Modifier
-                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                            .padding(bottom = padding),
-                    )
-                }
-            },
-            verticalMajorGridLineStyle = null,
+            yAxisContent = AxisContent(
+                labels = {
+                    if (!thumbnail) AxisLabel(it.toString(1), Modifier.absolutePadding(right = 2.dp))
+                },
+                title = {
+                    if (!thumbnail) {
+                        AxisTitle(
+                            "Value",
+                            modifier = Modifier
+                                .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                                .padding(bottom = padding),
+                        )
+                    }
+                },
+                style = rememberAxisStyle(tickPosition = tickPositionState.verticalAxis),
+            ),
+            gridStyle = GridStyle(null, null, null, null),
         ) {
             VerticalBarPlot(
                 barChartEntries,
-                bar = { index, _, _ ->
+                bar = { _, _, _ ->
                     DefaultBar(
                         brush = SolidColor(colors[0]),
                         modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        if (!thumbnail) {
-                            HoverSurface { Text(barChartEntries[index].y.end.toString()) }
-                        }
-                    }
+                    )
                 },
                 barWidth = BarWidth,
             )

@@ -18,8 +18,11 @@ import io.github.koalaplot.core.bar.VerticalBarPlot
 import io.github.koalaplot.core.bar.VerticalBarPlotEntry
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.toString
+import io.github.koalaplot.core.xygraph.AxisContent
+import io.github.koalaplot.core.xygraph.AxisStyle
 import io.github.koalaplot.core.xygraph.CategoryAxisModel
 import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
+import io.github.koalaplot.core.xygraph.GridStyle
 import io.github.koalaplot.core.xygraph.XYGraph
 import kotlin.math.ceil
 import kotlin.math.max
@@ -91,26 +94,29 @@ private fun WaterfallChart(thumbnail: Boolean) {
     XYGraph(
         xAxisModel = CategoryAxisModel(PopulationData.years),
         yAxisModel = FloatLinearAxisModel(0f..p),
-        xAxisTitle = if (!thumbnail) "Year" else null,
-        yAxisTitle = if (!thumbnail) "Population" else null,
-        xAxisLabels = {
-            if (!thumbnail) {
-                it.toString()
-            } else {
-                ""
-            }
-        },
-        yAxisLabels = {
-            if (!thumbnail) {
-                it.toString(0)
-            } else {
-                ""
-            }
-        },
-        verticalMajorGridLineStyle = null,
-        verticalMinorGridLineStyle = null,
-        horizontalMinorGridLineStyle = null,
-        horizontalMajorGridLineStyle = null,
+        xAxisContent = AxisContent(
+            labels = {
+                if (!thumbnail) {
+                    it.toString()
+                } else {
+                    ""
+                }
+            },
+            title = { if (!thumbnail) Text("Year") },
+            style = AxisStyle(),
+        ),
+        yAxisContent = AxisContent(
+            labels = {
+                if (!thumbnail) {
+                    it.toString(0)
+                } else {
+                    ""
+                }
+            },
+            title = { if (!thumbnail) Text("Population") },
+            style = AxisStyle(),
+        ),
+        gridStyle = GridStyle(null, null, null, null),
     ) {
         @Suppress("MagicNumber")
         VerticalBarPlot(

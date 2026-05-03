@@ -45,6 +45,7 @@ import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
 import io.github.koalaplot.core.xygraph.Point
 import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.XYGraphScope
+import io.github.koalaplot.core.xygraph.rememberAxisContent
 
 private data class GestureOptionsState(
     val independentZoom: Boolean = true,
@@ -130,39 +131,43 @@ private fun XYSamplePlot(
         XYGraph(
             xAxisModel = xAxis,
             yAxisModel = yAxis,
-            xAxisLabels = {
-                if (!thumbnail) {
-                    AxisLabel(it.toString(), Modifier.padding(top = 2.dp))
-                }
-            },
-            xAxisTitle = {
-                if (!thumbnail) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        AxisTitle("Random data set (X)")
+            xAxisContent = rememberAxisContent(
+                labels = {
+                    if (!thumbnail) {
+                        AxisLabel(it.toString(), Modifier.padding(top = 2.dp))
                     }
-                }
-            },
-            yAxisLabels = {
-                if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
-            },
-            yAxisTitle = {
-                if (!thumbnail) {
-                    Box(
-                        modifier = Modifier.fillMaxHeight(),
-                        contentAlignment = Alignment.TopStart,
-                    ) {
-                        AxisTitle(
-                            "Random data set (Y)",
-                            modifier = Modifier
-                                .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                                .padding(bottom = padding),
-                        )
+                },
+                title = {
+                    if (!thumbnail) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            AxisTitle("Random data set (X)")
+                        }
                     }
-                }
-            },
+                },
+            ),
+            yAxisContent = rememberAxisContent(
+                labels = {
+                    if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
+                },
+                title = {
+                    if (!thumbnail) {
+                        Box(
+                            modifier = Modifier.fillMaxHeight(),
+                            contentAlignment = Alignment.TopStart,
+                        ) {
+                            AxisTitle(
+                                "Random data set (Y)",
+                                modifier = Modifier
+                                    .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                                    .padding(bottom = padding),
+                            )
+                        }
+                    }
+                },
+            ),
             gestureConfig = GestureConfig(
                 panXEnabled = gestureOptions.allowPanX,
                 panYEnabled = gestureOptions.allowPanY,

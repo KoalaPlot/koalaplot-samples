@@ -35,10 +35,12 @@ import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
+import io.github.koalaplot.core.xygraph.AxisContent
 import io.github.koalaplot.core.xygraph.CategoryAxisModel
 import io.github.koalaplot.core.xygraph.LongLinearAxisModel
 import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.rememberAxisStyle
+import io.github.koalaplot.core.xygraph.rememberGridStyle
 
 private val colors = generateHueColorPalette(PopulationData.Categories.entries.size)
 
@@ -147,50 +149,46 @@ private fun StackedBarSamplePlot(
         XYGraph(
             xAxisModel = CategoryAxisModel(PopulationData.years),
             yAxisModel = LongLinearAxisModel(0L..10000000, minimumMajorTickIncrement = 1000000),
-            xAxisStyle = rememberAxisStyle(labelRotation = xAxisLabelRotation),
-            xAxisLabels = {
-                if (!thumbnail) AxisLabel("$it", Modifier.padding(top = 2.dp))
-            },
-            xAxisTitle = {
-                if (!thumbnail) AxisTitle("Year", modifier = paddingMod)
-            },
-            yAxisStyle = rememberAxisStyle(minorTickSize = 0.dp),
-            yAxisLabels = {
-                if (!thumbnail) {
-                    AxisLabel(
-                        (it / PopulationScale).toString(2),
-                        Modifier.absolutePadding(right = 2.dp),
-                    )
-                }
-            },
-            yAxisTitle = {
-                if (!thumbnail) {
-                    AxisTitle(
-                        "Population (Millions)",
-                        modifier = Modifier
-                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                            .padding(bottom = padding),
-                    )
-                }
-            },
-            verticalMajorGridLineStyle = null,
+            xAxisContent = AxisContent(
+                style = rememberAxisStyle(labelRotation = xAxisLabelRotation),
+                labels = {
+                    if (!thumbnail) AxisLabel("$it", Modifier.padding(top = 2.dp))
+                },
+                title = {
+                    if (!thumbnail) AxisTitle("Year", modifier = paddingMod)
+                },
+            ),
+            yAxisContent = AxisContent(
+                style = rememberAxisStyle(minorTickSize = 0.dp),
+                labels = {
+                    if (!thumbnail) {
+                        AxisLabel(
+                            (it / PopulationScale).toString(2),
+                            Modifier.absolutePadding(right = 2.dp),
+                        )
+                    }
+                },
+                title = {
+                    if (!thumbnail) {
+                        AxisTitle(
+                            "Population (Millions)",
+                            modifier = Modifier
+                                .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                                .padding(bottom = padding),
+                        )
+                    }
+                },
+            ),
+            gridStyle = rememberGridStyle(verticalMajorStyle = null),
         ) {
             StackedVerticalBarPlot(
                 barChartEntries,
                 barWidth = BarWidth,
-                bar = { xIndex, barIndex, _ ->
+                bar = { _, barIndex, _ ->
                     DefaultBar(
                         brush = SolidColor(colors[barIndex]),
                         modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        if (!thumbnail) {
-                            HoverSurface {
-                                val borough = PopulationData.Categories.entries[barIndex]
-                                val pop = PopulationData.data[borough]!![xIndex]
-                                Text("$borough: $pop")
-                            }
-                        }
-                    }
+                    )
                 },
             )
         }

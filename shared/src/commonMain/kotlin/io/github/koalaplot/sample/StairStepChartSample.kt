@@ -20,11 +20,13 @@ import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.rotateVertically
+import io.github.koalaplot.core.xygraph.AxisContent
 import io.github.koalaplot.core.xygraph.CategoryAxisModel
 import io.github.koalaplot.core.xygraph.DefaultPoint
 import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
 import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.XYGraphScope
+import io.github.koalaplot.core.xygraph.rememberAxisStyle
 import kotlin.math.ceil
 
 val stairStepSampleView = object : SampleView {
@@ -68,25 +70,31 @@ private fun StairStepSamplePlot(
                 0f..(ceil(RainData.max / 50.0) * 50.0).toFloat(),
                 minimumMajorTickSpacing = 50.dp,
             ),
-            xAxisLabels = {
-                if (!thumbnail) {
-                    AxisLabel(it, Modifier.padding(top = 2.dp))
-                }
-            },
-            xAxisTitle = { if (!thumbnail) AxisTitle("Month") },
-            yAxisLabels = {
-                if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
-            },
-            yAxisTitle = {
-                if (!thumbnail) {
-                    AxisTitle(
-                        "Rainfall (mm)",
-                        modifier = Modifier
-                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                            .padding(bottom = padding),
-                    )
-                }
-            },
+            xAxisContent = AxisContent(
+                labels = {
+                    if (!thumbnail) {
+                        AxisLabel(it, Modifier.padding(top = 2.dp))
+                    }
+                },
+                title = { if (!thumbnail) AxisTitle("Month") },
+                style = rememberAxisStyle(),
+            ),
+            yAxisContent = AxisContent(
+                labels = {
+                    if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
+                },
+                title = {
+                    if (!thumbnail) {
+                        AxisTitle(
+                            "Rainfall (mm)",
+                            modifier = Modifier
+                                .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                                .padding(bottom = padding),
+                        )
+                    }
+                },
+                style = rememberAxisStyle(),
+            ),
         ) {
             RainData.rainfall.entries.sortedBy { it.key }.forEach { (city, rain) ->
                 Chart(

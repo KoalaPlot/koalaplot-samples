@@ -43,6 +43,8 @@ import io.github.koalaplot.core.xygraph.Point
 import io.github.koalaplot.core.xygraph.XYAnnotation
 import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.XYGraphScope
+import io.github.koalaplot.core.xygraph.rememberAxisContent
+import io.github.koalaplot.core.xygraph.rememberGridStyle
 
 val stackedAreaSampleView =
     object : SampleView {
@@ -115,37 +117,38 @@ private fun StackedAreaSampleChart(
                     minimumMajorTickIncrement = 10,
                 ),
             yAxisModel = FloatLinearAxisModel(0f..10f),
-            horizontalMajorGridLineStyle = null,
-            horizontalMinorGridLineStyle = null,
-            verticalMajorGridLineStyle = null,
-            verticalMinorGridLineStyle = null,
-            xAxisLabels = {
-                if (!thumbnail) {
-                    AxisLabel(it.toString(), Modifier.padding(top = 2.dp))
-                }
-            },
-            xAxisTitle = {
-                if (!thumbnail) {
-                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        AxisTitle("Year")
+            xAxisContent = rememberAxisContent(
+                labels = {
+                    if (!thumbnail) {
+                        AxisLabel(it.toString(), Modifier.padding(top = 2.dp))
                     }
-                }
-            },
-            yAxisLabels = {
-                if (!thumbnail) {
-                    AxisLabel(it.toString(0))
-                }
-            },
-            yAxisTitle = {
-                if (!thumbnail) {
-                    Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.Center) {
-                        AxisTitle(
-                            "Population (Millions)",
-                            modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE),
-                        )
+                },
+                title = {
+                    if (!thumbnail) {
+                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                            AxisTitle("Year")
+                        }
                     }
-                }
-            },
+                },
+            ),
+            yAxisContent = rememberAxisContent(
+                labels = {
+                    if (!thumbnail) {
+                        AxisLabel(it.toString(0))
+                    }
+                },
+                title = {
+                    if (!thumbnail) {
+                        Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.Center) {
+                            AxisTitle(
+                                "Population (Millions)",
+                                modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE),
+                            )
+                        }
+                    }
+                },
+            ),
+            gridStyle = rememberGridStyle(null, null, null, null),
         ) {
             if (bezierOn) {
                 StackedAreaBezierPlot(thumbnail, tau)
@@ -166,7 +169,7 @@ private fun XYGraphScope<Int, Float>.StackedAreaLinePlot(thumbnail: Boolean) {
                 AreaStyle(brush = SolidColor(it)),
             )
         },
-        AreaBaseline.ConstantLine(0f),
+        AreaBaseline.HorizontalLine(0f),
     )
 
     annotations(thumbnail)

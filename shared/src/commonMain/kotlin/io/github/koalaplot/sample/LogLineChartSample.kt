@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
-import io.github.koalaplot.core.line.LinePlot2
+import io.github.koalaplot.core.line.LinePlot
 import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
@@ -29,6 +29,7 @@ import io.github.koalaplot.core.xygraph.DefaultPoint
 import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
 import io.github.koalaplot.core.xygraph.LogAxisModel
 import io.github.koalaplot.core.xygraph.XYGraph
+import io.github.koalaplot.core.xygraph.rememberAxisContent
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 val xyLogLineSampleView = object : SampleView {
@@ -65,27 +66,31 @@ private fun XYSamplePlot(
                 minorTickCount = 0,
             ),
             yAxisModel = LogAxisModel(YAxisRange),
-            xAxisLabels = {
-                if (!thumbnail) {
-                    AxisLabel("${it.toInt()}", Modifier.padding(top = 2.dp))
-                }
-            },
-            xAxisTitle = { if (!thumbnail) AxisTitle("Position in Sequence") },
-            yAxisLabels = {
-                if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
-            },
-            yAxisTitle = {
-                if (!thumbnail) {
-                    AxisTitle(
-                        "Value",
-                        modifier = Modifier
-                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                            .padding(bottom = padding),
-                    )
-                }
-            },
+            xAxisContent = rememberAxisContent(
+                labels = {
+                    if (!thumbnail) {
+                        AxisLabel("${it.toInt()}", Modifier.padding(top = 2.dp))
+                    }
+                },
+                title = { if (!thumbnail) AxisTitle("Position in Sequence") },
+            ),
+            yAxisContent = rememberAxisContent(
+                labels = {
+                    if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
+                },
+                title = {
+                    if (!thumbnail) {
+                        AxisTitle(
+                            "Value",
+                            modifier = Modifier
+                                .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                                .padding(bottom = padding),
+                        )
+                    }
+                },
+            ),
         ) {
-            LinePlot2(
+            LinePlot(
                 data = fibonacciExtended.mapIndexed { index, fl ->
                     DefaultPoint(index.toFloat(), fl)
                 },

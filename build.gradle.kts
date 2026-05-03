@@ -17,7 +17,7 @@ repositories {
 }
 
 group = "io.github.koalaplot"
-version = "0.11.0-dev3"
+version = "0.12.0"
 
 detekt {
     source.setFrom("src")

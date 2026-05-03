@@ -26,6 +26,7 @@ import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.rotateVertically
+import io.github.koalaplot.core.xygraph.AxisContent
 import io.github.koalaplot.core.xygraph.DefaultPoint
 import io.github.koalaplot.core.xygraph.IntLinearAxisModel
 import io.github.koalaplot.core.xygraph.LongLinearAxisModel
@@ -108,40 +109,45 @@ private fun TimeSamplePlot(
                 yAxisModel = IntLinearAxisModel(
                     range = yDataMin..yDataMax,
                 ),
-                xAxisLabels = {
-                    if (!thumbnail) {
-                        AxisLabel(Instant.fromEpochSeconds(it).toString(), Modifier.padding(top = 2.dp))
-                    }
-                },
-                xAxisStyle = rememberAxisStyle(labelRotation = 90),
-                xAxisTitle = {
-                    if (!thumbnail) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            AxisTitle("Time")
+                xAxisContent = AxisContent(
+                    labels = {
+                        if (!thumbnail) {
+                            AxisLabel(Instant.fromEpochSeconds(it).toString(), Modifier.padding(top = 2.dp))
                         }
-                    }
-                },
-                yAxisLabels = {
-                    if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
-                },
-                yAxisTitle = {
-                    if (!thumbnail) {
-                        Box(
-                            modifier = Modifier.fillMaxHeight(),
-                            contentAlignment = Alignment.TopStart,
-                        ) {
-                            AxisTitle(
-                                "Value",
-                                modifier = Modifier
-                                    .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                                    .padding(bottom = padding),
-                            )
+                    },
+                    title = {
+                        if (!thumbnail) {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                AxisTitle("Time")
+                            }
                         }
-                    }
-                },
+                    },
+                    style = rememberAxisStyle(labelRotation = 90),
+                ),
+                yAxisContent = AxisContent(
+                    labels = {
+                        if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
+                    },
+                    title = {
+                        if (!thumbnail) {
+                            Box(
+                                modifier = Modifier.fillMaxHeight(),
+                                contentAlignment = Alignment.TopStart,
+                            ) {
+                                AxisTitle(
+                                    "Value",
+                                    modifier = Modifier
+                                        .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                                        .padding(bottom = padding),
+                                )
+                            }
+                        }
+                    },
+                    style = rememberAxisStyle(),
+                ),
             ) {
                 Chart(data)
             }

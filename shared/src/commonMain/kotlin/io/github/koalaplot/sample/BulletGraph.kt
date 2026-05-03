@@ -90,7 +90,7 @@ private fun BulletGraphScope.bulletGraphSample1() {
         }
         axis { labels { AxisText("${it.toInt()}") } }
         comparativeMeasure(260f)
-        comparativeMeasure(210f) { LineIndicator(Color.DarkGray) }
+        comparativeMeasure(210f) { LineIndicator(color = Color.DarkGray) }
         featuredMeasureBar(275f)
         ranges(0f, 200f, 250f, 300f)
     }

@@ -89,7 +89,7 @@ private fun SpiderPlotSample(
             radialAxisLabels = { if (!thumbnail) Text(it.toString()) },
             { if (!thumbnail) Text(it) },
             polarGraphProperties = PolarGraphDefaults
-                .PolarGraphPropertyDefaults()
+                .polarGraphPropertyDefaults()
                 .copy(
                     radialGridType = RadialGridType.LINES,
                     angularAxisGridLineStyle = angularAxisGridLineStyle,

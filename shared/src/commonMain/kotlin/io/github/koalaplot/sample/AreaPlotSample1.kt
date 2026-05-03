@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.line.AreaBaseline
-import io.github.koalaplot.core.line.AreaPlot2
+import io.github.koalaplot.core.line.AreaPlot
 import io.github.koalaplot.core.style.AreaStyle
 import io.github.koalaplot.core.style.KoalaPlotTheme
 import io.github.koalaplot.core.style.LineStyle
@@ -31,6 +31,8 @@ import io.github.koalaplot.core.xygraph.VerticalLineAnnotation
 import io.github.koalaplot.core.xygraph.XYAnnotation
 import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.XYGraphScope
+import io.github.koalaplot.core.xygraph.rememberAxisContent
+import io.github.koalaplot.core.xygraph.rememberGridStyle
 import kotlin.math.PI
 import kotlin.math.exp
 import kotlin.math.pow
@@ -65,42 +67,46 @@ private fun AreaPlotSample1Plot(
         XYGraph(
             xAxisModel = FloatLinearAxisModel(-5f..5.0f),
             yAxisModel = FloatLinearAxisModel(0f..1.0f, minimumMajorTickSpacing = 50.dp),
-            xAxisLabels = {
-                if (!thumbnail) {
-                    AxisLabel(it.toString(1), Modifier.padding(top = 2.dp))
-                }
-            },
-            xAxisTitle = {
-                if (!thumbnail) {
-                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        AxisTitle("x")
+            xAxisContent = rememberAxisContent(
+                labels = {
+                    if (!thumbnail) {
+                        AxisLabel(it.toString(1), Modifier.padding(top = 2.dp))
                     }
-                }
-            },
-            yAxisLabels = {
+                },
+                title = {
+                    if (!thumbnail) {
+                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                            AxisTitle("x")
+                        }
+                    }
+                },
+            ),
+            yAxisContent = rememberAxisContent(labels = {
                 if (!thumbnail) AxisLabel(it.toString(1), Modifier.absolutePadding(right = 2.dp))
-            },
-            horizontalMinorGridLineStyle = null,
-            verticalMinorGridLineStyle = null,
+            }),
+            gridStyle = rememberGridStyle(
+                horizontalMinorStyle = null,
+                verticalMinorStyle = null,
+            ),
         ) {
-            AreaPlot2(
+            AreaPlot(
                 data = distribution1,
                 lineStyle = LineStyle(brush = SolidColor(Color(0xFF00498F)), strokeWidth = 2.dp),
                 areaStyle = AreaStyle(
                     brush = SolidColor(Color(0xFF00498F)),
                     alpha = 0.5f,
                 ),
-                areaBaseline = AreaBaseline.ConstantLine(0f),
+                areaBaseline = AreaBaseline.HorizontalLine(0f),
                 // symbol = {}
             )
-            AreaPlot2(
+            AreaPlot(
                 data = distribution2,
                 lineStyle = LineStyle(brush = SolidColor(Color(0xFF37A78F)), strokeWidth = 2.dp),
                 areaStyle = AreaStyle(
                     brush = SolidColor(Color(0xFF37A78F)),
                     alpha = 0.5f,
                 ),
-                areaBaseline = AreaBaseline.ConstantLine(0f),
+                areaBaseline = AreaBaseline.HorizontalLine(0f),
             )
 
             if (!thumbnail) {

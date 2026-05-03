@@ -20,6 +20,7 @@ import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.xygraph.CategoryAxisModel
 import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.autoScaleRange
+import io.github.koalaplot.core.xygraph.rememberAxisContent
 import io.github.koalaplot.core.xygraph.rememberAxisStyle
 import io.github.koalaplot.core.xygraph.rememberFloatLinearAxisModel
 import kotlin.random.Random
@@ -65,17 +66,18 @@ private fun CategorySamplePlot(
                 .padding(start = 10.dp, top = 10.dp, end = 20.dp)
                 .fillMaxWidth(),
             xAxisModel = remember { CategoryAxisModel(GreekAlphabet.entries) },
-            xAxisLabels = {
-                Text(
-                    modifier = Modifier.border(1.dp, Color.Black),
-                    text = if (!thumbnail) it.name else "",
-                    maxLines = 1,
-                )
-            },
-            xAxisStyle = rememberAxisStyle(labelRotation = 45),
             yAxisModel = rememberFloatLinearAxisModel(data.map { it.value }.autoScaleRange()),
-            yAxisLabels = { },
-            xAxisTitle = {},
+            xAxisContent = rememberAxisContent(
+                labels = {
+                    Text(
+                        modifier = Modifier.border(1.dp, Color.Black),
+                        text = if (!thumbnail) it.name else "",
+                        maxLines = 1,
+                    )
+                },
+                style = rememberAxisStyle(labelRotation = 45),
+            ),
+            yAxisContent = rememberAxisContent(),
         ) {
             VerticalBarPlot2 {
                 data.forEach {

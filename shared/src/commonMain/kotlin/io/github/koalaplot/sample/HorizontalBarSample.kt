@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,7 +29,9 @@ import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.core.xygraph.FloatLinearAxisModel
 import io.github.koalaplot.core.xygraph.TickPosition
 import io.github.koalaplot.core.xygraph.XYGraph
+import io.github.koalaplot.core.xygraph.rememberAxisContent
 import io.github.koalaplot.core.xygraph.rememberAxisStyle
+import io.github.koalaplot.core.xygraph.rememberGridStyle
 
 private val colors = generateHueColorPalette(fibonacci.size)
 private const val BarWidth = 0.8f
@@ -105,36 +106,40 @@ private fun BarSamplePlot(
                 minimumMajorTickIncrement = 1f,
                 minorTickCount = 0,
             ),
-            yAxisStyle = rememberAxisStyle(
-                tickPosition = tickPositionState.verticalAxis,
-                color = Color.LightGray,
+            xAxisContent = rememberAxisContent(
+                style = rememberAxisStyle(tickPosition = tickPositionState.horizontalAxis),
+                labels = {
+                    if (!thumbnail) AxisLabel(it.toString(1), Modifier.absolutePadding(right = 2.dp))
+                },
+                title = {
+                    if (!thumbnail) {
+                        AxisTitle("Value")
+                    }
+                },
             ),
-            yAxisLabels = {
-                if (!thumbnail) {
-                    AxisLabel(it.toString(0), Modifier.padding(top = 2.dp))
-                }
-            },
-            yAxisTitle = {
-                if (!thumbnail) {
-                    AxisTitle(
-                        "Position in Sequence",
-                        modifier = Modifier
-                            .rotateVertically(
-                                VerticalRotation.COUNTER_CLOCKWISE,
-                            ).padding(bottom = padding),
-                    )
-                }
-            },
-            xAxisStyle = rememberAxisStyle(tickPosition = tickPositionState.horizontalAxis),
-            xAxisLabels = {
-                if (!thumbnail) AxisLabel(it.toString(1), Modifier.absolutePadding(right = 2.dp))
-            },
-            xAxisTitle = {
-                if (!thumbnail) {
-                    AxisTitle("Value")
-                }
-            },
-            horizontalMajorGridLineStyle = null,
+            yAxisContent = rememberAxisContent(
+                style = rememberAxisStyle(
+                    tickPosition = tickPositionState.verticalAxis,
+                    color = Color.LightGray,
+                ),
+                labels = {
+                    if (!thumbnail) {
+                        AxisLabel(it.toString(0), Modifier.padding(top = 2.dp))
+                    }
+                },
+                title = {
+                    if (!thumbnail) {
+                        AxisTitle(
+                            "Position in Sequence",
+                            modifier = Modifier
+                                .rotateVertically(
+                                    VerticalRotation.COUNTER_CLOCKWISE,
+                                ).padding(bottom = padding),
+                        )
+                    }
+                },
+            ),
+            gridStyle = rememberGridStyle(null, null, null, null),
         ) {
             HorizontalBarPlot(
                 barChartEntries,
@@ -142,11 +147,7 @@ private fun BarSamplePlot(
                     DefaultBar(
                         brush = SolidColor(colors[0]),
                         modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        if (!thumbnail) {
-                            HoverSurface { Text(barChartEntries[index].x.end.toString()) }
-                        }
-                    }
+                    )
                 },
                 barWidth = BarWidth,
             )
