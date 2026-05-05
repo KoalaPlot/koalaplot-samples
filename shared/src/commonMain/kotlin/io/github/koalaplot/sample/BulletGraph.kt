@@ -2,9 +2,7 @@
 
 package io.github.koalaplot.sample
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material3.MaterialTheme
@@ -21,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.bar.BulletGraphScope
 import io.github.koalaplot.core.bar.BulletGraphs
-import io.github.koalaplot.core.bar.FixedFraction
 import io.github.koalaplot.core.bar.HorizontalBarIndicator
 import io.github.koalaplot.core.bar.LineIndicator
 import io.github.koalaplot.core.bar.VariableFraction
@@ -35,13 +32,7 @@ import io.github.koalaplot.core.xygraph.LongLinearAxisModel
 val bulletGraphSampleView = object : SampleView {
     override val name: String = "Bullet Graph"
 
-    override val thumbnail = @Composable {
-        ThumbnailTheme {
-            MaterialTheme(lightColorScheme(primary = Color.Black)) {
-                BulletGraphThumbnail()
-            }
-        }
-    }
+    override fun toString(): String = name
 
     override val content: @Composable () -> Unit = @Composable {
         Column {
@@ -270,32 +261,6 @@ private fun BulletGraphScope.bulletGraphSample8() {
             }
             range(-40)
             range(0)
-        }
-    }
-}
-
-@OptIn(ExperimentalKoalaPlotApi::class)
-@Suppress("MagicNumber")
-@Composable
-private fun BulletGraphThumbnail() {
-    ChartLayout(paddingMod, title = { Text("Bullet Graph") }) {
-        Box(contentAlignment = Alignment.Center) {
-            BulletGraphs(modifier = Modifier.fillMaxHeight(0.25f)) {
-                labelWidth = FixedFraction(0f)
-
-                bullet(FloatLinearAxisModel(0f..300f)) {
-                    comparativeMeasure(260f) {
-                        LineIndicator(width = 4.dp)
-                    }
-                    featuredMeasureBar(275f)
-
-                    ranges(0f) {
-                        range(200f)
-                        range(250f)
-                        range(300f)
-                    }
-                }
-            }
         }
     }
 }

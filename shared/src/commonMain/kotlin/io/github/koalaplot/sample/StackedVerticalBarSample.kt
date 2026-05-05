@@ -66,31 +66,25 @@ private fun barChartEntries(): List<VerticalBarPlotStackedPointEntry<Int, Long>>
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
-private fun Legend(thumbnail: Boolean = false) {
-    if (!thumbnail) {
-        Surface(shadowElevation = 2.dp) {
-            FlowLegend(
-                itemCount = PopulationData.Categories.entries.size,
-                symbol = { i ->
-                    Symbol(modifier = Modifier.size(padding), fillBrush = SolidColor(colors[i]))
-                },
-                label = { i ->
-                    Text(PopulationData.Categories.entries[i].toString())
-                },
-                modifier = paddingMod,
-            )
-        }
+private fun Legend() {
+    Surface(shadowElevation = 2.dp) {
+        FlowLegend(
+            itemCount = PopulationData.Categories.entries.size,
+            symbol = { i ->
+                Symbol(modifier = Modifier.size(padding), fillBrush = SolidColor(colors[i]))
+            },
+            label = { i ->
+                Text(PopulationData.Categories.entries[i].toString())
+            },
+            modifier = paddingMod,
+        )
     }
 }
 
 val stackedVerticalBarSampleView = object : SampleView {
     override val name: String = "Stacked Vertical Bar"
 
-    override val thumbnail = @Composable {
-        ThumbnailTheme {
-            StackedBarSamplePlot(name, thumbnail = true)
-        }
-    }
+    override fun toString(): String = name
 
     override val content: @Composable () -> Unit = @Composable {
         var selectedOption by remember { mutableStateOf(rotationOptions[0]) }
@@ -134,7 +128,6 @@ private const val PopulationScale = 1E6
 private fun StackedBarSamplePlot(
     title: String,
     modifier: Modifier = Modifier,
-    thumbnail: Boolean = false,
     xAxisLabelRotation: Int = 0,
 ) {
     val barChartEntries = remember { barChartEntries() }
@@ -142,7 +135,7 @@ private fun StackedBarSamplePlot(
     ChartLayout(
         modifier = modifier.then(paddingMod),
         title = { ChartTitle(title) },
-        legend = { Legend(thumbnail) },
+        legend = { Legend() },
         legendLocation = LegendLocation.BOTTOM,
     ) {
         @Suppress("MagicNumber")
@@ -152,31 +145,27 @@ private fun StackedBarSamplePlot(
             xAxisContent = AxisContent(
                 style = rememberAxisStyle(labelRotation = xAxisLabelRotation),
                 labels = {
-                    if (!thumbnail) AxisLabel("$it", Modifier.padding(top = 2.dp))
+                    AxisLabel("$it", Modifier.padding(top = 2.dp))
                 },
                 title = {
-                    if (!thumbnail) AxisTitle("Year", modifier = paddingMod)
+                    AxisTitle("Year", modifier = paddingMod)
                 },
             ),
             yAxisContent = AxisContent(
                 style = rememberAxisStyle(minorTickSize = 0.dp),
                 labels = {
-                    if (!thumbnail) {
-                        AxisLabel(
-                            (it / PopulationScale).toString(2),
-                            Modifier.absolutePadding(right = 2.dp),
-                        )
-                    }
+                    AxisLabel(
+                        (it / PopulationScale).toString(2),
+                        Modifier.absolutePadding(right = 2.dp),
+                    )
                 },
                 title = {
-                    if (!thumbnail) {
-                        AxisTitle(
-                            "Population (Millions)",
-                            modifier = Modifier
-                                .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                                .padding(bottom = padding),
-                        )
-                    }
+                    AxisTitle(
+                        "Population (Millions)",
+                        modifier = Modifier
+                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                            .padding(bottom = padding),
+                    )
                 },
             ),
             gridStyle = rememberGridStyle(verticalMajorStyle = null),

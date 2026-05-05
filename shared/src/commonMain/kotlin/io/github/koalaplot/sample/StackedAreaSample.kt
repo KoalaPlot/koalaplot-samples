@@ -50,14 +50,10 @@ val stackedAreaSampleView =
     object : SampleView {
         override val name: String = "Stacked Area Chart"
 
-        override val thumbnail = @Composable {
-            ThumbnailTheme {
-                StackedAreaChartSampleView(true, name)
-            }
-        }
+        override fun toString(): String = name
 
         override val content: @Composable () -> Unit = @Composable {
-            StackedAreaChartSampleView(false, "New York City Population")
+            StackedAreaChartSampleView("New York City Population")
         }
     }
 
@@ -72,27 +68,23 @@ private val colorPalette =
     )
 
 @Composable
-private fun StackedAreaChartSampleView(
-    thumbnail: Boolean,
-    title: String,
-) {
+private fun StackedAreaChartSampleView(title: String) {
     var bezier by remember { mutableStateOf(false) }
 
     @Suppress("MagicNumber")
     var tau by remember { mutableFloatStateOf(0.5f) }
 
     Column {
-        if (!thumbnail) {
-            BezierOptions(
-                bezier,
-                tau,
-                { bezier = it },
-                { tau = it },
-                Modifier.padding(KoalaPlotTheme.sizes.gap),
-            )
-            HorizontalDivider()
-        }
-        StackedAreaSampleChart(thumbnail, title, bezier, tau)
+        BezierOptions(
+            bezier,
+            tau,
+            { bezier = it },
+            { tau = it },
+            Modifier.padding(KoalaPlotTheme.sizes.gap),
+        )
+        HorizontalDivider()
+
+        StackedAreaSampleChart(title, bezier, tau)
     }
 }
 
@@ -100,7 +92,6 @@ private fun StackedAreaChartSampleView(
 @Composable
 @Suppress("MagicNumber")
 private fun StackedAreaSampleChart(
-    thumbnail: Boolean,
     title: String,
     bezierOn: Boolean,
     tau: Float,
@@ -119,48 +110,40 @@ private fun StackedAreaSampleChart(
             yAxisModel = FloatLinearAxisModel(0f..10f),
             xAxisContent = rememberAxisContent(
                 labels = {
-                    if (!thumbnail) {
-                        AxisLabel(it.toString(), Modifier.padding(top = 2.dp))
-                    }
+                    AxisLabel(it.toString(), Modifier.padding(top = 2.dp))
                 },
                 title = {
-                    if (!thumbnail) {
-                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                            AxisTitle("Year")
-                        }
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        AxisTitle("Year")
                     }
                 },
             ),
             yAxisContent = rememberAxisContent(
                 labels = {
-                    if (!thumbnail) {
-                        AxisLabel(it.toString(0))
-                    }
+                    AxisLabel(it.toString(0))
                 },
                 title = {
-                    if (!thumbnail) {
-                        Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.Center) {
-                            AxisTitle(
-                                "Population (Millions)",
-                                modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE),
-                            )
-                        }
+                    Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.Center) {
+                        AxisTitle(
+                            "Population (Millions)",
+                            modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE),
+                        )
                     }
                 },
             ),
             gridStyle = rememberGridStyle(null, null, null, null),
         ) {
             if (bezierOn) {
-                StackedAreaBezierPlot(thumbnail, tau)
+                StackedAreaBezierPlot(tau)
             } else {
-                StackedAreaLinePlot(thumbnail)
+                StackedAreaLinePlot()
             }
         }
     }
 }
 
 @Composable
-private fun XYGraphScope<Int, Float>.StackedAreaLinePlot(thumbnail: Boolean) {
+private fun XYGraphScope<Int, Float>.StackedAreaLinePlot() {
     StackedAreaPlot(
         stackedAreaData,
         colorPalette.map {
@@ -172,15 +155,12 @@ private fun XYGraphScope<Int, Float>.StackedAreaLinePlot(thumbnail: Boolean) {
         AreaBaseline.HorizontalLine(0f),
     )
 
-    annotations(thumbnail)
+    annotations()
 }
 
 @Suppress("MagicNumber")
 @Composable
-private fun XYGraphScope<Int, Float>.StackedAreaBezierPlot(
-    thumbnail: Boolean,
-    tau: Float,
-) {
+private fun XYGraphScope<Int, Float>.StackedAreaBezierPlot(tau: Float) {
     val popData = PopulationData.data.values.toList()
 
     StackedAreaPlot(
@@ -202,7 +182,7 @@ private fun XYGraphScope<Int, Float>.StackedAreaBezierPlot(
         baseline = AreaBaseline.HorizontalLine(0f),
     )
 
-    annotations(thumbnail)
+    annotations()
 }
 
 private fun integrate(
@@ -219,46 +199,44 @@ private fun integrate(
 
 @Suppress("MagicNumber")
 @Composable
-private fun XYGraphScope<Int, Float>.annotations(thumbnail: Boolean) {
-    if (!thumbnail) {
-        val entries = PopulationData.data.entries.toList()
-        val max = entries.map { it.value.max() }
-        val maxIndices =
-            entries.mapIndexed { index, entry ->
-                entry.value.indexOfFirst { it == max[index] }
+private fun XYGraphScope<Int, Float>.annotations() {
+    val entries = PopulationData.data.entries.toList()
+    val max = entries.map { it.value.max() }
+    val maxIndices =
+        entries.mapIndexed { index, entry ->
+            entry.value.indexOfFirst { it == max[index] }
+        }
+
+    entries.forEachIndexed { index, (category, data) ->
+        val yearIndex = maxIndices[index] // index into the year the max occurred
+
+        var sum = 0
+        for (i in 0..<index) {
+            sum += entries[i].value[yearIndex]
+        }
+
+        val anchorPoint =
+            when (yearIndex) {
+                0 -> AnchorPoint.LeftMiddle
+                PopulationData.years.lastIndex -> AnchorPoint.RightMiddle
+                else -> AnchorPoint.Center
             }
 
-        entries.forEachIndexed { index, (category, data) ->
-            val yearIndex = maxIndices[index] // index into the year the max occurred
-
-            var sum = 0
-            for (i in 0..<index) {
-                sum += entries[i].value[yearIndex]
-            }
-
-            val anchorPoint =
-                when (yearIndex) {
-                    0 -> AnchorPoint.LeftMiddle
-                    PopulationData.years.lastIndex -> AnchorPoint.RightMiddle
-                    else -> AnchorPoint.Center
-                }
-
-            XYAnnotation(
-                Point(PopulationData.years[yearIndex], (sum + data[yearIndex] / 2f) / 1E6f),
-                anchorPoint,
-            ) {
-                Text(
-                    category.display,
-                    style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                    color = Color.DarkGray,
-                    modifier =
-                        Modifier
-                            .padding(horizontal = KoalaPlotTheme.sizes.gap)
-                            .background(Color.LightGray, RoundedCornerShape(4.dp))
-                            .padding(horizontal = KoalaPlotTheme.sizes.gap),
-                )
-            }
+        XYAnnotation(
+            Point(PopulationData.years[yearIndex], (sum + data[yearIndex] / 2f) / 1E6f),
+            anchorPoint,
+        ) {
+            Text(
+                category.display,
+                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                color = Color.DarkGray,
+                modifier =
+                    Modifier
+                        .padding(horizontal = KoalaPlotTheme.sizes.gap)
+                        .background(Color.LightGray, RoundedCornerShape(4.dp))
+                        .padding(horizontal = KoalaPlotTheme.sizes.gap),
+            )
         }
     }
 }

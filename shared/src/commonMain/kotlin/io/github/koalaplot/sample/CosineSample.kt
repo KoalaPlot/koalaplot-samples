@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.line.AreaBaseline.HorizontalLine
-import io.github.koalaplot.core.line.AreaPlot2
+import io.github.koalaplot.core.line.AreaPlot
 import io.github.koalaplot.core.style.AreaStyle
 import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
@@ -42,24 +42,17 @@ import kotlin.math.cos
 val trigSampleView = object : SampleView {
     override val name: String = "Area to x-axis"
 
-    override val thumbnail = @Composable {
-        ThumbnailTheme {
-            CosineSamplePlot(true, name)
-        }
-    }
+    override fun toString(): String = name
 
     override val content: @Composable () -> Unit = @Composable {
-        CosineSamplePlot(false, "Cosine")
+        CosineSamplePlot("Cosine")
     }
 }
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
 @Suppress("MagicNumber")
-private fun CosineSamplePlot(
-    thumbnail: Boolean,
-    title: String,
-) {
+private fun CosineSamplePlot(title: String) {
     val x: MutableState<Float?> = remember { mutableStateOf(null as Float?) }
     val y: MutableState<Float?> = remember { mutableStateOf(null as Float?) }
 
@@ -71,8 +64,8 @@ private fun CosineSamplePlot(
         XYGraph(
             xAxisModel = FloatLinearAxisModel(0f..4.0.toFloat()), // units of PI
             yAxisModel = FloatLinearAxisModel(-1.1f..1.1f, minimumMajorTickSpacing = 50.dp),
-            xAxisContent = createXAxisContent(thumbnail),
-            yAxisContent = createYAxisContent(thumbnail),
+            xAxisContent = createXAxisContent(),
+            yAxisContent = createYAxisContent(),
             onPointerEvent = {
                 when (it.type) {
                     PointerEventType.Exit -> {
@@ -88,7 +81,7 @@ private fun CosineSamplePlot(
                 }
             },
         ) {
-            AreaPlot2(
+            AreaPlot(
                 data = cosineData,
                 lineStyle = LineStyle(brush = SolidColor(Color.Blue), strokeWidth = 2.dp),
                 areaStyle = AreaStyle(
@@ -131,30 +124,26 @@ private fun CosineSamplePlot(
     }
 }
 
-private fun createYAxisContent(thumbnail: Boolean): AxisContent<Float> = AxisContent(
+private fun createYAxisContent(): AxisContent<Float> = AxisContent(
     labels = {
-        if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
+        AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
     },
     title = {
-        if (!thumbnail) {
-            AxisTitle(
-                "cosine",
-                modifier = Modifier
-                    .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                    .padding(bottom = padding),
-            )
-        }
+        AxisTitle(
+            "cosine",
+            modifier = Modifier
+                .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                .padding(bottom = padding),
+        )
     },
     style = AxisStyle(),
 )
 
-private fun createXAxisContent(thumbnail: Boolean): AxisContent<Float> = AxisContent(
+private fun createXAxisContent(): AxisContent<Float> = AxisContent(
     labels = {
-        if (!thumbnail) {
-            AxisLabel("$it \u03C0", Modifier.padding(top = 2.dp))
-        }
+        AxisLabel("$it \u03C0", Modifier.padding(top = 2.dp))
     },
-    title = { if (!thumbnail) AxisTitle("Angle (radians)") },
+    title = { AxisTitle("Angle (radians)") },
     style = AxisStyle(),
 )
 

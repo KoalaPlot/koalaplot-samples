@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.legend.LegendLocation
-import io.github.koalaplot.core.line.LinePlot2
+import io.github.koalaplot.core.line.LinePlot
 import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
@@ -40,24 +40,17 @@ import kotlin.time.Instant
 val timeLineSampleView = object : SampleView {
     override val name: String = "Time Chart"
 
-    override val thumbnail = @Composable {
-        ThumbnailTheme {
-            TimeSamplePlot(true, name)
-        }
-    }
+    override fun toString(): String = name
 
     override val content: @Composable () -> Unit = @Composable {
-        TimeSamplePlot(false, "Random Walk")
+        TimeSamplePlot("Random Walk")
     }
 }
 
 @OptIn(ExperimentalKoalaPlotApi::class, ExperimentalTime::class)
 @Composable
 @Suppress("MagicNumber", "LongMethod")
-private fun TimeSamplePlot(
-    thumbnail: Boolean,
-    title: String,
-) {
+private fun TimeSamplePlot(title: String) {
     val data = remember {
         mutableStateListOf(
             DefaultPoint(
@@ -72,29 +65,27 @@ private fun TimeSamplePlot(
     var yDataMax by remember { mutableIntStateOf(1) }
 
     Column {
-        if (!thumbnail) {
-            Button(
-                onClick = {
-                    val yLast = data.last().y
-                    val yNext = if (Random.nextBoolean()) {
-                        yLast + 1
-                    } else {
-                        yLast - 1
-                    }
-                    data.add(
-                        DefaultPoint(
-                            kotlin.time.Clock.System
-                                .now()
-                                .epochSeconds,
-                            yNext,
-                        ),
-                    )
-                    yDataMin = minOf(yDataMin, yNext)
-                    yDataMax = maxOf(yDataMax, yNext)
-                },
-            ) {
-                Text("Add Step")
-            }
+        Button(
+            onClick = {
+                val yLast = data.last().y
+                val yNext = if (Random.nextBoolean()) {
+                    yLast + 1
+                } else {
+                    yLast - 1
+                }
+                data.add(
+                    DefaultPoint(
+                        kotlin.time.Clock.System
+                            .now()
+                            .epochSeconds,
+                        yNext,
+                    ),
+                )
+                yDataMin = minOf(yDataMin, yNext)
+                yDataMax = maxOf(yDataMax, yNext)
+            },
+        ) {
+            Text("Add Step")
         }
 
         ChartLayout(
@@ -111,39 +102,33 @@ private fun TimeSamplePlot(
                 ),
                 xAxisContent = AxisContent(
                     labels = {
-                        if (!thumbnail) {
-                            AxisLabel(Instant.fromEpochSeconds(it).toString(), Modifier.padding(top = 2.dp))
-                        }
+                        AxisLabel(Instant.fromEpochSeconds(it).toString(), Modifier.padding(top = 2.dp))
                     },
                     title = {
-                        if (!thumbnail) {
-                            Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                AxisTitle("Time")
-                            }
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            AxisTitle("Time")
                         }
                     },
                     style = rememberAxisStyle(labelRotation = 90),
                 ),
                 yAxisContent = AxisContent(
                     labels = {
-                        if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
+                        AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
                     },
                     title = {
-                        if (!thumbnail) {
-                            Box(
-                                modifier = Modifier.fillMaxHeight(),
-                                contentAlignment = Alignment.TopStart,
-                            ) {
-                                AxisTitle(
-                                    "Value",
-                                    modifier = Modifier
-                                        .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                                        .padding(bottom = padding),
-                                )
-                            }
+                        Box(
+                            modifier = Modifier.fillMaxHeight(),
+                            contentAlignment = Alignment.TopStart,
+                        ) {
+                            AxisTitle(
+                                "Value",
+                                modifier = Modifier
+                                    .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                                    .padding(bottom = padding),
+                            )
                         }
                     },
                     style = rememberAxisStyle(),
@@ -158,7 +143,7 @@ private fun TimeSamplePlot(
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
 private fun XYGraphScope<Long, Int>.Chart(data: List<DefaultPoint<Long, Int>>) {
-    LinePlot2(
+    LinePlot(
         data = data,
         lineStyle = LineStyle(
             brush = SolidColor(Color.Black),

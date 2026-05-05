@@ -42,11 +42,9 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
 import io.github.koalaplot.core.legend.ColumnLegend
@@ -97,9 +95,7 @@ private data class OtherOptionsState(
 val pieSampleView = object : SampleView {
     override val name: String = "Pie Chart"
 
-    override val thumbnail = @Composable {
-        PieChartThumbnail()
-    }
+    override fun toString(): String = name
 
     override val content: @Composable () -> Unit = @Composable {
         var legendLocation by remember { mutableStateOf(LegendLocation.LEFT) }
@@ -262,7 +258,7 @@ private fun ConnectorStyleSelector(
             expanded = expanded,
             onDismissRequest = { expanded = false },
         ) {
-            strokes.forEachIndexed { index, stroke ->
+            strokes.forEachIndexed { _, stroke ->
                 DropdownMenuItem(
                     text = {
                         Box(
@@ -442,7 +438,7 @@ private fun PieChartSample(
                 labelSpacing = if (labelOptions.showLabels) labelOptions.labelSpacing else 1.0f,
                 labelPlacement = labelOptions.labelPlacement,
             ),
-            modifier = Modifier.padding(start = padding).border(1.dp, Color.Black).padding(padding),
+            modifier = Modifier.padding(start = padding).padding(padding),
             slice = { i: Int ->
                 DefaultSlice(
                     color = colors[i],
@@ -486,27 +482,6 @@ private fun PieChartSample(
             maxPieDiameter = Dp.Infinity,
             forceCenteredPie = otherOptionsState.forcePieCentering,
         )
-    }
-}
-
-@OptIn(ExperimentalKoalaPlotApi::class)
-@Suppress("MagicNumber")
-@Composable
-private fun PieChartThumbnail(modifier: Modifier = Modifier) {
-    ChartLayout(
-        modifier = modifier.padding(padding),
-        title = {
-            Column {
-                Text(
-                    "Pie Chart",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                )
-            }
-        },
-    ) {
-        PieChart(fibonacci, labelConnector = {})
     }
 }
 

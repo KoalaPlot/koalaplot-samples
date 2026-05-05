@@ -44,6 +44,8 @@ androidGradlePlugin = "9.0.0"
 
 androidx-activity = "1.13.0"
 
+compose-adaptive = "1.2.0"
+
 composeHotReload = "1.0.0"
 
 composeMultiplatform = "1.10.3"
@@ -85,6 +87,8 @@ material3 = "1.9.0"
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity" }
 
+compose-adaptive = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive", version.ref = "compose-adaptive" }
+compose-adaptive-layout = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive-layout", version.ref = "compose-adaptive" }
 compose-animation = { module = "org.jetbrains.compose.animation:animation", version.ref = "composeMultiplatform" }
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "composeMultiplatform" }
 compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
@@ -101,3 +105,5 @@ kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-co
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 
 ktlint-compose = { module = "io.nlopez.compose.rules:ktlint", version.ref = "ktlint-compose" }
+
+treeview = { module = "io.github.vooft:compose-treeview-core", version = "0.6.1" }

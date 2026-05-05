@@ -1,200 +1,207 @@
 package io.github.koalaplot.sample
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.layout.AnimatedPane
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
+import androidx.compose.material3.adaptive.layout.PaneScaffoldDirective
+import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldDestinationItem
+import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldValue
+import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.style.KoalaPlotTheme
 import io.github.koalaplot.sample.polar.polarScatterPlotSample
 import io.github.koalaplot.sample.polar.radialLinePlotSample
 import io.github.koalaplot.sample.polar.spiderPlotSample
+import io.github.vooft.compose.treeview.core.TreeView
+import io.github.vooft.compose.treeview.core.node.Branch
+import io.github.vooft.compose.treeview.core.node.Leaf
+import io.github.vooft.compose.treeview.core.tree.Tree
 
-// https://developer.android.com/guide/topics/large-screens/support-different-screen-sizes#window_size_classes
-enum class WindowWidthSizeClass(
-    private val threshold: Dp,
-) {
-    Compact(0.dp),
-    Medium(600.dp),
-    Expanded(840.dp),
-    ;
-
-    companion object {
-        fun fromWidth(width: Dp): WindowWidthSizeClass = when {
-            width >= Expanded.threshold -> Expanded
-            width >= Medium.threshold -> Medium
-            else -> Compact
-        }
+@Composable
+private fun composeSamplesTree(): Tree<SampleContent> = Tree {
+    Branch(SampleCategory("Pie Charts")) {
+        Leaf(pieSampleView)
+    }
+    Branch(SampleCategory("Bar Charts")) {
+        Leaf(verticalBarSampleView)
+        Leaf(horizontalBarSampleView)
+        Leaf(groupedVerticalBarSampleView)
+        Leaf(groupedHorizontalBarSampleView)
+        Leaf(stackedVerticalBarSampleView)
+        Leaf(stackedHorizontalBarSampleView)
+        Leaf(waterfallChartSampleView)
+    }
+    Branch(SampleCategory("Line & Area Charts")) {
+        Leaf(xyLineSampleView)
+        Leaf(stairStepSampleView)
+        Leaf(xyLogLineSampleView)
+        Leaf(trigSampleView)
+        Leaf(areaPlotSample1View)
+        Leaf(stackedAreaSampleView)
+        Leaf(timeLineSampleView)
+        Leaf(liveTimeChartSampleView)
+        Leaf(xyLineChartGestureSampleView)
+    }
+    Branch(SampleCategory("Radial/Polar Plots")) {
+        Leaf(radialLinePlotSample)
+        Leaf(spiderPlotSample)
+        Leaf(polarScatterPlotSample)
+    }
+    Branch(SampleCategory("Bullet Graphs")) {
+        Leaf(bulletGraphSampleView)
+    }
+    Branch(SampleCategory("Heat Maps")) {
+        Leaf(heatMapSampleView)
     }
 }
 
-enum class WindowHeightSizeClass(
-    private val threshold: Dp,
-) {
-    Compact(0.dp),
-    Medium(480.dp),
-    Expanded(900.dp),
-    ;
-
-    companion object {
-        fun fromHeight(height: Dp): WindowHeightSizeClass = when {
-            height >= Expanded.threshold -> Expanded
-            height >= Medium.threshold -> Medium
-            else -> Compact
-        }
-    }
-}
-
-class WindowSizeClass(
-    val widthSizeClass: WindowWidthSizeClass,
-    val heightSizeClass: WindowHeightSizeClass,
-) {
-    companion object {
-        fun fromSize(
-            width: Dp,
-            height: Dp,
-        ): WindowSizeClass = WindowSizeClass(
-            WindowWidthSizeClass.fromWidth(width),
-            WindowHeightSizeClass.fromHeight(height),
-        )
-    }
-}
-
-private val samples = buildList {
-    add(pieSampleView)
-    add(verticalBarSampleView)
-    add(horizontalBarSampleView)
-    add(groupedVerticalBarSampleView)
-    add(groupedHorizontalBarSampleView)
-    add(stackedVerticalBarSampleView)
-    add(stackedHorizontalBarSampleView)
-    add(waterfallChartSampleView)
-    add(bulletGraphSampleView)
-    add(xyLineSampleView)
-    add(stairStepSampleView)
-    add(xyLogLineSampleView)
-    add(trigSampleView)
-    add(areaPlotSample1View)
-    add(stackedAreaSampleView)
-    add(radialLinePlotSample)
-    add(spiderPlotSample)
-    add(polarScatterPlotSample)
-    add(timeLineSampleView)
-    add(liveTimeChartSampleView)
-    add(xyLineChartGestureSampleView)
-    add(heatMapSampleView)
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun MainView(modifier: Modifier = Modifier) {
     MaterialTheme {
         KoalaPlotTheme {
-            var selectedTabIndex by remember { mutableStateOf(-1) }
+            // var selectedTabIndex by remember { mutableStateOf(-1) }
+            var selectedItem: SampleView? by remember { mutableStateOf(null) }
 
-            Scaffold(modifier = modifier, topBar = {
-                if (selectedTabIndex == -1) {
-                    TopAppBar(
-                        title = { Text("Select Sample") },
+            val directive = calculatePaneScaffoldDirective(currentWindowAdaptiveInfo(true)).copy(horizontalPartitionSpacerSize = 0.dp)
+            val destination = remember(selectedItem) {
+                if (selectedItem == null) {
+                    ThreePaneScaffoldDestinationItem(
+                        ListDetailPaneScaffoldRole.List,
+                        contentKey = null,
                     )
                 } else {
-                    TopAppBar(
-                        title = { Text(samples[selectedTabIndex].name) },
-                        navigationIcon = {
-                            IconButton({ selectedTabIndex = -1 }) {
-                                Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
-                            }
-                        },
+                    ThreePaneScaffoldDestinationItem(
+                        ListDetailPaneScaffoldRole.Detail,
+                        contentKey = selectedItem,
                     )
                 }
-            }) { innerPadding ->
-                Column(
-                    Modifier
-                        .consumeWindowInsets(innerPadding)
-                        .padding(innerPadding)
-                        .fillMaxSize(),
-                ) {
-                    if (selectedTabIndex == -1) {
-                        ThumbnailsView(
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
-                        ) {
-                            selectedTabIndex = it
-                        }
-                    } else {
-                        samples[selectedTabIndex].content.invoke()
+            }
+
+            ListDetailPaneScaffold(
+                directive = directive,
+                value = computeThreePaneScaffoldValue(directive, destination),
+                listPane = {
+                    AnimatedPane {
+                        TreeView(
+                            composeSamplesTree(),
+                            onClick = {
+                                when (val content = it.content) {
+                                    is SampleView -> {
+                                        selectedItem = content
+                                    }
+
+                                    else -> {}
+                                }
+                            },
+                        )
+//                        LazyColumn {
+//                            items(samples.size) { index ->
+//                                ListItem(
+//                                    headlineContent = { Text(samples[index].name) },
+//                                    modifier = Modifier.clickable(
+//                                        onClick = { selectedItem = samples[index] },
+//                                    ),
+//                                )
+//                            }
+//                        }
                     }
-                }
-            }
+                },
+                detailPane = {
+                    AnimatedPane {
+                        Column(Modifier.fillMaxSize()) {
+                            TopAppBar(
+                                title = { Text(selectedItem?.name ?: "") },
+                                navigationIcon = {
+                                    IconButton({ selectedItem = null }) {
+                                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                                    }
+                                },
+                            )
+                            HorizontalDivider()
+                            selectedItem?.content?.invoke()
+                        }
+                    }
+                },
+                paneExpansionDragHandle = {
+                    VerticalDivider()
+                },
+            )
         }
     }
 }
 
-/**
- * Displays the sample thumbnails.
- */
-@Composable
-private fun ThumbnailsView(
-    modifier: Modifier = Modifier,
-    select: (Int) -> Unit,
-) {
-    BoxWithConstraints(modifier) {
-        val sizeClass = WindowSizeClass.fromSize(maxWidth, maxHeight)
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun computeThreePaneScaffoldValue(
+    directive: PaneScaffoldDirective,
+    destination: ThreePaneScaffoldDestinationItem<*>,
+): ThreePaneScaffoldValue {
+    val isList = destination.pane == ListDetailPaneScaffoldRole.List
+    val isDetail = destination.pane == ListDetailPaneScaffoldRole.Detail
 
-        @Suppress("MagicNumber")
-        val columns = when (sizeClass.widthSizeClass) {
-            WindowWidthSizeClass.Compact -> 2
-            WindowWidthSizeClass.Medium -> 3
-            WindowWidthSizeClass.Expanded -> 4
+    return when (directive.maxHorizontalPartitions) {
+        // COMPACT (phone)
+        1 -> {
+            if (isList) {
+                ThreePaneScaffoldValue(
+                    primary = PaneAdaptedValue.Hidden,
+                    secondary = PaneAdaptedValue.Expanded,
+                    tertiary = PaneAdaptedValue.Hidden,
+                )
+            } else {
+                ThreePaneScaffoldValue(
+                    primary = PaneAdaptedValue.Expanded,
+                    secondary = PaneAdaptedValue.Hidden,
+                    tertiary = PaneAdaptedValue.Hidden,
+                )
+            }
         }
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(columns),
-        ) {
-            itemsIndexed(samples) { index, item ->
-                Thumbnail({ select(index) }, item.thumbnail)
-            }
+        // MEDIUM (tablet portrait, small desktop)
+        else -> {
+            ThreePaneScaffoldValue(
+                secondary = PaneAdaptedValue.Expanded,
+                primary = if (isDetail) {
+                    PaneAdaptedValue.Expanded
+                } else {
+                    PaneAdaptedValue.Hidden
+                },
+                tertiary = PaneAdaptedValue.Hidden,
+            )
         }
     }
 }
 
-@Composable
-private fun Thumbnail(
-    onClick: () -> Unit,
-    content: @Composable () -> Unit,
-) {
-    Surface(
-        shadowElevation = 2.dp,
-        modifier = Modifier.padding(padding).clickable(onClick = onClick).aspectRatio(1f),
-        content = content,
-    )
+sealed interface SampleContent
+
+data class SampleCategory(
+    val name: String,
+) : SampleContent {
+    override fun toString(): String = name
 }
 
-interface SampleView {
+interface SampleView : SampleContent {
     val name: String
-    val thumbnail: @Composable () -> Unit
     val content: @Composable () -> Unit
 }

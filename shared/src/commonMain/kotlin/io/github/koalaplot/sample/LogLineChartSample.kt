@@ -33,16 +33,12 @@ import io.github.koalaplot.core.xygraph.rememberAxisContent
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 val xyLogLineSampleView = object : SampleView {
-    override val name: String = "XY Line - Log Axis"
+    override val name: String = "Log Axis"
 
-    override val thumbnail = @Composable {
-        ThumbnailTheme {
-            XYSamplePlot(true, name)
-        }
-    }
+    override fun toString(): String = name
 
     override val content: @Composable () -> Unit = @Composable {
-        XYSamplePlot(false, "Fibonacci Sequence")
+        XYSamplePlot("Fibonacci Sequence")
     }
 }
 
@@ -51,10 +47,7 @@ private val XAxisRange = -0.5f..15.5f
 
 @OptIn(ExperimentalKoalaPlotApi::class, ExperimentalMaterial3Api::class)
 @Composable
-private fun XYSamplePlot(
-    thumbnail: Boolean,
-    title: String,
-) {
+private fun XYSamplePlot(title: String) {
     ChartLayout(
         modifier = paddingMod,
         title = { ChartTitle(title) },
@@ -68,25 +61,21 @@ private fun XYSamplePlot(
             yAxisModel = LogAxisModel(YAxisRange),
             xAxisContent = rememberAxisContent(
                 labels = {
-                    if (!thumbnail) {
-                        AxisLabel("${it.toInt()}", Modifier.padding(top = 2.dp))
-                    }
+                    AxisLabel("${it.toInt()}", Modifier.padding(top = 2.dp))
                 },
-                title = { if (!thumbnail) AxisTitle("Position in Sequence") },
+                title = { AxisTitle("Position in Sequence") },
             ),
             yAxisContent = rememberAxisContent(
                 labels = {
-                    if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
+                    AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
                 },
                 title = {
-                    if (!thumbnail) {
-                        AxisTitle(
-                            "Value",
-                            modifier = Modifier
-                                .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                                .padding(bottom = padding),
-                        )
-                    }
+                    AxisTitle(
+                        "Value",
+                        modifier = Modifier
+                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                            .padding(bottom = padding),
+                    )
                 },
             ),
         ) {
@@ -99,10 +88,8 @@ private fun XYSamplePlot(
                     TooltipBox(
                         positionProvider = TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
                         tooltip = {
-                            if (!thumbnail) {
-                                PlainTooltip {
-                                    Text(point.y.toString())
-                                }
+                            PlainTooltip {
+                                Text(point.y.toString())
                             }
                         },
                         state = rememberTooltipState(),

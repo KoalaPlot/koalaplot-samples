@@ -36,7 +36,7 @@ import io.github.koalaplot.core.Symbol
 import io.github.koalaplot.core.legend.FlowLegend
 import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.line.CubicBezierLinePlot
-import io.github.koalaplot.core.line.LinePlot2
+import io.github.koalaplot.core.line.LinePlot
 import io.github.koalaplot.core.line.catmullRomControlPoints
 import io.github.koalaplot.core.style.KoalaPlotTheme
 import io.github.koalaplot.core.style.LineStyle
@@ -54,20 +54,15 @@ import io.github.koalaplot.core.xygraph.rememberAxisStyle
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
-val xyLineSampleView =
-    object : SampleView {
-        override val name: String = "XY Line"
+val xyLineSampleView = object : SampleView {
+    override val name: String = "XY Line"
 
-        override val thumbnail = @Composable {
-            ThumbnailTheme {
-                LineChartSample(true, name)
-            }
-        }
+    override fun toString(): String = name
 
-        override val content: @Composable () -> Unit = @Composable {
-            LineChartSample(false, "Rainfall")
-        }
+    override val content: @Composable () -> Unit = @Composable {
+        LineChartSample("Rainfall")
     }
+}
 
 private val colorMap =
     buildMap {
@@ -79,27 +74,23 @@ private val colorMap =
     }
 
 @Composable
-private fun LineChartSample(
-    thumbnail: Boolean,
-    title: String,
-) {
+private fun LineChartSample(title: String) {
     var bezier by remember { mutableStateOf(false) }
 
     @Suppress("MagicNumber")
     var tau by remember { mutableFloatStateOf(0.5f) }
 
     Column {
-        if (!thumbnail) {
-            BezierOptions(
-                bezier,
-                tau,
-                { bezier = it },
-                { tau = it },
-                Modifier.padding(KoalaPlotTheme.sizes.gap),
-            )
-            HorizontalDivider()
-        }
-        XYSamplePlot(thumbnail, title, bezier, tau)
+        BezierOptions(
+            bezier,
+            tau,
+            { bezier = it },
+            { tau = it },
+            Modifier.padding(KoalaPlotTheme.sizes.gap),
+        )
+        HorizontalDivider()
+
+        XYSamplePlot(title, bezier, tau)
     }
 }
 
@@ -137,7 +128,6 @@ internal fun BezierOptions(
 @Composable
 @Suppress("MagicNumber")
 private fun XYSamplePlot(
-    thumbnail: Boolean,
     title: String,
     bezierOn: Boolean,
     tau: Float,
@@ -145,7 +135,7 @@ private fun XYSamplePlot(
     ChartLayout(
         modifier = paddingMod,
         title = { ChartTitle(title) },
-        legend = { Legend(thumbnail) },
+        legend = { Legend() },
         legendLocation = LegendLocation.BOTTOM,
     ) {
         XYGraph(
@@ -158,18 +148,14 @@ private fun XYSamplePlot(
             xAxisContent =
                 AxisContent(
                     labels = {
-                        if (!thumbnail) {
-                            AxisLabel(it, Modifier.padding(top = 2.dp))
-                        }
+                        AxisLabel(it, Modifier.padding(top = 2.dp))
                     },
                     title = {
-                        if (!thumbnail) {
-                            Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                AxisTitle("Month")
-                            }
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            AxisTitle("Month")
                         }
                     },
                     style = rememberAxisStyle(),
@@ -177,21 +163,19 @@ private fun XYSamplePlot(
             yAxisContent =
                 AxisContent(
                     labels = {
-                        if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
+                        AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
                     },
                     title = {
-                        if (!thumbnail) {
-                            Box(
-                                modifier = Modifier.fillMaxHeight(),
-                                contentAlignment = Alignment.TopStart,
-                            ) {
-                                AxisTitle(
-                                    "Rainfall (mm)",
-                                    modifier = Modifier
-                                        .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                                        .padding(bottom = padding),
-                                )
-                            }
+                        Box(
+                            modifier = Modifier.fillMaxHeight(),
+                            contentAlignment = Alignment.TopStart,
+                        ) {
+                            AxisTitle(
+                                "Rainfall (mm)",
+                                modifier = Modifier
+                                    .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                                    .padding(bottom = padding),
+                            )
                         }
                     },
                     style = rememberAxisStyle(),
@@ -204,7 +188,6 @@ private fun XYSamplePlot(
                         rain.mapIndexed { index, d ->
                             DefaultPoint(RainData.months[index], d.toFloat())
                         },
-                        thumbnail,
                         tau,
                     )
                 } else {
@@ -213,7 +196,6 @@ private fun XYSamplePlot(
                         rain.mapIndexed { index, d ->
                             DefaultPoint(RainData.months[index], d.toFloat())
                         },
-                        thumbnail,
                     )
                 }
             }
@@ -226,9 +208,8 @@ private fun XYSamplePlot(
 private fun XYGraphScope<String, Float>.Chart(
     city: String,
     data: List<DefaultPoint<String, Float>>,
-    thumbnail: Boolean,
 ) {
-    LinePlot2(
+    LinePlot(
         data = data,
         lineStyle =
             LineStyle(
@@ -239,10 +220,8 @@ private fun XYGraphScope<String, Float>.Chart(
             TooltipBox(
                 positionProvider = TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
                 tooltip = {
-                    if (!thumbnail) {
-                        PlainTooltip {
-                            Text(point.y.toString())
-                        }
+                    PlainTooltip {
+                        Text(point.y.toString())
                     }
                 },
                 state = rememberTooltipState(),
@@ -261,7 +240,6 @@ private fun XYGraphScope<String, Float>.Chart(
 private fun XYGraphScope<String, Float>.BezierChart(
     city: String,
     data: List<DefaultPoint<String, Float>>,
-    thumbnail: Boolean,
     tau: Float,
 ) {
     CubicBezierLinePlot(
@@ -275,10 +253,8 @@ private fun XYGraphScope<String, Float>.BezierChart(
             TooltipBox(
                 positionProvider = TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
                 tooltip = {
-                    if (!thumbnail) {
-                        PlainTooltip {
-                            Text(point.y.toString())
-                        }
+                    PlainTooltip {
+                        Text(point.y.toString())
                     }
                 },
                 state = rememberTooltipState(),
@@ -295,24 +271,22 @@ private fun XYGraphScope<String, Float>.BezierChart(
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
-private fun Legend(thumbnail: Boolean = false) {
+private fun Legend() {
     val cities = RainData.rainfall.keys.sorted()
 
-    if (!thumbnail) {
-        Surface(shadowElevation = 2.dp) {
-            FlowLegend(
-                itemCount = cities.size,
-                symbol = { i ->
-                    Symbol(
-                        modifier = Modifier.size(padding),
-                        fillBrush = SolidColor(colorMap[cities[i]] ?: Color.Black),
-                    )
-                },
-                label = { i ->
-                    Text(cities[i])
-                },
-                modifier = paddingMod,
-            )
-        }
+    Surface(shadowElevation = 2.dp) {
+        FlowLegend(
+            itemCount = cities.size,
+            symbol = { i ->
+                Symbol(
+                    modifier = Modifier.size(padding),
+                    fillBrush = SolidColor(colorMap[cities[i]] ?: Color.Black),
+                )
+            },
+            label = { i ->
+                Text(cities[i])
+            },
+            modifier = paddingMod,
+        )
     }
 }

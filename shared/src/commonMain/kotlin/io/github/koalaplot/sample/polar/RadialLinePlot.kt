@@ -23,11 +23,10 @@ import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.polar.DefaultPolarPoint
 import io.github.koalaplot.core.polar.PolarGraph
 import io.github.koalaplot.core.polar.PolarGraphDefaults
-import io.github.koalaplot.core.polar.PolarPlotSeries2
+import io.github.koalaplot.core.polar.PolarPlotSeries
 import io.github.koalaplot.core.polar.PolarPoint
 import io.github.koalaplot.core.polar.rememberCategoryAngularAxisModel
 import io.github.koalaplot.core.polar.rememberFloatRadialAxisModel
-import io.github.koalaplot.core.style.KoalaPlotTheme.axis
 import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.generateHueColorPalette
@@ -35,51 +34,39 @@ import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.sample.ChartTitle
 import io.github.koalaplot.sample.PopulationData
 import io.github.koalaplot.sample.SampleView
-import io.github.koalaplot.sample.ThumbnailTheme
 import io.github.koalaplot.sample.padding
 import io.github.koalaplot.sample.paddingMod
 
 val radialLinePlotSample = object : SampleView {
     override val name: String = "Radial Line Plot"
 
-    override val thumbnail = @Composable {
-        ThumbnailTheme {
-            RadialLinePlotSample(true, name)
-        }
-    }
+    override fun toString(): String = name
 
     override val content: @Composable () -> Unit = @Composable {
-        RadialLinePlotSample(false, "Population (Millions)")
+        RadialLinePlotSample("Population (Millions)")
     }
 }
 
 @OptIn(ExperimentalKoalaPlotApi::class, ExperimentalMaterial3Api::class)
 @Composable
 @Suppress("MagicNumber")
-private fun RadialLinePlotSample(
-    thumbnail: Boolean,
-    title: String,
-) {
+private fun RadialLinePlotSample(title: String) {
     ChartLayout(
         modifier = paddingMod,
         title = { ChartTitle(title) },
-        legend = { Legend(thumbnail) },
+        legend = { Legend() },
         legendLocation = LegendLocation.BOTTOM,
     ) {
         val ram = rememberFloatRadialAxisModel(listOf(0f, 0.5f, 1f, 1.5f, 2f, 2.5f, 3f)) // population in millions
         val aam = rememberCategoryAngularAxisModel(PopulationData.years)
 
-        val angularAxisGridLineStyle = if (thumbnail) {
-            LineStyle(SolidColor(Color.LightGray), strokeWidth = 1.dp)
-        } else {
-            axis.majorGridlineStyle
-        }
+        val angularAxisGridLineStyle = LineStyle(SolidColor(Color.LightGray), strokeWidth = 1.dp)
 
         PolarGraph(
             ram,
             aam,
-            radialAxisLabels = { if (!thumbnail) Text(it.toString(1)) },
-            { if (!thumbnail) Text(it.toString()) },
+            radialAxisLabels = { Text(it.toString(1)) },
+            { Text(it.toString()) },
             polarGraphProperties = PolarGraphDefaults
                 .polarGraphPropertyDefaults()
                 .copy(
@@ -88,7 +75,7 @@ private fun RadialLinePlotSample(
                 ),
         ) {
             PopulationData.data.forEach { (category, data) ->
-                PolarPlotSeries2(
+                PolarPlotSeries(
                     object : AbstractList<PolarPoint<Float, Int>>() {
                         override val size: Int
                             get() = PopulationData.years.size
@@ -103,13 +90,11 @@ private fun RadialLinePlotSample(
                                 TooltipAnchorPosition.Above,
                             ),
                             tooltip = {
-                                if (!thumbnail) {
-                                    PlainTooltip {
-                                        Text(
-                                            "${(it.r * 1E6).toInt()}",
-                                            style = MaterialTheme.typography.bodySmall,
-                                        )
-                                    }
+                                PlainTooltip {
+                                    Text(
+                                        "${(it.r * 1E6).toInt()}",
+                                        style = MaterialTheme.typography.bodySmall,
+                                    )
                                 }
                             },
                             state = rememberTooltipState(),
@@ -136,25 +121,23 @@ private val colorMap = buildMap {
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
-private fun Legend(thumbnail: Boolean = false) {
+private fun Legend() {
     val cities = PopulationData.data.keys.sorted()
 
-    if (!thumbnail) {
-        Surface(shadowElevation = 2.dp) {
-            FlowLegend(
-                itemCount = cities.size,
-                symbol = { i ->
-                    Symbol(
-                        shape = CircleShape,
-                        modifier = Modifier.size(padding),
-                        fillBrush = SolidColor(colorMap[cities[i]] ?: Color.Black),
-                    )
-                },
-                label = { i ->
-                    Text(cities[i].display)
-                },
-                modifier = paddingMod,
-            )
-        }
+    Surface(shadowElevation = 2.dp) {
+        FlowLegend(
+            itemCount = cities.size,
+            symbol = { i ->
+                Symbol(
+                    shape = CircleShape,
+                    modifier = Modifier.size(padding),
+                    fillBrush = SolidColor(colorMap[cities[i]] ?: Color.Black),
+                )
+            },
+            label = { i ->
+                Text(cities[i].display)
+            },
+            modifier = paddingMod,
+        )
     }
 }

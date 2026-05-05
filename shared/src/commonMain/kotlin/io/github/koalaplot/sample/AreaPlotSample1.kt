@@ -41,24 +41,17 @@ import kotlin.math.sqrt
 val areaPlotSample1View = object : SampleView {
     override val name: String = "Areas to x-axis"
 
-    override val thumbnail = @Composable {
-        ThumbnailTheme {
-            AreaPlotSample1Plot(true, name)
-        }
-    }
+    override fun toString(): String = name
 
     override val content: @Composable () -> Unit = @Composable {
-        AreaPlotSample1Plot(false, "Normal Distributions")
+        AreaPlotSample1Plot("Normal Distributions")
     }
 }
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
 @Suppress("MagicNumber")
-private fun AreaPlotSample1Plot(
-    thumbnail: Boolean,
-    title: String,
-) {
+private fun AreaPlotSample1Plot(title: String) {
     ChartLayout(
         modifier = paddingMod.padding(end = 16.dp),
         title = { ChartTitle(title) },
@@ -69,20 +62,16 @@ private fun AreaPlotSample1Plot(
             yAxisModel = FloatLinearAxisModel(0f..1.0f, minimumMajorTickSpacing = 50.dp),
             xAxisContent = rememberAxisContent(
                 labels = {
-                    if (!thumbnail) {
-                        AxisLabel(it.toString(1), Modifier.padding(top = 2.dp))
-                    }
+                    AxisLabel(it.toString(1), Modifier.padding(top = 2.dp))
                 },
                 title = {
-                    if (!thumbnail) {
-                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                            AxisTitle("x")
-                        }
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        AxisTitle("x")
                     }
                 },
             ),
             yAxisContent = rememberAxisContent(labels = {
-                if (!thumbnail) AxisLabel(it.toString(1), Modifier.absolutePadding(right = 2.dp))
+                AxisLabel(it.toString(1), Modifier.absolutePadding(right = 2.dp))
             }),
             gridStyle = rememberGridStyle(
                 horizontalMinorStyle = null,
@@ -109,9 +98,7 @@ private fun AreaPlotSample1Plot(
                 areaBaseline = AreaBaseline.HorizontalLine(0f),
             )
 
-            if (!thumbnail) {
-                Annotations()
-            }
+            Annotations()
         }
     }
 }

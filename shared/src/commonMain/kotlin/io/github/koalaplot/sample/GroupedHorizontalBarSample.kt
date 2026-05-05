@@ -52,36 +52,30 @@ private fun barChartEntries(): List<BarPlotGroupedPointEntry<Int, Float>> = Popu
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
-private fun Legend(thumbnail: Boolean = false) {
-    if (!thumbnail) {
-        FlowLegend(
-            itemCount = PopulationData.Categories.entries.size,
-            symbol = { i ->
-                Symbol(modifier = Modifier.size(padding), fillBrush = SolidColor(colors[i]))
-            },
-            label = { i ->
-                Text(PopulationData.Categories.entries[i].toString())
-            },
-        )
-    }
+private fun Legend() {
+    FlowLegend(
+        itemCount = PopulationData.Categories.entries.size,
+        symbol = { i ->
+            Symbol(modifier = Modifier.size(padding), fillBrush = SolidColor(colors[i]))
+        },
+        label = { i ->
+            Text(PopulationData.Categories.entries[i].toString())
+        },
+    )
 }
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 val groupedHorizontalBarSampleView = object : SampleView {
     override val name: String = "Grouped Horizontal Bar"
 
-    override val thumbnail = @Composable {
-        ThumbnailTheme {
-            BarSample2Plot(true, name)
-        }
-    }
+    override fun toString(): String = name
 
     override val content: @Composable () -> Unit = @Composable {
         Column {
             ChartLayout(
                 modifier = Modifier.sizeIn(minHeight = 200.dp, maxHeight = 600.dp).weight(1f),
             ) {
-                BarSample2Plot(false, "New York City Population")
+                BarSample2Plot("New York City Population")
             }
         }
     }
@@ -91,17 +85,14 @@ private const val PopulationScale = 1E6f
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
-private fun BarSample2Plot(
-    thumbnail: Boolean,
-    title: String,
-) {
-    val barChartEntries: List<BarPlotGroupedPointEntry<Int, Float>> = remember(thumbnail) { barChartEntries() }
+private fun BarSample2Plot(title: String) {
+    val barChartEntries: List<BarPlotGroupedPointEntry<Int, Float>> = remember { barChartEntries() }
 
     ChartLayout(
         // modifier = paddingMod,
         modifier = paddingMod.padding(end = 16.dp),
         title = { ChartTitle(title) },
-        legend = { Legend(thumbnail) },
+        legend = { Legend() },
         legendLocation = LegendLocation.BOTTOM,
     ) {
         XYGraph(
@@ -112,35 +103,29 @@ private fun BarSample2Plot(
             ),
             xAxisContent = rememberAxisContent(
                 labels = {
-                    if (!thumbnail) {
-                        AxisLabel(
-                            (it / PopulationScale).toString(2),
-                        )
-                    }
+                    AxisLabel(
+                        (it / PopulationScale).toString(2),
+                    )
                 },
                 title = {
-                    if (!thumbnail) {
-                        Text(
-                            "Population (Millions)",
-                            color = MaterialTheme.colorScheme.onBackground,
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    }
+                    Text(
+                        "Population (Millions)",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
                 },
             ),
             yAxisContent = rememberAxisContent(
                 labels = {
-                    if (!thumbnail) AxisLabel("$it", Modifier.padding(top = 2.dp))
+                    AxisLabel("$it", Modifier.padding(top = 2.dp))
                 },
                 title = {
-                    if (!thumbnail) {
-                        AxisTitle(
-                            "Year",
-                            modifier = Modifier
-                                .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                                .padding(bottom = padding),
-                        )
-                    }
+                    AxisTitle(
+                        "Year",
+                        modifier = Modifier
+                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                            .padding(bottom = padding),
+                    )
                 },
             ),
             gridStyle = rememberGridStyle(horizontalMajorStyle = null),

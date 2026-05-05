@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.bar.DefaultBar
-import io.github.koalaplot.core.bar.VerticalBarPlot2
+import io.github.koalaplot.core.bar.VerticalBarPlot
 import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.xygraph.CategoryAxisModel
@@ -28,18 +28,13 @@ import kotlin.random.Random
 val categoryBarChartSampleView = object : SampleView {
     override val name: String = "Category Bar Chart"
 
-    override val thumbnail = @Composable {
-        ThumbnailTheme {
-            CategorySamplePlot(true, name)
-        }
-    }
+    override fun toString(): String = name
 
     override val content: @Composable () -> Unit = @Composable {
         Column(
             modifier = Modifier.fillMaxSize(),
         ) {
             CategorySamplePlot(
-                thumbnail = false,
                 title = name,
                 modifier = Modifier.weight(1.0f),
             )
@@ -51,7 +46,6 @@ val categoryBarChartSampleView = object : SampleView {
 @Composable
 @Suppress("MagicNumber")
 private fun CategorySamplePlot(
-    thumbnail: Boolean,
     title: String,
     modifier: Modifier = Modifier,
 ) {
@@ -71,7 +65,7 @@ private fun CategorySamplePlot(
                 labels = {
                     Text(
                         modifier = Modifier.border(1.dp, Color.Black),
-                        text = if (!thumbnail) it.name else "",
+                        text = it.name,
                         maxLines = 1,
                     )
                 },
@@ -79,7 +73,7 @@ private fun CategorySamplePlot(
             ),
             yAxisContent = rememberAxisContent(),
         ) {
-            VerticalBarPlot2 {
+            VerticalBarPlot {
                 data.forEach {
                     item(
                         x = it.key,

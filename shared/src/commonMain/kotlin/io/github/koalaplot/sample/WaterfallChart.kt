@@ -1,12 +1,16 @@
 package io.github.koalaplot.sample
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -17,6 +21,8 @@ import io.github.koalaplot.core.bar.DefaultBarPosition
 import io.github.koalaplot.core.bar.VerticalBarPlot
 import io.github.koalaplot.core.bar.VerticalBarPlotEntry
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
+import io.github.koalaplot.core.util.VerticalRotation
+import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.core.xygraph.AxisContent
 import io.github.koalaplot.core.xygraph.AxisStyle
@@ -58,13 +64,7 @@ private fun barChartEntries(): List<VerticalBarPlotEntry<Int, Float>> {
 val waterfallChartSampleView = object : SampleView {
     override val name: String = "Waterfall Chart"
 
-    override val thumbnail = @Composable {
-        ThumbnailTheme {
-            ChartLayout(title = { Text(name) }) {
-                WaterfallChart(true)
-            }
-        }
-    }
+    override fun toString(): String = name
 
     override val content: @Composable () -> Unit = @Composable {
         Column {
@@ -73,11 +73,12 @@ val waterfallChartSampleView = object : SampleView {
                     Text(
                         "Population Changes in Manhattan Over 70 Years",
                         style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.padding(bottom = padding),
                     )
                 },
                 modifier = Modifier.sizeIn(minHeight = 200.dp, maxHeight = 600.dp).weight(1f),
             ) {
-                WaterfallChart(false)
+                WaterfallChart()
             }
         }
     }
@@ -85,7 +86,7 @@ val waterfallChartSampleView = object : SampleView {
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
-private fun WaterfallChart(thumbnail: Boolean) {
+private fun WaterfallChart() {
     val barChartEntries = remember { barChartEntries() }
 
     @Suppress("MagicNumber")
@@ -96,24 +97,35 @@ private fun WaterfallChart(thumbnail: Boolean) {
         yAxisModel = FloatLinearAxisModel(0f..p),
         xAxisContent = AxisContent(
             labels = {
-                if (!thumbnail) {
-                    it.toString()
-                } else {
-                    ""
+                Text(it.toString())
+            },
+            title = {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    AxisTitle("Year")
                 }
             },
-            title = { if (!thumbnail) Text("Year") },
             style = AxisStyle(),
         ),
         yAxisContent = AxisContent(
             labels = {
-                if (!thumbnail) {
-                    it.toString(0)
-                } else {
-                    ""
+                Text(it.toString(0), modifier = Modifier.padding(end = 2.dp))
+            },
+            title = {
+                Box(
+                    modifier = Modifier.fillMaxHeight(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    AxisTitle(
+                        "Population",
+                        modifier = Modifier
+                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                            .padding(bottom = padding),
+                    )
                 }
             },
-            title = { if (!thumbnail) Text("Population") },
             style = AxisStyle(),
         ),
         gridStyle = GridStyle(null, null, null, null),

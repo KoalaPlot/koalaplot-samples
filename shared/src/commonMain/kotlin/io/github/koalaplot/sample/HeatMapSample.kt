@@ -49,35 +49,30 @@ import kotlin.math.sqrt
 import kotlin.random.Random
 
 @OptIn(ExperimentalKoalaPlotApi::class)
-val heatMapSampleView =
-    object : SampleView {
-        override val name: String = "Heat Map"
+val heatMapSampleView = object : SampleView {
+    override val name: String = "Heat Map"
 
-        override val thumbnail = @Composable {
-            ThumbnailTheme {
-                HeapMapSamplePlot(HeapMapSampleState(), thumbnail = true)
-            }
+    override fun toString(): String = name
+
+    override val content: @Composable () -> Unit = @Composable {
+        var sampleState by remember {
+            mutableStateOf(
+                HeapMapSampleState(),
+            )
         }
-
-        override val content: @Composable () -> Unit = @Composable {
-            var sampleState by remember {
-                mutableStateOf(
-                    HeapMapSampleState(),
-                )
+        Column {
+            ChartLayout(
+                modifier = Modifier.sizeIn(minHeight = 200.dp, maxHeight = 600.dp).weight(1f),
+            ) {
+                HeapMapSamplePlot(state = sampleState)
             }
-            Column {
-                ChartLayout(
-                    modifier = Modifier.sizeIn(minHeight = 200.dp, maxHeight = 600.dp).weight(1f),
-                ) {
-                    HeapMapSamplePlot(state = sampleState)
-                }
-                HorizontalDivider(modifier = Modifier.fillMaxWidth())
-                HeatMapSampleConfigurator(sampleState, {
-                    sampleState = it
-                })
-            }
+            HorizontalDivider(modifier = Modifier.fillMaxWidth())
+            HeatMapSampleConfigurator(sampleState, {
+                sampleState = it
+            })
         }
     }
+}
 
 /**
  * Configuration for a Gaussian cluster in 2D space
@@ -211,7 +206,6 @@ public fun generateHeatMapData(
 fun HeapMapSamplePlot(
     state: HeapMapSampleState,
     modifier: Modifier = Modifier,
-    thumbnail: Boolean = false,
 ) {
     val gridSize = 100
     val function2D = generateHeatMapData(gridSize, gridSize)
@@ -257,8 +251,8 @@ fun HeapMapSamplePlot(
             XYGraph(
                 xAxisModel = rememberDoubleLinearAxisModel(0.0..gridSize.toDouble()),
                 yAxisModel = rememberDoubleLinearAxisModel(0.0..gridSize.toDouble()),
-                xAxisContent = AxisContent({ if (!thumbnail) Label(it) }, {}, rememberAxisStyle()),
-                yAxisContent = AxisContent({ if (!thumbnail) Label(it) }, {}, rememberAxisStyle()),
+                xAxisContent = AxisContent({ Label(it) }, {}, rememberAxisStyle()),
+                yAxisContent = AxisContent({ Label(it) }, {}, rememberAxisStyle()),
                 modifier = Modifier.weight(1f),
             ) {
                 HeatMapPlot(
@@ -278,8 +272,8 @@ fun HeapMapSamplePlot(
             XYGraph(
                 xAxisModel = rememberDoubleLinearAxisModel(0.0..gridSize.toDouble()),
                 yAxisModel = rememberDoubleLinearAxisModel(0.0..gridSize.toDouble()),
-                xAxisContent = AxisContent({ if (!thumbnail) Label(it) }, {}, rememberAxisStyle()),
-                yAxisContent = AxisContent({ if (!thumbnail) Label(it) }, {}, rememberAxisStyle()),
+                xAxisContent = AxisContent({ Label(it) }, {}, rememberAxisStyle()),
+                yAxisContent = AxisContent({ Label(it) }, {}, rememberAxisStyle()),
                 modifier = Modifier.weight(1f),
             ) {
                 HeatMapPlot(

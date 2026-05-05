@@ -18,7 +18,7 @@ import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.polar.DefaultPolarPoint
 import io.github.koalaplot.core.polar.PolarGraph
 import io.github.koalaplot.core.polar.PolarGraphDefaults
-import io.github.koalaplot.core.polar.PolarPlotSeries2
+import io.github.koalaplot.core.polar.PolarPlotSeries
 import io.github.koalaplot.core.polar.PolarPoint
 import io.github.koalaplot.core.polar.rememberAngularValueAxisModel
 import io.github.koalaplot.core.polar.rememberFloatRadialAxisModel
@@ -31,7 +31,6 @@ import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.toDegrees
 import io.github.koalaplot.sample.ChartTitle
 import io.github.koalaplot.sample.SampleView
-import io.github.koalaplot.sample.ThumbnailTheme
 import io.github.koalaplot.sample.padding
 import io.github.koalaplot.sample.paddingMod
 import kotlin.random.Random
@@ -39,14 +38,10 @@ import kotlin.random.Random
 val polarScatterPlotSample = object : SampleView {
     override val name: String = "Polar Scatter"
 
-    override val thumbnail = @Composable {
-        ThumbnailTheme {
-            PolarScatterPlot(true, name)
-        }
-    }
+    override fun toString(): String = name
 
     override val content: @Composable () -> Unit = @Composable {
-        PolarScatterPlot(false, "")
+        PolarScatterPlot("")
     }
 }
 
@@ -67,27 +62,20 @@ private val data: List<List<PolarPoint<Float, AngularValue>>> = buildList {
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
 @Suppress("MagicNumber")
-private fun PolarScatterPlot(
-    thumbnail: Boolean,
-    title: String,
-) {
+private fun PolarScatterPlot(title: String) {
     ChartLayout(
         modifier = paddingMod,
         title = { ChartTitle(title) },
-        legend = { Legend(thumbnail) },
+        legend = { Legend() },
         legendLocation = LegendLocation.BOTTOM,
     ) {
-        val angularAxisGridLineStyle = if (thumbnail) {
-            LineStyle(SolidColor(Color.LightGray), strokeWidth = 1.dp)
-        } else {
-            LineStyle(SolidColor(Color.LightGray), strokeWidth = 1.dp)
-        }
+        val angularAxisGridLineStyle = LineStyle(SolidColor(Color.LightGray), strokeWidth = 1.dp)
 
         PolarGraph(
             rememberFloatRadialAxisModel(listOf(0f, 5f, 10f)),
             rememberAngularValueAxisModel(),
-            radialAxisLabels = { if (!thumbnail) Text(it.toString()) },
-            { if (!thumbnail) Text("${it.toDegrees().value}\u00B0") },
+            radialAxisLabels = { Text(it.toString()) },
+            { Text("${it.toDegrees().value}\u00B0") },
             polarGraphProperties = PolarGraphDefaults
                 .polarGraphPropertyDefaults()
                 .copy(
@@ -100,7 +88,7 @@ private fun PolarScatterPlot(
                 ),
         ) {
             data.forEachIndexed { index, seriesData ->
-                PolarPlotSeries2(
+                PolarPlotSeries(
                     seriesData,
                     symbols = {
                         Symbol(shape = CircleShape, fillBrush = SolidColor(palette[index]))
@@ -115,23 +103,21 @@ private val palette = generateHueColorPalette(seriesNames.size)
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
-private fun Legend(thumbnail: Boolean = false) {
-    if (!thumbnail) {
-        Surface(shadowElevation = 2.dp) {
-            FlowLegend(
-                itemCount = seriesNames.size,
-                symbol = { i ->
-                    Symbol(
-                        shape = CircleShape,
-                        modifier = Modifier.size(padding),
-                        fillBrush = SolidColor(palette[i]),
-                    )
-                },
-                label = { i ->
-                    Text(seriesNames[i])
-                },
-                modifier = paddingMod,
-            )
-        }
+private fun Legend() {
+    Surface(shadowElevation = 2.dp) {
+        FlowLegend(
+            itemCount = seriesNames.size,
+            symbol = { i ->
+                Symbol(
+                    shape = CircleShape,
+                    modifier = Modifier.size(padding),
+                    fillBrush = SolidColor(palette[i]),
+                )
+            },
+            label = { i ->
+                Text(seriesNames[i])
+            },
+            modifier = paddingMod,
+        )
     }
 }

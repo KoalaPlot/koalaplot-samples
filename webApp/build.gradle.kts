@@ -5,10 +5,10 @@ plugins {
 }
 
 kotlin {
-    js(IR) {
-        browser()
-        binaries.executable()
-    }
+//    js(IR) {
+//        browser()
+//        binaries.executable()
+//    }
 
     @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs {

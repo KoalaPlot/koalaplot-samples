@@ -29,9 +29,9 @@ kotlin {
     }
 
     jvm()
-    js {
-        browser()
-    }
+//    js {
+//        browser()
+//    }
 
     @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs {
@@ -50,6 +50,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(libs.compose.adaptive)
+            implementation(libs.compose.adaptive.layout)
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
@@ -60,6 +62,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.collections.immutable)
             implementation(libs.kotlinx.coroutines)
+            implementation(libs.treeview)
         }
     }
 }

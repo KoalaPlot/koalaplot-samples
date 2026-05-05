@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
 import io.github.koalaplot.core.legend.LegendLocation
-import io.github.koalaplot.core.line.LinePlot2
+import io.github.koalaplot.core.line.LinePlot
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.xygraph.CategoryAxisModel
 import io.github.koalaplot.core.xygraph.DefaultPoint
@@ -39,14 +39,10 @@ import kotlin.time.Instant
 val liveTimeChartSampleView = object : SampleView {
     override val name: String = "Live Time Chart"
 
-    override val thumbnail = @Composable {
-        ThumbnailTheme {
-            LiveTimeChart(true)
-        }
-    }
+    override fun toString(): String = name
 
     override val content: @Composable () -> Unit = @Composable {
-        LiveTimeChart(false)
+        LiveTimeChart()
     }
 }
 
@@ -62,10 +58,7 @@ private const val UpdateDelay = 500L
 
 @OptIn(ExperimentalKoalaPlotApi::class, ExperimentalTime::class)
 @Composable
-fun LiveTimeChart(
-    thumbnail: Boolean,
-    modifier: Modifier = Modifier,
-) {
+fun LiveTimeChart(modifier: Modifier = Modifier) {
     val info = remember {
         val x = kotlin.time.Clock.System
             .now()
@@ -85,7 +78,7 @@ fun LiveTimeChart(
         )
     }
 
-    LaunchedEffect(thumbnail) {
+    LaunchedEffect(Unit) {
         withContext(Dispatchers.Main) {
             var count = 0
             while (isActive) {
@@ -119,21 +112,17 @@ fun LiveTimeChart(
             ),
             xAxisContent = rememberAxisContent(
                 labels = {
-                    if (!thumbnail) {
-                        AxisLabel(it, Modifier.padding(top = 2.dp))
-                    }
+                    AxisLabel(it, Modifier.padding(top = 2.dp))
                 },
                 style = rememberAxisStyle(labelRotation = 45),
             ),
             yAxisContent = rememberAxisContent(
                 labels = {
-                    if (!thumbnail) {
-                        AxisLabel(it.toString())
-                    }
+                    AxisLabel(it.toString())
                 },
             ),
         ) {
-            LinePlot2(
+            LinePlot(
                 info.value.points,
                 symbol = { Symbol(fillBrush = SolidColor(Color.Black)) },
                 animationSpec = TweenSpec(0),

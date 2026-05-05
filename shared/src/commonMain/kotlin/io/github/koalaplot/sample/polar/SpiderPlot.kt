@@ -8,7 +8,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
@@ -18,7 +17,7 @@ import io.github.koalaplot.core.legend.LegendLocation
 import io.github.koalaplot.core.polar.DefaultPolarPoint
 import io.github.koalaplot.core.polar.PolarGraph
 import io.github.koalaplot.core.polar.PolarGraphDefaults
-import io.github.koalaplot.core.polar.PolarPlotSeries2
+import io.github.koalaplot.core.polar.PolarPlotSeries
 import io.github.koalaplot.core.polar.PolarPoint
 import io.github.koalaplot.core.polar.RadialGridType
 import io.github.koalaplot.core.polar.rememberCategoryAngularAxisModel
@@ -30,7 +29,6 @@ import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.sample.ChartTitle
 import io.github.koalaplot.sample.SampleView
-import io.github.koalaplot.sample.ThumbnailTheme
 import io.github.koalaplot.sample.padding
 import io.github.koalaplot.sample.paddingMod
 import kotlin.random.Random
@@ -38,14 +36,10 @@ import kotlin.random.Random
 val spiderPlotSample = object : SampleView {
     override val name: String = "Spider Plot"
 
-    override val thumbnail = @Composable {
-        ThumbnailTheme {
-            SpiderPlotSample(true, name)
-        }
-    }
+    override fun toString(): String = name
 
     override val content: @Composable () -> Unit = @Composable {
-        SpiderPlotSample(false, "")
+        SpiderPlotSample("")
     }
 }
 
@@ -67,27 +61,20 @@ private val data: List<List<PolarPoint<Float, String>>> = buildList {
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
 @Suppress("MagicNumber")
-private fun SpiderPlotSample(
-    thumbnail: Boolean,
-    title: String,
-) {
+private fun SpiderPlotSample(title: String) {
     ChartLayout(
         modifier = paddingMod,
         title = { ChartTitle(title) },
-        legend = { Legend(thumbnail) },
+        legend = { Legend() },
         legendLocation = LegendLocation.BOTTOM,
     ) {
-        val angularAxisGridLineStyle = if (thumbnail) {
-            LineStyle(SolidColor(Color.LightGray), strokeWidth = 1.dp)
-        } else {
-            axis.majorGridlineStyle
-        }
+        val angularAxisGridLineStyle = axis.majorGridlineStyle
 
         PolarGraph(
             rememberFloatRadialAxisModel((0..5).toList().map { it.toFloat() }),
             rememberCategoryAngularAxisModel(categories),
-            radialAxisLabels = { if (!thumbnail) Text(it.toString()) },
-            { if (!thumbnail) Text(it) },
+            radialAxisLabels = { Text(it.toString()) },
+            { Text(it) },
             polarGraphProperties = PolarGraphDefaults
                 .polarGraphPropertyDefaults()
                 .copy(
@@ -97,7 +84,7 @@ private fun SpiderPlotSample(
                 ),
         ) {
             data.forEachIndexed { index, seriesData ->
-                PolarPlotSeries2(
+                PolarPlotSeries(
                     seriesData,
                     lineStyle = LineStyle(SolidColor(palette[index]), strokeWidth = 1.5.dp),
                     areaStyle = AreaStyle(SolidColor(palette[index]), alpha = 0.3f),
@@ -114,23 +101,21 @@ private val palette = generateHueColorPalette(seriesNames.size)
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
-private fun Legend(thumbnail: Boolean = false) {
-    if (!thumbnail) {
-        Surface(shadowElevation = 2.dp) {
-            FlowLegend(
-                itemCount = seriesNames.size,
-                symbol = { i ->
-                    Symbol(
-                        shape = CircleShape,
-                        modifier = Modifier.size(padding),
-                        fillBrush = SolidColor(palette[i]),
-                    )
-                },
-                label = { i ->
-                    Text(seriesNames[i])
-                },
-                modifier = paddingMod,
-            )
-        }
+private fun Legend() {
+    Surface(shadowElevation = 2.dp) {
+        FlowLegend(
+            itemCount = seriesNames.size,
+            symbol = { i ->
+                Symbol(
+                    shape = CircleShape,
+                    modifier = Modifier.size(padding),
+                    fillBrush = SolidColor(palette[i]),
+                )
+            },
+            label = { i ->
+                Text(seriesNames[i])
+            },
+            modifier = paddingMod,
+        )
     }
 }

@@ -14,7 +14,7 @@ import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
 import io.github.koalaplot.core.legend.FlowLegend
 import io.github.koalaplot.core.legend.LegendLocation
-import io.github.koalaplot.core.line.StairstepPlot2
+import io.github.koalaplot.core.line.StairstepPlot
 import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
@@ -32,14 +32,10 @@ import kotlin.math.ceil
 val stairStepSampleView = object : SampleView {
     override val name: String = "Stair Step"
 
-    override val thumbnail = @Composable {
-        ThumbnailTheme {
-            StairStepSamplePlot(true, name)
-        }
-    }
+    override fun toString(): String = name
 
     override val content: @Composable () -> Unit = @Composable {
-        StairStepSamplePlot(false, "Rainfall")
+        StairStepSamplePlot("Rainfall")
     }
 }
 
@@ -54,14 +50,11 @@ private val colorMap = buildMap {
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
 @Suppress("MagicNumber")
-private fun StairStepSamplePlot(
-    thumbnail: Boolean,
-    title: String,
-) {
+private fun StairStepSamplePlot(title: String) {
     ChartLayout(
         modifier = paddingMod,
         title = { ChartTitle(title) },
-        legend = { Legend(thumbnail) },
+        legend = { Legend() },
         legendLocation = LegendLocation.BOTTOM,
     ) {
         XYGraph(
@@ -72,26 +65,22 @@ private fun StairStepSamplePlot(
             ),
             xAxisContent = AxisContent(
                 labels = {
-                    if (!thumbnail) {
-                        AxisLabel(it, Modifier.padding(top = 2.dp))
-                    }
+                    AxisLabel(it, Modifier.padding(top = 2.dp))
                 },
-                title = { if (!thumbnail) AxisTitle("Month") },
+                title = { AxisTitle("Month") },
                 style = rememberAxisStyle(),
             ),
             yAxisContent = AxisContent(
                 labels = {
-                    if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
+                    AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
                 },
                 title = {
-                    if (!thumbnail) {
-                        AxisTitle(
-                            "Rainfall (mm)",
-                            modifier = Modifier
-                                .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                                .padding(bottom = padding),
-                        )
-                    }
+                    AxisTitle(
+                        "Rainfall (mm)",
+                        modifier = Modifier
+                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                            .padding(bottom = padding),
+                    )
                 },
                 style = rememberAxisStyle(),
             ),
@@ -114,7 +103,7 @@ private fun XYGraphScope<String, Float>.Chart(
     city: String,
     data: List<DefaultPoint<String, Float>>,
 ) {
-    StairstepPlot2(
+    StairstepPlot(
         data = data,
         lineStyle = LineStyle(
             brush = SolidColor(colorMap[city] ?: Color.Black),
@@ -125,24 +114,22 @@ private fun XYGraphScope<String, Float>.Chart(
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
-private fun Legend(thumbnail: Boolean = false) {
+private fun Legend() {
     val cities = RainData.rainfall.keys.sorted()
 
-    if (!thumbnail) {
-        Surface(shadowElevation = 2.dp) {
-            FlowLegend(
-                itemCount = cities.size,
-                symbol = { i ->
-                    Symbol(
-                        modifier = Modifier.size(padding),
-                        fillBrush = SolidColor(colorMap[cities[i]] ?: Color.Black),
-                    )
-                },
-                label = { i ->
-                    Text(cities[i])
-                },
-                modifier = paddingMod,
-            )
-        }
+    Surface(shadowElevation = 2.dp) {
+        FlowLegend(
+            itemCount = cities.size,
+            symbol = { i ->
+                Symbol(
+                    modifier = Modifier.size(padding),
+                    fillBrush = SolidColor(colorMap[cities[i]] ?: Color.Black),
+                )
+            },
+            label = { i ->
+                Text(cities[i])
+            },
+            modifier = paddingMod,
+        )
     }
 }

@@ -35,7 +35,7 @@ import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.Symbol
 import io.github.koalaplot.core.gestures.GestureConfig
 import io.github.koalaplot.core.legend.LegendLocation
-import io.github.koalaplot.core.line.LinePlot2
+import io.github.koalaplot.core.line.LinePlot
 import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
@@ -61,20 +61,7 @@ private data class GestureOptionsState(
 val xyLineChartGestureSampleView = object : SampleView {
     override val name: String = "Gestures"
 
-    override val thumbnail = @Composable {
-        ThumbnailTheme {
-            XYSamplePlot(
-                thumbnail = true,
-                title = name,
-                gestureOptions = GestureOptionsState(
-                    allowZoomX = false,
-                    allowZoomY = false,
-                    allowPanX = false,
-                    allowPanY = false,
-                ),
-            )
-        }
-    }
+    override fun toString(): String = name
 
     override val content: @Composable () -> Unit = @Composable {
         Column(
@@ -82,7 +69,6 @@ val xyLineChartGestureSampleView = object : SampleView {
         ) {
             var gestureOptions by remember { mutableStateOf(GestureOptionsState()) }
             XYSamplePlot(
-                thumbnail = false,
                 title = "Gestures",
                 gestureOptions = gestureOptions,
                 modifier = Modifier.weight(1.0f),
@@ -104,7 +90,6 @@ private val colorMap = buildMap {
 @Composable
 @Suppress("MagicNumber")
 private fun XYSamplePlot(
-    thumbnail: Boolean,
     title: String,
     gestureOptions: GestureOptionsState,
     modifier: Modifier = Modifier,
@@ -133,38 +118,32 @@ private fun XYSamplePlot(
             yAxisModel = yAxis,
             xAxisContent = rememberAxisContent(
                 labels = {
-                    if (!thumbnail) {
-                        AxisLabel(it.toString(), Modifier.padding(top = 2.dp))
-                    }
+                    AxisLabel(it.toString(), Modifier.padding(top = 2.dp))
                 },
                 title = {
-                    if (!thumbnail) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            AxisTitle("Random data set (X)")
-                        }
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        AxisTitle("Random data set (X)")
                     }
                 },
             ),
             yAxisContent = rememberAxisContent(
                 labels = {
-                    if (!thumbnail) AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
+                    AxisLabel(it.toString(), Modifier.absolutePadding(right = 2.dp))
                 },
                 title = {
-                    if (!thumbnail) {
-                        Box(
-                            modifier = Modifier.fillMaxHeight(),
-                            contentAlignment = Alignment.TopStart,
-                        ) {
-                            AxisTitle(
-                                "Random data set (Y)",
-                                modifier = Modifier
-                                    .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                                    .padding(bottom = padding),
-                            )
-                        }
+                    Box(
+                        modifier = Modifier.fillMaxHeight(),
+                        contentAlignment = Alignment.TopStart,
+                    ) {
+                        AxisTitle(
+                            "Random data set (Y)",
+                            modifier = Modifier
+                                .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                                .padding(bottom = padding),
+                        )
                     }
                 },
             ),
@@ -180,11 +159,7 @@ private fun XYSamplePlot(
             ),
         ) {
             FakeData.floatData.forEachIndexed { index, points ->
-                Chart(
-                    dataSetIndex = index,
-                    data = points,
-                    thumbnail = thumbnail,
-                )
+                Chart(dataSetIndex = index, data = points)
             }
         }
     }
@@ -195,9 +170,8 @@ private fun XYSamplePlot(
 private fun XYGraphScope<Float, Float>.Chart(
     dataSetIndex: Int,
     data: List<Point<Float, Float>>,
-    thumbnail: Boolean,
 ) {
-    LinePlot2(
+    LinePlot(
         data = data,
         lineStyle = LineStyle(
             brush = SolidColor(colorMap[dataSetIndex] ?: Color.Black),
@@ -207,10 +181,8 @@ private fun XYGraphScope<Float, Float>.Chart(
             TooltipBox(
                 positionProvider = TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
                 tooltip = {
-                    if (!thumbnail) {
-                        PlainTooltip {
-                            Text(point.y.toString())
-                        }
+                    PlainTooltip {
+                        Text(point.y.toString())
                     }
                 },
                 state = rememberTooltipState(),

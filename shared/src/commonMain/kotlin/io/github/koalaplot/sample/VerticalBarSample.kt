@@ -50,11 +50,7 @@ private fun barChartEntries(): List<VerticalBarPlotEntry<Float, Float>> = buildL
 val verticalBarSampleView = object : SampleView {
     override val name: String = "Vertical Bar"
 
-    override val thumbnail = @Composable {
-        ThumbnailTheme {
-            BarSamplePlot(TickPositionState(TickPosition.None, TickPosition.None), name, Modifier, true)
-        }
-    }
+    override fun toString(): String = name
 
     override val content: @Composable () -> Unit = @Composable {
         var tickPositionState by remember {
@@ -89,9 +85,8 @@ private fun BarSamplePlot(
     tickPositionState: TickPositionState,
     title: String,
     modifier: Modifier = Modifier,
-    thumbnail: Boolean = false,
 ) {
-    val barChartEntries = remember(thumbnail) { barChartEntries() }
+    val barChartEntries = remember { barChartEntries() }
 
     ChartLayout(
         modifier = modifier.then(paddingMod),
@@ -112,11 +107,9 @@ private fun BarSamplePlot(
             ),
             xAxisContent = AxisContent(
                 labels = {
-                    if (!thumbnail) {
-                        AxisLabel(it.toString(0), Modifier.padding(top = 2.dp))
-                    }
+                    AxisLabel(it.toString(0), Modifier.padding(top = 2.dp))
                 },
-                title = { if (!thumbnail) AxisTitle("Position in Sequence") },
+                title = { AxisTitle("Position in Sequence") },
                 style = rememberAxisStyle(
                     tickPosition = tickPositionState.horizontalAxis,
                     color = Color.LightGray,
@@ -124,17 +117,15 @@ private fun BarSamplePlot(
             ),
             yAxisContent = AxisContent(
                 labels = {
-                    if (!thumbnail) AxisLabel(it.toString(1), Modifier.absolutePadding(right = 2.dp))
+                    AxisLabel(it.toString(1), Modifier.absolutePadding(right = 2.dp))
                 },
                 title = {
-                    if (!thumbnail) {
-                        AxisTitle(
-                            "Value",
-                            modifier = Modifier
-                                .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                                .padding(bottom = padding),
-                        )
-                    }
+                    AxisTitle(
+                        "Value",
+                        modifier = Modifier
+                            .rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                            .padding(bottom = padding),
+                    )
                 },
                 style = rememberAxisStyle(tickPosition = tickPositionState.verticalAxis),
             ),
