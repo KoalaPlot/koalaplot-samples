@@ -8,6 +8,7 @@ plugins {
 }
 
 kotlin {
+    jvmToolchain(21)
     androidLibrary {
         namespace = "io.github.koalaplot.sample"
         compileSdk = libs.versions.android.compileSdk
