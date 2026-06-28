@@ -54,12 +54,13 @@ import io.github.koalaplot.core.xygraph.rememberAxisStyle
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
-val xyLineSampleView = object : SampleView {
+val xyLineSampleView = object : SimpleSampleView {
     override val name: String = "XY Line"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         LineChartSample("Rainfall")
     }
 }

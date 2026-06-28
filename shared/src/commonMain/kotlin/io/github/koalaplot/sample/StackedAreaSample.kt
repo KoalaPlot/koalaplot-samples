@@ -47,12 +47,13 @@ import io.github.koalaplot.core.xygraph.rememberAxisContent
 import io.github.koalaplot.core.xygraph.rememberGridStyle
 
 val stackedAreaSampleView =
-    object : SampleView {
+    object : SimpleSampleView {
         override val name: String = "Stacked Area Chart"
 
         override fun toString(): String = name
 
-        override val content: @Composable () -> Unit = @Composable {
+        @Composable
+        override fun Content() {
             StackedAreaChartSampleView("New York City Population")
         }
     }

@@ -49,12 +49,13 @@ import kotlin.math.sqrt
 import kotlin.random.Random
 
 @OptIn(ExperimentalKoalaPlotApi::class)
-val heatMapSampleView = object : SampleView {
+val heatMapSampleView = object : SimpleSampleView {
     override val name: String = "Heat Map"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         var sampleState by remember {
             mutableStateOf(
                 HeapMapSampleState(),

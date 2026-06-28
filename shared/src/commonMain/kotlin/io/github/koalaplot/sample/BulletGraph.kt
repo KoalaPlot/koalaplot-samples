@@ -29,12 +29,13 @@ import io.github.koalaplot.core.xygraph.IntLinearAxisModel
 import io.github.koalaplot.core.xygraph.LongLinearAxisModel
 
 @OptIn(ExperimentalKoalaPlotApi::class)
-val bulletGraphSampleView = object : SampleView {
+val bulletGraphSampleView = object : SimpleSampleView {
     override val name: String = "Bullet Graph"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         Column {
             ChartLayout(
                 modifier = Modifier.sizeIn(minHeight = 200.dp, maxHeight = 600.dp).weight(1f),

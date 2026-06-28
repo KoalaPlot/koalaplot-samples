@@ -30,17 +30,18 @@ import io.github.koalaplot.core.util.deg
 import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.toDegrees
 import io.github.koalaplot.sample.ChartTitle
-import io.github.koalaplot.sample.SampleView
+import io.github.koalaplot.sample.SimpleSampleView
 import io.github.koalaplot.sample.padding
 import io.github.koalaplot.sample.paddingMod
 import kotlin.random.Random
 
-val polarScatterPlotSample = object : SampleView {
+val polarScatterPlotSample = object : SimpleSampleView {
     override val name: String = "Polar Scatter"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         PolarScatterPlot("")
     }
 }

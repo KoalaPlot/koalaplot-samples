@@ -36,7 +36,9 @@ import io.github.koalaplot.core.xygraph.rememberAxisContent
 import io.github.koalaplot.core.xygraph.rememberAxisStyle
 import io.github.koalaplot.core.xygraph.rememberGridStyle
 
-private val colors = generateHueColorPalette(PopulationData.Categories.entries.size)
+private val barConstants = object {
+    val colors = generateHueColorPalette(PopulationData.Categories.entries.size)
+}
 
 private const val BarWidth = 0.8f
 
@@ -63,7 +65,7 @@ private fun Legend() {
         FlowLegend(
             itemCount = PopulationData.Categories.entries.size,
             symbol = { i ->
-                Symbol(modifier = Modifier.size(padding), fillBrush = SolidColor(colors[i]))
+                Symbol(modifier = Modifier.size(padding), fillBrush = SolidColor(barConstants.colors[i]))
             },
             label = { i ->
                 Text(PopulationData.Categories.entries[i].toString())
@@ -73,12 +75,13 @@ private fun Legend() {
     }
 }
 
-val stackedHorizontalBarSampleView = object : SampleView {
+val stackedHorizontalBarSampleView = object : SimpleSampleView {
     override val name: String = "Stacked Horizontal Bar"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         KoalaPlotTheme(axis = KoalaPlotTheme.axis.copy(minorGridlineStyle = minorGridLineStyle)) {
             Column {
                 StackedBarSamplePlot(
@@ -143,7 +146,7 @@ private fun StackedBarSamplePlot(
                 barWidth = BarWidth,
                 bar = { xIndex, barIndex, _ ->
                     DefaultBar(
-                        brush = SolidColor(colors[barIndex]),
+                        brush = SolidColor(barConstants.colors[barIndex]),
                         modifier = Modifier.fillMaxWidth(),
                     )
                 },

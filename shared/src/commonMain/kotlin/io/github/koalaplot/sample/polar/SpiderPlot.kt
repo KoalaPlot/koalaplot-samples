@@ -28,17 +28,18 @@ import io.github.koalaplot.core.style.LineStyle
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.sample.ChartTitle
-import io.github.koalaplot.sample.SampleView
+import io.github.koalaplot.sample.SimpleSampleView
 import io.github.koalaplot.sample.padding
 import io.github.koalaplot.sample.paddingMod
 import kotlin.random.Random
 
-val spiderPlotSample = object : SampleView {
+val spiderPlotSample = object : SimpleSampleView {
     override val name: String = "Spider Plot"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         SpiderPlotSample("")
     }
 }

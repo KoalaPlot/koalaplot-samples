@@ -32,12 +32,13 @@ import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.rememberAxisContent
 
 @OptIn(ExperimentalKoalaPlotApi::class)
-val xyLogLineSampleView = object : SampleView {
+val xyLogLineSampleView = object : SimpleSampleView {
     override val name: String = "Log Axis"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         XYSamplePlot("Fibonacci Sequence")
     }
 }

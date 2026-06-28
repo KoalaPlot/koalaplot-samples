@@ -58,12 +58,13 @@ private data class GestureOptionsState(
     val enablePanFlingAnimation: Boolean = true,
 )
 
-val xyLineChartGestureSampleView = object : SampleView {
+val xyLineChartGestureSampleView = object : SimpleSampleView {
     override val name: String = "Gestures"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         Column(
             modifier = Modifier.fillMaxSize(),
         ) {

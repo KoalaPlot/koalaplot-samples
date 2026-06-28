@@ -33,7 +33,8 @@ import io.github.koalaplot.core.xygraph.rememberAxisContent
 import io.github.koalaplot.core.xygraph.rememberAxisStyle
 import io.github.koalaplot.core.xygraph.rememberGridStyle
 
-private val colors = generateHueColorPalette(fibonacci.size)
+internal val fibonacciColors = generateHueColorPalette(fibonacci.size)
+
 private const val BarWidth = 0.8f
 
 private fun barChartEntries(): List<HorizontalBarPlotEntry<Float, Float>> = buildList {
@@ -43,12 +44,13 @@ private fun barChartEntries(): List<HorizontalBarPlotEntry<Float, Float>> = buil
 }
 
 @OptIn(ExperimentalKoalaPlotApi::class)
-val horizontalBarSampleView = object : SampleView {
+val horizontalBarSampleView = object : SimpleSampleView {
     override val name: String = "Horizontal Bar"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         var tickPositionState by remember {
             mutableStateOf(
                 TickPositionState(
@@ -134,7 +136,7 @@ private fun BarSamplePlot(
                 barChartEntries,
                 bar = { index, _, _ ->
                     DefaultBar(
-                        brush = SolidColor(colors[0]),
+                        brush = SolidColor(fibonacciColors[0]),
                         modifier = Modifier.fillMaxWidth(),
                     )
                 },

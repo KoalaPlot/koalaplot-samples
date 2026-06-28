@@ -38,12 +38,13 @@ import kotlin.math.exp
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-val areaPlotSample1View = object : SampleView {
+val areaPlotSample1View = object : SimpleSampleView {
     override val name: String = "Areas to x-axis"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         AreaPlotSample1Plot("Normal Distributions")
     }
 }

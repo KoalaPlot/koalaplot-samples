@@ -29,12 +29,13 @@ import io.github.koalaplot.core.xygraph.XYGraphScope
 import io.github.koalaplot.core.xygraph.rememberAxisStyle
 import kotlin.math.ceil
 
-val stairStepSampleView = object : SampleView {
+val stairStepSampleView = object : SimpleSampleView {
     override val name: String = "Stair Step"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         StairStepSamplePlot("Rainfall")
     }
 }

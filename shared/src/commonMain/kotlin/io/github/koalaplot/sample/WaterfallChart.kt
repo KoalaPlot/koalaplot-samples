@@ -61,12 +61,13 @@ private fun barChartEntries(): List<VerticalBarPlotEntry<Int, Float>> {
 }
 
 @OptIn(ExperimentalKoalaPlotApi::class)
-val waterfallChartSampleView = object : SampleView {
+val waterfallChartSampleView = object : SimpleSampleView {
     override val name: String = "Waterfall Chart"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         Column {
             ChartLayout(
                 title = {

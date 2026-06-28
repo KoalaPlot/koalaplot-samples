@@ -32,7 +32,9 @@ import io.github.koalaplot.core.xygraph.rememberAxisContent
 import io.github.koalaplot.core.xygraph.rememberGridStyle
 import kotlin.math.ceil
 
-private val colors = generateHueColorPalette(PopulationData.Categories.entries.size)
+private val constants = object {
+    val colors = generateHueColorPalette(PopulationData.Categories.entries.size)
+}
 
 private fun barChartEntries(): List<BarPlotGroupedPointEntry<Int, Float>> = PopulationData.years.mapIndexed { yearIndex, year ->
     object : BarPlotGroupedPointEntry<Int, Float> {
@@ -56,7 +58,7 @@ private fun Legend() {
     FlowLegend(
         itemCount = PopulationData.Categories.entries.size,
         symbol = { i ->
-            Symbol(modifier = Modifier.size(padding), fillBrush = SolidColor(colors[i]))
+            Symbol(modifier = Modifier.size(padding), fillBrush = SolidColor(constants.colors[i]))
         },
         label = { i ->
             Text(PopulationData.Categories.entries[i].toString())
@@ -65,12 +67,13 @@ private fun Legend() {
 }
 
 @OptIn(ExperimentalKoalaPlotApi::class)
-val groupedHorizontalBarSampleView = object : SampleView {
+val groupedHorizontalBarSampleView = object : SimpleSampleView {
     override val name: String = "Grouped Horizontal Bar"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         Column {
             ChartLayout(
                 modifier = Modifier.sizeIn(minHeight = 200.dp, maxHeight = 600.dp).weight(1f),
@@ -133,7 +136,7 @@ private fun BarSample2Plot(title: String) {
             GroupedHorizontalBarPlot(
                 data = barChartEntries,
                 bar = { dataIndex, groupIndex, _ ->
-                    DefaultBar(brush = SolidColor(colors[groupIndex]))
+                    DefaultBar(brush = SolidColor(constants.colors[groupIndex]))
                 },
             )
         }

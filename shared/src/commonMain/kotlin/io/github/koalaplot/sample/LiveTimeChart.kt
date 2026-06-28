@@ -36,12 +36,13 @@ import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-val liveTimeChartSampleView = object : SampleView {
+val liveTimeChartSampleView = object : SimpleSampleView {
     override val name: String = "Live Time Chart"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         LiveTimeChart()
     }
 }

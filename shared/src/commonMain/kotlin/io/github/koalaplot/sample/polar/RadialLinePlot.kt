@@ -33,16 +33,17 @@ import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.sample.ChartTitle
 import io.github.koalaplot.sample.PopulationData
-import io.github.koalaplot.sample.SampleView
+import io.github.koalaplot.sample.SimpleSampleView
 import io.github.koalaplot.sample.padding
 import io.github.koalaplot.sample.paddingMod
 
-val radialLinePlotSample = object : SampleView {
+val radialLinePlotSample = object : SimpleSampleView {
     override val name: String = "Radial Line Plot"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         RadialLinePlotSample("Population (Millions)")
     }
 }

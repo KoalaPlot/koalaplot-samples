@@ -37,12 +37,13 @@ import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-val timeLineSampleView = object : SampleView {
+val timeLineSampleView = object : SimpleSampleView {
     override val name: String = "Time Chart"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         TimeSamplePlot("Random Walk")
     }
 }

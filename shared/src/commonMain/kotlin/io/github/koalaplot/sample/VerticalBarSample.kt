@@ -27,7 +27,6 @@ import io.github.koalaplot.core.bar.VerticalBarPlot
 import io.github.koalaplot.core.bar.VerticalBarPlotEntry
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.util.VerticalRotation
-import io.github.koalaplot.core.util.generateHueColorPalette
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
 import io.github.koalaplot.core.xygraph.AxisContent
@@ -37,7 +36,6 @@ import io.github.koalaplot.core.xygraph.TickPosition
 import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.rememberAxisStyle
 
-private val colors = generateHueColorPalette(fibonacci.size)
 private const val BarWidth = 0.8f
 
 private fun barChartEntries(): List<VerticalBarPlotEntry<Float, Float>> = buildList {
@@ -47,12 +45,13 @@ private fun barChartEntries(): List<VerticalBarPlotEntry<Float, Float>> = buildL
 }
 
 @OptIn(ExperimentalKoalaPlotApi::class)
-val verticalBarSampleView = object : SampleView {
+val verticalBarSampleView = object : SimpleSampleView {
     override val name: String = "Vertical Bar"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         var tickPositionState by remember {
             mutableStateOf(
                 TickPositionState(
@@ -135,7 +134,7 @@ private fun BarSamplePlot(
                 barChartEntries,
                 bar = { _, _, _ ->
                     DefaultBar(
-                        brush = SolidColor(colors[0]),
+                        brush = SolidColor(fibonacciColors[0]),
                         modifier = Modifier.fillMaxWidth(),
                     )
                 },

@@ -39,12 +39,13 @@ import io.github.koalaplot.core.xygraph.XYGraph
 import kotlin.math.PI
 import kotlin.math.cos
 
-val trigSampleView = object : SampleView {
+val trigSampleView = object : SimpleSampleView {
     override val name: String = "Area to x-axis"
 
     override fun toString(): String = name
 
-    override val content: @Composable () -> Unit = @Composable {
+    @Composable
+    override fun Content() {
         CosineSamplePlot("Cosine")
     }
 }
