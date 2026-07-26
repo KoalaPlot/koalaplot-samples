@@ -28,7 +28,7 @@ jobs:
                 working-directory: koalaplot-samples
 
             -   name: Build js koalaplot-samples
-                run: ./gradlew composeCompatibilityBrowserDistribution
+                run: ./gradlew wasmJsBrowserDistribution
                 working-directory: koalaplot-samples
 
             -   name: Deploy compose-web samples to GitHub Pages
@@ -36,7 +36,7 @@ jobs:
                 uses: crazy-max/ghaction-github-pages@v4
                 with:
                     target_branch: gh-pages
-                    build_dir: koalaplot-samples/webApp/build/dist/composeWebCompatibility
+                    build_dir: koalaplot-samples/webApp/build/dist/wasmJs/productionExecutable
                     keep_history: false
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
