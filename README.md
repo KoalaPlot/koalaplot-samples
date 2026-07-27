@@ -3,7 +3,7 @@
 This repository houses samples demonstrating the use and features of Koala Plot libraries.
 
 Try out
-the [web version of the samples](https://koalaplot.github.io/koalaplot-samples/productionExecutable/index.html)
+the [web version of the samples](https://koalaplot.github.io/koalaplot-samples/index.html)
 for a quick look at
 the possibilities when using Koala Plot.
 
